@@ -1,0 +1,41 @@
+How to stream Spotify wirelessly to your stereo
+=================================================
+
+The best and most simple solution to listen to Spotify in your stereo is by 
+connecting your computer to your stereo using a regular stereo cable. But if you
+have a laptop and want to use it from different locations, that method obviously 
+fails. Not to mention that stereo cables tend to get glitchy when used for some time.
+
+So, the second best alternative is to connect a separate computer to your stereo and
+from this computer do the audio playback. You can then connect this computer to a TV
+and get a [wireless keyboard and mouse] to remote control it.
+
+But if you absolutely must use your laptop to wirelessly stream music to your stereo,
+here are five solutions, ranging from the best to the trickiest. Which is best to you,
+however, depends on your setup and equipment.
+
+## Solution A: Stream to an AirPort Express
+
+The simplest thing to do when it comes to wireless streaming is to purchase an 
+[Apple AirPort Express] ($99) from which you drag an audio cable to your stereo. On top of 
+helping your sound system, the AirPort Express gives you wireless printer and home 
+network router.
+
+The AirPort Express was built to function natively with iTunes, but there's a program
+for Mac and PC called 'AirFoil' ($25, test it 10 min a time) which allows you to 
+the sound of a program (e.g Spotify) and broadcast it to an AirPort Express. 
+
+This method works well for streaming from a computer. Note well, however, that AirFoil
+doesn't work with anything but a PC or a Mac, so streaming from your iPhone or another
+Spotify mobile phone *won't* work with the AirPort Express. (This may change if Spotify
+ever implements native AirPort Express support, in which case AirFoil won't be needed).
+
+Requirements:
+- Apple Airport Express 
+- AirFoil 
+- A PC or Mac
+
+## Solution B: Stream to a Bluetooth receiver
+## Solution C: Stream to your mobile phone
+## Solution D: Stream to another computer (AirFoil)
+## Solution E: Stream to your PS3/Xbox
