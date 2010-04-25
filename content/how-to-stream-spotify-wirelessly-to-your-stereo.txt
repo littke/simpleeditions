@@ -36,6 +36,34 @@ Requirements:
 - A PC or Mac
 
 ## Solution B: Stream to a Bluetooth receiver
-## Solution C: Stream to your mobile phone
-## Solution D: Stream to another computer (AirFoil)
-## Solution E: Stream to your PS3/Xbox
+
+Another alternative that should be fairly straightforward is to get yourself a Bluetooth
+receiver. This receiver can then be connected straight to your stereo, much like the 
+AirPort Express. 
+
+Bluetooth is good because it's a wireless protocol supported by quite a high number of 
+devices, including computer, laptops and phones. There are even some newer stereos that
+have Bluetooth built into them and can receive wireless audio out of the box.
+
+In either case, the only setup required is to plug in the Bluetooth receiver close to 
+your stereo and jack the audio cable into it. From the computer you're streaming, open
+up the Bluetooth panel and search for the device and attempt to pair with.
+
+Examples of Bluetooth devices: 
+- 1
+- 2
+- 3
+
+## Solution C: Stream to your computer or iPhone using AirFoil speakers
+
+The [previously discussed] streaming program [AirFoil] can, on to of streaming audio,
+also receive it. It has an application called _AirFoil speakers_ which acts as a 
+receiver device much like the Airport Express. 
+
+AirFoil speakers is available for Windows, Mac and iPhone. Let one of these device be
+connected to the stereo and run the application AirFoil speakers. From the computer 
+you wish to be streaming audio, start the regular AirFoil application and see if the 
+computer/phone you set up for receiving can be found. If it can, connect to it and
+start playing!
+
+## Solution D: Stream to your PS3/Xbox
