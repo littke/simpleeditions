@@ -67,3 +67,27 @@ computer/phone you set up for receiving can be found. If it can, connect to it a
 start playing!
 
 ## Solution D: Stream to your PS3/Xbox
+
+Another solution, albeit less smooth, is to stream Spotify to your gaming console. At
+this time, PS3 and Xbox both support something called DLNA, a protocol for sharing 
+music files and playing them. This isn't supported by Spotify, but you can set up a 
+program to capture the sound from Spotify and make your gaming console believe it's a
+music file on your computer - a very, very long track!
+
+For Windows, there's a program called [JamCast] ($29.99, 14 days trial) which lets you
+do just that. It has a feature called 'Virtual Soundcard' that will capture *all* sound
+that your computer plays, and broadcast it. 
+
+Simply download and install JamCast and enable the Virtual Soundcard playback. Go to 
+your gaming console and search for Media servers, and see if your computer shows up. 
+If it does, access it and go to playlists -> Virtual Soundcard and play it.
+
+If you have any lag or playback problems, make sure your connection to your wireless
+router is good, and that your gaming console is using a wired (rather than wirless)
+connection, since the lag normally has to do with the speed of your wireless 
+connection.
+
+In our experience, this solution works but takes a little fiddling before it's 
+optimal, not to mention it takes at least 10-20 seconds from the time you start the 
+playback on the gaming console until it actually plays. But if it floats your boat,
+then we're happy.
