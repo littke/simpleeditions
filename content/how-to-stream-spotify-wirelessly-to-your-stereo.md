@@ -87,5 +87,5 @@ optimal, not to mention it takes at least 10-20 seconds from the time you start 
 playback on the gaming console until it actually plays. But if it floats your boat,
 then we're happy.
 
-That's all for now - this article will be updated continually to give you the best 
-instructions on how to listen to Spotify without cables.
+*That's all for now - this article will be updated continually to give you the best 
+instructions on how to listen to Spotify without cables.*
