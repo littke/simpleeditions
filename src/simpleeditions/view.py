@@ -55,6 +55,28 @@ def do_auth(handler, auth_func, *args):
 
     return True
 
+def login_required(func):
+    """A decorator that ensures that the user is logged in to the application.
+
+    The decorator may only be applied to the get/head/post/etc. methods of a
+    TemplatedRequestHandler instance.
+
+    If the user is not logged in, a "Not logged in" message will be shown,
+    encouraging the user to log in.
+
+    To avoid losing the user object which is fetched to check whether the
+    user is logged in, it is added as the first argument (after the self
+    argument) to the function.
+
+    """
+    def wrapper(self, *args, **kwargs):
+        user = controller.get_user_info(self)
+        if user:
+            return func(self, user, *args, **kwargs)
+        self.response.set_status(403)
+        self.render('not_logged_in.html')
+    return wrapper
+
 class HomeHandler(utils.TemplatedRequestHandler):
     def get(self):
         self.render('home.html',
@@ -70,12 +92,16 @@ class LoginHandler(utils.TemplatedRequestHandler):
             return
 
         # User successfully logged in.
-        self.redirect('/')
+        redirect_to = self.request.get('continue', '/')
+        self.redirect(redirect_to)
 
 class LogOutHandler(utils.TemplatedRequestHandler):
     def get(self):
         controller.log_out(self)
-        self.redirect('/')
+
+        redirect_to = self.request.get('continue', '/')
+        self.redirect(redirect_to)
+
 
 class RegisterHandler(utils.TemplatedRequestHandler):
     def get(self):
