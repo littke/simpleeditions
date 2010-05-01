@@ -33,33 +33,25 @@ def do_auth(handler, auth_func, *args):
     """
     req = handler.request
 
-    # Get a list of all argument names.
-    names = req.arguments()
-
     # Build a argument dictionary used to call the authentication function.
     kwargs = {}
-    for arg_name in names:
-        if not arg_name.startswith('_'):
-            value = req.get(arg_name).strip()
-            if value:
-                kwargs[str(arg_name)] = value
+    for name, value in req.POST.items():
+        if not name.startswith('_') and value:
+            kwargs[name] = value
 
     # Call the auth function with the requested auth type.
     auth_type = kwargs.pop('auth_type')
     try:
         auth_func(handler, auth_type, **kwargs)
     except simpleeditions.ExternalLoginNeededError:
+        # The authentication method requires that the user be directed to an
+        # external URL.
         login_url = controller.get_login_url(
             handler,
-            req.get('auth_type'),
+            auth_type,
             handler.request.path)
         handler.redirect(login_url)
         return False
-    except simpleeditions.NotConnectedError:
-        raise
-    except TypeError:
-        # Erroneous parameters.
-        raise
 
     return True
 
