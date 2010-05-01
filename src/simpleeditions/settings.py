@@ -24,8 +24,10 @@ import os
 # the application is running on a development server, False if not.
 DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Development')
 
+DOMAIN = 'www.simpleeditions.com'
 STATIC_PATH = '/static'
 TEMPLATE_DIR = 'templates'
+NOT_FOUND_TEMPLATE = '404.html'
 
 # The time that a session should be stored in a user's browser, in days.
 SESSION_TTL = 7

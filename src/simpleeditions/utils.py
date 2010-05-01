@@ -32,6 +32,17 @@ class TemplatedRequestHandler(webapp.RequestHandler):
 
     """
 
+    def not_found(self, template_name=None, **kwargs):
+        """Similar to the render() method, but with a 404 HTTP status code.
+        Also, the template_name argument is optional. If not specified, the
+        NOT_FOUND_TEMPLATE setting will be used instead.
+
+        """
+        if not template_name:
+            template_name = settings.NOT_FOUND_TEMPLATE
+        res.set_status(404)
+        self.render(template_name, **kwargs)
+
     def redirect(self, location, permanent=False):
         res = self.response
 
@@ -39,7 +50,7 @@ class TemplatedRequestHandler(webapp.RequestHandler):
         res.headers['Location'] = location
         res.set_status(301 if permanent else 302)
 
-    def render(self, template_name, values=None, **kwargs):
+    def render(self, template_name, **kwargs):
         """Renders the specified template to the output.
 
         The template will have the following variables available, in addition
@@ -51,16 +62,11 @@ class TemplatedRequestHandler(webapp.RequestHandler):
                    'query_string', etc.
 
         """
-
-        if values is not None and not isinstance(values, dict):
-            raise TypeError('values must be None or of type dict')
-
         kwargs.update({'DEBUG': settings.DEBUG,
                        'STATIC_PATH': settings.STATIC_PATH,
+                       'DOMAIN': settings.DOMAIN,
                        'VERSION': os.environ['CURRENT_VERSION_ID'],
                        'request': self.request})
-        if values:
-            kwargs.update(values)
 
         path = os.path.join(settings.TEMPLATE_DIR, template_name)
         self.response.out.write(template.render(path, kwargs))

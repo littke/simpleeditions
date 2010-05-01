@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ page_title }} – SimpleEditions</title>
+    <title>{% block page_title %}{{ page_title }}{% endblock %} – SimpleEditions</title>
     <link href="{{ STATIC_PATH }}/style.css" rel="stylesheet" type="text/css">
     {% block page_head %}{% endblock %}
 </head>
@@ -11,7 +11,7 @@
     {% else %}
     <p><a href="/login">Log in</a> or <a href="/register">register</a>.</p>
     {% endif %}
-    <h1>{{ page_title }}</h1>
+    <h1>{% block page_header %}{{ page_title }}{% endblock %}</h1>
     {% block page_content %}{% endblock %}
 </body>
 </html>
