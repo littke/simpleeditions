@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block page_content %}
+    <form action="{{ request.path }}" method="post">
+        <p>To log in, enter your credentials below.</p>
+        <p>Authentication type</p>
+        <p><select name="auth_type">
+            <option value="local">Local</option>
+            <option value="google">Google</option>
+        </select></p>
+        <p>E-mail for login (local only)</p>
+        <p><input name="auth_email" type="text" /></p>
+        <p>Password (local only)</p>
+        <p><input name="password" type="password" /></p>
+        <p><input type="submit" value="Log in" />
+    </form>
+{% endblock %}

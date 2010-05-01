@@ -17,3 +17,26 @@
 # You should have received a copy of the GNU General Public License along with
 # SimpleEditions. If not, see http://www.gnu.org/licenses/.
 #
+
+class Error(Exception):
+    """Generic error for the SimpleEditions application."""
+
+class ConnectError(Error):
+    """Raised when connecting an authentication type to a user fails."""
+
+class ExternalLoginNeededError(Error):
+    """Raised when a login cannot be completed without leaving the page.
+
+    It's up to the code handling the error to decide whether to send the
+    user to another page or to return an error.
+
+    """
+
+class LogInError(Error):
+    """Error raised when logging in fails."""
+
+class NotConnectedError(Error):
+    """Raised when a user is validated by the external service, but does not
+    have a corresponding application account.
+
+    """

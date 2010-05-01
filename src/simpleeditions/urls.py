@@ -22,4 +22,7 @@ from simpleeditions import view
 
 urlpatterns = (
     ('/', view.HomeHandler),
+    ('/login', view.LoginHandler),
+    ('/logout', view.LogOutHandler),
+    ('/register', view.RegisterHandler),
 )

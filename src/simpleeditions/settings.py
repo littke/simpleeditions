@@ -26,3 +26,6 @@ DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Development')
 
 STATIC_PATH = '/static'
 TEMPLATE_DIR = 'templates'
+
+# The time that a session should be stored in a user's browser, in days.
+SESSION_TTL = 7

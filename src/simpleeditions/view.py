@@ -18,8 +18,85 @@
 # SimpleEditions. If not, see http://www.gnu.org/licenses/.
 #
 
-from simpleeditions import settings, utils
+import simpleeditions
+from simpleeditions import controller, settings, utils
+
+def do_auth(handler, auth_func, *args):
+    """Performs authentication based on the available form values.
+
+    This function expects at least auth_type to be defined as a form value.
+
+    Returns True when authentication succeeded and False when authentication
+    failed but the handler has been redirected to another URL where the
+    authentication can be completed. In other cases, an exception is raised.
+
+    """
+    req = handler.request
+
+    # Get a list of all argument names.
+    names = req.arguments()
+
+    # Build a argument dictionary used to call the authentication function.
+    kwargs = {}
+    for arg_name in names:
+        if not arg_name.startswith('_'):
+            value = req.get(arg_name).strip()
+            if value:
+                kwargs[str(arg_name)] = value
+
+    # Call the auth function with the requested auth type.
+    auth_type = kwargs.pop('auth_type')
+    try:
+        auth_func(handler, auth_type, **kwargs)
+    except simpleeditions.ExternalLoginNeededError:
+        login_url = controller.get_login_url(
+            handler,
+            req.get('auth_type'),
+            handler.request.path)
+        handler.redirect(login_url)
+        return False
+    except simpleeditions.NotConnectedError:
+        raise
+    except TypeError:
+        # Erroneous parameters.
+        raise
+
+    return True
 
 class HomeHandler(utils.TemplatedRequestHandler):
     def get(self):
-        self.render('home.html', page_title='Home')
+        self.render('home.html',
+            user=controller.get_user_info(self),
+            page_title='Home')
+
+class LoginHandler(utils.TemplatedRequestHandler):
+    def get(self):
+        self.render('login.html',
+            user=controller.get_user_info(self),
+            page_title='Log in')
+
+    def post(self):
+        if not do_auth(self, controller.log_in):
+            return
+
+        # User successfully logged in.
+        self.redirect('/')
+
+class LogOutHandler(utils.TemplatedRequestHandler):
+    def get(self):
+        controller.log_out(self)
+        self.redirect('/')
+
+class RegisterHandler(utils.TemplatedRequestHandler):
+    def get(self):
+        self.render('register.html',
+            user=controller.get_user_info(self),
+            page_title='Register')
+
+    def post(self):
+        if not do_auth(self, controller.register):
+            return
+
+        self.render('register_success.html',
+            user=controller.get_user_info(self),
+            page_title='Successfully registered!')
