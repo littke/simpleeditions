@@ -66,14 +66,12 @@ def do_auth(handler, auth_func, *args):
 class HomeHandler(utils.TemplatedRequestHandler):
     def get(self):
         self.render('home.html',
-            user=controller.get_user_info(self),
-            page_title='Home')
+            user=controller.get_user_info(self))
 
 class LoginHandler(utils.TemplatedRequestHandler):
     def get(self):
         self.render('login.html',
-            user=controller.get_user_info(self),
-            page_title='Log in')
+            user=controller.get_user_info(self))
 
     def post(self):
         if not do_auth(self, controller.log_in):
@@ -90,13 +88,11 @@ class LogOutHandler(utils.TemplatedRequestHandler):
 class RegisterHandler(utils.TemplatedRequestHandler):
     def get(self):
         self.render('register.html',
-            user=controller.get_user_info(self),
-            page_title='Register')
+            user=controller.get_user_info(self))
 
     def post(self):
         if not do_auth(self, controller.register):
             return
 
         self.render('register_success.html',
-            user=controller.get_user_info(self),
-            page_title='Successfully registered!')
+            user=controller.get_user_info(self))
