@@ -40,7 +40,7 @@ class TemplatedRequestHandler(webapp.RequestHandler):
         """
         if not template_name:
             template_name = settings.NOT_FOUND_TEMPLATE
-        res.set_status(404)
+        self.response.set_status(404)
         self.render(template_name, **kwargs)
 
     def redirect(self, location, permanent=False):
