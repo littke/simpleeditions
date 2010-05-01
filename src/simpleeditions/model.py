@@ -203,15 +203,10 @@ class GoogleAuth(UserAuthType):
         if not isinstance(user, User):
             raise TypeError('Did not get a valid User instance.')
 
-        google_user = users.get_current_user()
-        if not google_user:
-            raise simpleeditions.ExternalLoginNeededError(
-                'You must log in with Google first.')
-
         auth = GoogleAuth(
             parent=user,
             user=user,
-            google_user=google_user)
+            google_user=users.get_current_user())
         auth.put()
         return auth
 
@@ -237,6 +232,16 @@ class GoogleAuth(UserAuthType):
 
         # No error so far means the user has been successfully authenticated.
         return auth
+
+    @staticmethod
+    def validate():
+        google_user = users.get_current_user()
+        if not google_user:
+            raise simpleeditions.ExternalLoginNeededError(
+                'You must log in with Google first.')
+        qry = GoogleAuth.all(keys_only=True).filter('google_user', google_user)
+        if qry.get():
+            raise simpleeditions.ConnectError('Google user is already in use.')
 
 AUTH_TYPES = dict(
     local=LocalAuth,
