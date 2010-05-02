@@ -43,7 +43,7 @@ def do_auth(handler, auth_func, *args):
     kwargs = {}
     for name, value in req.POST.items():
         if not name.startswith('_') and value:
-            kwargs[name] = value
+            kwargs[str(name)] = value
 
     # Call the auth function with the requested auth type.
     auth_type = kwargs.pop('auth_type')
