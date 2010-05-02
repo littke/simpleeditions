@@ -84,6 +84,10 @@ def login_required(func):
     return wrapper
 
 def jsonify(obj):
+    """Takes complex data structures and returns them as data structures that
+    simplejson can handle.
+
+    """
     if isinstance(obj, datetime.datetime):
         return int(time.mktime(obj.timetuple()))
 

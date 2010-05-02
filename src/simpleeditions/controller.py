@@ -25,6 +25,7 @@ views) and the back-end (models and data logic).
 
 """
 
+import simpleeditions
 from simpleeditions import model
 from simpleeditions.utils import public
 
@@ -38,8 +39,19 @@ def get_login_url(handler, auth_type, return_url='/'):
     return auth_class.get_login_url(return_url)
 
 @public
-def get_user_info(handler):
-    return model.User.get_current(handler)
+def get_user_info(handler, id=None):
+    """Returns information about a user. The current user is returned if no id
+    is specified.
+
+    """
+    if id:
+        user = model.User.get_by_id(id)
+        if not user:
+            raise simpleeditions.UserNotFoundError(
+                'Could not find user with id %r.' % id)
+        return user.as_public()
+    else:
+        return model.User.get_current(handler)
 
 @public
 def log_in(handler, auth_type, *args, **kwargs):

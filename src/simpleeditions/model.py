@@ -31,6 +31,19 @@ from google.appengine.ext.db import polymodel
 import simpleeditions
 from simpleeditions import settings
 
+class PublicUser(db.Model):
+    display_name = db.StringProperty()
+    created = db.DateTimeProperty()
+    status = db.StringProperty()
+
+    @classmethod
+    def kind(cls):
+        return 'User'
+
+    def put(self):
+        raise simpleeditions.ReadOnlyError(
+            'Public user data cannot be modified.')
+
 class User(db.Model):
     display_name = db.StringProperty(required=True)
     email = db.StringProperty()
@@ -64,6 +77,24 @@ class User(db.Model):
             user.email = email
         user.put()
         return user
+
+    def as_public(self):
+        """Returns a PublicUser version of this object.
+
+        """
+        props = self.properties()
+
+        pu = PublicUser()
+        for prop in pu.properties().values():
+            # Only copy properties that exist for both the PublicUser model and
+            # the User model.
+            if prop.name in props:
+                # This line of code sets the property of the PublicUser
+                # instance to the value of the same property on the User
+                # instance.
+                prop.__set__(pu, props[prop.name].__get__(self, type(self)))
+
+        return pu
 
     def end_session(self, handler):
         """Removes a session from the database and the client, effectively

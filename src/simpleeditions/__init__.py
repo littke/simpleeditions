@@ -40,3 +40,12 @@ class NotConnectedError(Error):
     have a corresponding application account.
 
     """
+
+class NotFoundError(Error):
+    """Raised when a resource could not be found."""
+
+class UserNotFoundError(NotFoundError):
+    """Raised when a user cannot be found."""
+
+class ReadOnlyError(Error):
+    """Raised when attempting to modify a resource that is read only."""
