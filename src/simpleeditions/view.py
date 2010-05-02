@@ -142,6 +142,19 @@ class ApiHandler(webapp.RequestHandler):
         res.headers['Content-type'] = 'application/json'
         res.out.write(simplejson.dumps(result, separators=(',', ':')))
 
+class ArticleHandler(utils.TemplatedRequestHandler):
+    def get(self, article_id):
+        try:
+            article = controller.get_article(self, int(article_id))
+        except (TypeError, ValueError, simpleeditions.NotFoundError):
+            self.not_found(user=controller.get_user_info(self))
+            return
+
+        self.render('article.html',
+            user=controller.get_user_info(self),
+            article=article,
+            page_title=article.title)
+
 class HomeHandler(utils.TemplatedRequestHandler):
     def get(self):
         self.render('home.html',
@@ -167,6 +180,18 @@ class LogOutHandler(utils.TemplatedRequestHandler):
         redirect_to = self.request.get('continue', '/')
         self.redirect(redirect_to)
 
+class NewArticleHandler(utils.TemplatedRequestHandler):
+    @login_required
+    def get(self, user):
+        self.render('article_new.html',
+            user=user)
+
+    @login_required
+    def post(self, user):
+        req = self.request
+        article = controller.create_article(
+            self, req.get('title'), req.get('content'))
+        self.redirect('/%d/%s' % (article.key().id(), article.slug))
 
 class RegisterHandler(utils.TemplatedRequestHandler):
     def get(self):

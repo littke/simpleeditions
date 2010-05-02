@@ -41,8 +41,14 @@ class NotConnectedError(Error):
 
     """
 
+class NotLoggedInError(Error):
+    """Raised when the user needs to be logged in, but isn't."""
+
 class NotFoundError(Error):
     """Raised when a resource could not be found."""
+
+class ArticleNotFoundError(NotFoundError):
+    """Raised when an article cannot be found."""
 
 class UserNotFoundError(NotFoundError):
     """Raised when a user cannot be found."""

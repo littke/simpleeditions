@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block page_head %}
+<link rel="canonical" href="http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}">
+{% endblock %}
+{% block page_content %}
+    <div id="article">{{ article.html }}</div>
+{% endblock %}

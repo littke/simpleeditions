@@ -30,6 +30,22 @@ from simpleeditions import model
 from simpleeditions.utils import public
 
 @public
+def create_article(handler, title, content):
+    user = get_user_info(handler)
+    if not user:
+        raise simpleeditions.NotLoggedInError(
+            'You must be logged in to create an article.')
+    return model.Article.create(user, title, content)
+
+@public
+def get_article(handler, id):
+    article = model.Article.get_by_id(id)
+    if not article:
+        raise simpleeditions.ArticleNotFoundError(
+            'Could not find article with id %r.' % id)
+    return article
+
+@public
 def get_login_url(handler, auth_type, return_url='/'):
     try:
         auth_class = model.AUTH_TYPES[auth_type]

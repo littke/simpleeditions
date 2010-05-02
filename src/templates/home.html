@@ -3,4 +3,7 @@
 {% block page_header %}Home{% endblock %}
 {% block page_content %}
     <p>Welcome home!</p>
+    {% if user %}
+    <p><a href="/new">Write an article</a>!</p>
+    {% endif %}
 {% endblock %}

@@ -28,6 +28,8 @@ from google.appengine.api import mail, users
 from google.appengine.ext import db
 from google.appengine.ext.db import polymodel
 
+import markdown2
+
 import simpleeditions
 from simpleeditions import settings
 
@@ -301,6 +303,36 @@ class Article(db.Model):
     title = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     html = db.TextProperty(required=True)
+
+    @staticmethod
+    def _create_with_revision(user, slug, title, content, html):
+        article = Article(user=user, slug=slug, title=title, content=content,
+                          html=html)
+        article.put()
+
+        ArticleRevision(parent=article, article=article, user=user, diff='+',
+                        content=content, html=html).put()
+
+        return article
+
+    @staticmethod
+    def create(user, title, content):
+        if not isinstance(user, User):
+            raise TypeError('A valid user must be provided.')
+        if not isinstance(title, basestring):
+            raise TypeError('A valid title must be provided.')
+        if not isinstance(content, basestring):
+            raise TypeError('A valid article body must be provided.')
+
+        html = markdown2.markdown(content)
+        slug = Article.slugify(title)
+
+        return db.run_in_transaction(Article._create_with_revision,
+            user, slug, title, content, html)
+
+    @staticmethod
+    def slugify(title):
+        return re.sub('[^a-z0-9]+', '-', title.lower())
 
 class ArticleRevision(db.Model):
     article = db.ReferenceProperty(Article, collection_name='revisions',
