@@ -21,8 +21,9 @@
 from simpleeditions import view
 
 urlpatterns = (
-    ('/', view.HomeHandler),
-    ('/login', view.LoginHandler),
-    ('/logout', view.LogOutHandler),
-    ('/register', view.RegisterHandler),
+    (r'/', view.HomeHandler),
+    (r'/api/(\w+)', view.ApiHandler),
+    (r'/login', view.LoginHandler),
+    (r'/logout', view.LogOutHandler),
+    (r'/register', view.RegisterHandler),
 )

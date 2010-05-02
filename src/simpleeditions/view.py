@@ -18,6 +18,12 @@
 # SimpleEditions. If not, see http://www.gnu.org/licenses/.
 #
 
+import datetime
+import time
+
+from django.utils import simplejson
+from google.appengine.ext import db, webapp
+
 import simpleeditions
 from simpleeditions import controller, settings, utils
 
@@ -76,6 +82,61 @@ def login_required(func):
         self.response.set_status(403)
         self.render('not_logged_in.html')
     return wrapper
+
+def jsonify(obj):
+    if isinstance(obj, datetime.datetime):
+        return int(time.mktime(obj.timetuple()))
+
+    if isinstance(obj, db.Model):
+        o = {'id': obj.key().id_or_name()}
+        for name in obj.properties():
+            o[name] = jsonify(getattr(obj, name))
+        return o
+
+    return obj
+
+class ApiHandler(webapp.RequestHandler):
+    """Opens up the controller module to HTTP requests. Arguments should be
+    JSON encoded. Result will be JSON encoded.
+
+    """
+    def get(self, action):
+        res = self.response
+
+        # Attempt to get the attribute in the controller module.
+        attr = getattr(controller, action, None)
+        if not attr:
+            res.set_status(404)
+            res.out.write('{"status":"not_found"}')
+            return
+        if not getattr(attr, '__public', False):
+            res.set_status(403)
+            res.out.write('{"status":"forbidden"}')
+            return
+
+        req = self.request
+
+        try:
+            # Build a dict of keyword arguments from the request parameters.
+            # All arguments beginning with an underscore will be ignored.
+            kwargs = {}
+            for arg in req.arguments():
+                if arg.startswith('_'): continue
+                kwargs[str(arg)] = simplejson.loads(req.get(arg))
+
+            data = attr(self, **kwargs) if callable(attr) else attr
+            result = {'status': 'success',
+                      'response': jsonify(data)}
+        except BaseException, e:
+            res.set_status(500)
+            result = {'status': 'error',
+                      'response': str(e),
+                      'module': type(e).__module__,
+                      'type': type(e).__name__}
+
+        # Write the response as JSON.
+        res.headers['Content-type'] = 'application/json'
+        res.out.write(simplejson.dumps(result, separators=(',', ':')))
 
 class HomeHandler(utils.TemplatedRequestHandler):
     def get(self):
