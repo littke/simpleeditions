@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block page_title %}Login required{% endblock %}
+{% block page_header %}You must be logged in{% endblock %}
+{% block page_content %}
+    <p class="error">You must be logged in to access the requested page.</p>
+    <p>Proceed to the <a href="/login?continue={{ request.path|urlencode }}">login page</a>.</p>
+{% endblock %}
