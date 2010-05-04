@@ -144,7 +144,7 @@ class LocalAuth(UserAuthType):
 
     """
     email = db.EmailProperty(required=True)
-    password = db.StringProperty(required=True)
+    password = db.StringProperty(required=True, indexed=False)
 
     @staticmethod
     def connect(user, auth_email, password):
@@ -367,10 +367,10 @@ class ArticleRevision(db.Model):
     user = db.ReferenceProperty(User, collection_name='revisions',
                                 required=True)
     created = db.DateTimeProperty(auto_now_add=True)
-    title = db.StringProperty(required=True)
+    title = db.StringProperty(required=True, indexed=False)
     content = db.TextProperty(required=True)
     html = db.TextProperty(required=True)
-    message = db.StringProperty()
+    message = db.StringProperty(indexed=False)
 
     def put(self, **kwargs):
         assert not self.is_saved(), 'ArticleRevision can only be saved once.'
