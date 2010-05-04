@@ -276,34 +276,90 @@ class Article(db.Model):
     html = db.TextProperty(required=True)
 
     @staticmethod
-    def _create_with_revision(user, slug, title, content, html):
-        article = Article(user=user, slug=slug, title=title, content=content,
-                          html=html)
+    def _save(user, title=None, content=None, message='', article_id=None):
+        """Updates an article with the specified values. If no article is
+        supplied, a new article will be created. This method should ALWAYS
+        run in a transaction to ensure data consistency.
+
+        """
+        if not isinstance(user, User):
+            raise TypeError('A valid user must be provided.')
+
+        if not isinstance(message, basestring):
+            raise TypeError('Message must be a string.')
+
+        if article_id is not None:
+            article = Article.get_by_id(article_id)
+            if not article:
+                raise ValueError('A valid article id must be provided when '
+                                 'updating.')
+
+            # If the values do not change, behave as if no value was supplied
+            # at all.
+            if title == article.title:
+                title = None
+            if content == article.content:
+                content = None
+
+            if not title and not content:
+                raise simpleeditions.SaveArticleError('Nothing to update.')
+
+            # Right now, only the owner of the article may update it.
+            if article._entity['user'] != user.key():
+                raise simpleeditions.SaveArticleError(
+                    'You do not have the permissions to update that article.')
+        else:
+            article = None
+
+        if title:
+            if not isinstance(title, basestring):
+                raise TypeError('A valid title must be provided.')
+
+            slug = re.sub('[^a-z0-9]+', '-', title.lower()).strip('-')
+        else:
+            slug = None
+
+        if content:
+            if not isinstance(content, basestring):
+                raise TypeError('A valid article body must be provided.')
+
+            html = markdown2.markdown(content)
+        else:
+            html = None
+
+        if article:
+            # Update already existing article.
+            if title:
+                article.title = title
+                article.slug = slug
+            if content:
+                article.content = content
+                article.html = html
+        else:
+            article = Article(user=user, slug=slug, title=title,
+                              content=content, html=html)
         article.put()
 
-        ArticleRevision(parent=article, article=article, user=user, diff='+',
-                        content=content, html=html).put()
+        # Create a revision for the current article.
+        revision = ArticleRevision(
+            parent=article, article=article, user=user, title=article.title,
+            content=article.content, html=article.html, message=message)
+        revision.put()
 
         return article
 
     @staticmethod
     def create(user, title, content):
-        if not isinstance(user, User):
-            raise TypeError('A valid user must be provided.')
-        if not isinstance(title, basestring):
-            raise TypeError('A valid title must be provided.')
-        if not isinstance(content, basestring):
-            raise TypeError('A valid article body must be provided.')
-
-        html = markdown2.markdown(content)
-        slug = Article.slugify(title)
-
-        return db.run_in_transaction(Article._create_with_revision,
-            user, slug, title, content, html)
+        return db.run_in_transaction(Article._save, user, title, content)
 
     @staticmethod
-    def slugify(title):
-        return re.sub('[^a-z0-9]+', '-', title.lower())
+    def update(id, user, title=None, content=None, message=''):
+        """Updates the article. An empty/false value for title or content means
+        that it should not be changed.
+
+        """
+        db.run_in_transaction(Article._save, user, title, content, message,
+                              article_id=id)
 
 class ArticleRevision(db.Model):
     article = db.ReferenceProperty(Article, collection_name='revisions',
@@ -311,6 +367,11 @@ class ArticleRevision(db.Model):
     user = db.ReferenceProperty(User, collection_name='revisions',
                                 required=True)
     created = db.DateTimeProperty(auto_now_add=True)
-    diff = db.TextProperty(required=True)
+    title = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     html = db.TextProperty(required=True)
+    message = db.StringProperty()
+
+    def put(self, **kwargs):
+        assert not self.is_saved(), 'ArticleRevision can only be saved once.'
+        super(ArticleRevision, self).put(**kwargs)

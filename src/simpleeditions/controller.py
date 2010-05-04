@@ -96,3 +96,15 @@ def register(handler, auth_type, *args, **kwargs):
     auth = auth_class.register(*args, **kwargs)
     auth.user.start_session(handler)
     return auth.user
+
+@public
+def update_article(handler, id, title=None, content=None, message=''):
+    if not isinstance(id, int):
+        raise TypeError('Article id must be an integer.')
+
+    user = get_user_info(handler)
+    if not user:
+        raise simpleeditions.NotLoggedInError(
+            'You must be logged in to update an article.')
+
+    model.Article.update(id, user, title, content, message)

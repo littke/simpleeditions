@@ -55,3 +55,9 @@ class UserNotFoundError(NotFoundError):
 
 class ReadOnlyError(Error):
     """Raised when attempting to modify a resource that is read only."""
+
+class SaveError(Error):
+    """Raised when saving a resource fails."""
+
+class SaveArticleError(SaveError):
+    """Raised when saving an article fails."""
