@@ -83,7 +83,7 @@ def login_required(func):
         self.render('not_logged_in.html')
     return wrapper
 
-def jsonify(obj):
+def jsonify(obj, public=False):
     """Takes complex data structures and returns them as data structures that
     simplejson can handle.
 
@@ -92,9 +92,17 @@ def jsonify(obj):
         return int(time.mktime(obj.timetuple()))
 
     if isinstance(obj, db.Model):
+        # Support showing only public properties. This is useful for models
+        # like User, where session etc. should not be exposed.
+        public = getattr(obj, '__public', public)
+        if public and hasattr(obj, 'public_properties'):
+            props = obj.public_properties
+        else:
+            props = obj.properties().keys()
+
         o = {'id': obj.key().id_or_name()}
-        for name in obj.properties():
-            o[name] = jsonify(getattr(obj, name))
+        for name in props:
+            o[name] = jsonify(getattr(obj, name), public)
         return o
 
     return obj

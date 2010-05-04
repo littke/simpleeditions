@@ -43,7 +43,7 @@ def get_article(handler, id):
     if not article:
         raise simpleeditions.ArticleNotFoundError(
             'Could not find article with id %r.' % id)
-    return article
+    return public(article)
 
 @public
 def get_login_url(handler, auth_type, return_url='/'):
@@ -65,7 +65,7 @@ def get_user_info(handler, id=None):
         if not user:
             raise simpleeditions.UserNotFoundError(
                 'Could not find user with id %r.' % id)
-        return user.as_public()
+        return public(user)
     else:
         return model.User.get_current(handler)
 
