@@ -2,6 +2,16 @@
 {% block page_head %}
 <link rel="canonical" href="http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}">
 {% endblock %}
+{% block page_header %}{{ article.title }}{% endblock %}
 {% block page_content %}
-    <div id="article">{{ article.html }}</div>
+    <div class="contentbox_top"></div>
+    <div class="contentbox_middle">
+      <div id="tutorial_header">
+        <img src="{{ STATIC_PATH }}/images/tutorials/badge_spotify.png" />
+        <h1>{{ article.title }}</h1>
+        <p><span class="highlight">9.78</span> in rating, <span class="highlight">3 932</span> comments.</p>
+      </div>
+      {{ article.html }}
+    </div>
+    <div class="contentbox_bottom"></div>
 {% endblock %}

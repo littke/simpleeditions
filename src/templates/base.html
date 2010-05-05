@@ -2,16 +2,31 @@
 <html>
 <head>
     <title>{% block page_title %}{{ page_title }}{% endblock %} – SimpleEditions</title>
-    <link href="{{ STATIC_PATH }}/style.css" rel="stylesheet" type="text/css">
+    <link href="{{ STATIC_PATH }}/css/style.css" rel="stylesheet" type="text/css">
     {% block page_head %}{% endblock %}
 </head>
 <body>
-    {% if user %}
-    <p>Logged in as <strong>{{ user.display_name }}</strong>. <a href="/logout">Log out</a></p>
-    {% else %}
-    <p><a href="/login">Log in</a> or <a href="/register">register</a>.</p>
-    {% endif %}
-    <h1>{% block page_header %}{{ page_title }}{% endblock %}</h1>
-    {% block page_content %}{% endblock %}
+    <div id="headercontainer">
+      <div id="header">
+        <img src="{{ STATIC_PATH }}/images/logo.png" id="logo" />
+        <div id="account">
+          {% if user %}
+          Logged in as <strong>{{ user.display_name }}</strong>. <a href="/logout">Log out</a>
+          {% else %}
+          <a href="/login">Log in</a> | <a href="/register">Register</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div id="navigation">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/about/">About</a></li>
+      </ul>
+    </div>
+    <div id="contentcontainer">
+      {% block page_content %}{% endblock %}
+    </div>
 </body>
 </html>

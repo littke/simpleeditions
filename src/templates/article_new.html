@@ -1,12 +1,15 @@
 {% extends "base.html" %}
-{% block page_title %}Write new article{% endblock %}
-{% block page_header %}Write new article{% endblock %}
+{% block page_header %}Write a new article{% endblock %}
 {% block page_content %}
-    <form action="{{ request.path }}" method="post">
-        <p>Article title</p>
-        <p><input name="title" type="text" /></p>
-        <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
-        <p><textarea cols="50" name="content" rows="10"></textarea></p>
-        <p><input type="submit" value="Save article" />
-    </form>
+    <div class="contentbox_top"></div>
+    <div class="contentbox_middle">
+      <form action="{{ request.path }}" method="post">
+          <p>Article title</p>
+          <p><input name="title" type="text" /></p>
+          <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
+          <p><textarea cols="50" name="content" rows="10"></textarea></p>
+          <p><input type="submit" value="Save article" />
+      </form>
+    </div>
+    <div class="contentbox_bottom"></div>
 {% endblock %}
