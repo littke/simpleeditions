@@ -121,6 +121,7 @@ class ApiHandler(webapp.RequestHandler):
             res.set_status(404)
             res.out.write('{"status":"not_found"}')
             return
+        # Require that the attribute has been marked as public.
         if not getattr(attr, '__public', False):
             res.set_status(403)
             res.out.write('{"status":"forbidden"}')
