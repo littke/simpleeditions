@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block page_title %}{{ article.title }} – Edit{% endblock %}
+{% block page_content %}
+    <div class="contentbox_top"></div>
+    <div class="contentbox_middle">
+        <h1>Editing article</h1>
+        <form action="{{ request.path }}" method="post">
+            <p>Article title</p>
+            <p><input name="title" type="text" value="{{ article.title }}" /></p>
+            <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
+            <p><textarea cols="50" name="content" rows="10">{{ article.content }}</textarea></p>
+            <p>Edit message (optional)</p>
+            <input name="message" type="text" />
+            <p><input type="submit" value="Save article" />
+        </form>
+    </div>
+    <div class="contentbox_bottom"></div>
+{% endblock %}

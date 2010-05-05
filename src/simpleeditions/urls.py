@@ -23,6 +23,7 @@ from simpleeditions import view
 urlpatterns = (
     (r'/', view.HomeHandler),
     (r'/(\d+)(?:/.*)?', view.ArticleHandler),
+    (r'/edit/(\d+)', view.EditArticleHandler),
     (r'/api/(\w+)', view.ApiHandler),
     (r'/new', view.NewArticleHandler),
     (r'/login', view.LoginHandler),

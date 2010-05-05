@@ -164,6 +164,28 @@ class ArticleHandler(utils.TemplatedRequestHandler):
             article=article,
             page_title=article.title)
 
+class EditArticleHandler(utils.TemplatedRequestHandler):
+    @login_required
+    def get(self, user, article_id):
+        try:
+            article = controller.get_article(self, int(article_id))
+        except (TypeError, ValueError, simpleeditions.NotFoundError):
+            self.not_found(user=controller.get_user_info(self))
+            return
+
+        self.render('article_edit.html',
+            user=user, article=article)
+
+    @login_required
+    def post(self, user, article_id):
+        article_id = int(article_id)
+
+        req = self.request
+        article = controller.update_article(
+            self, article_id, req.get('title'), req.get('content'),
+            req.get('message'))
+        self.redirect('/%d/%s' % (article_id, article.slug))
+
 class HomeHandler(utils.TemplatedRequestHandler):
     def get(self):
         self.render('home.html',
