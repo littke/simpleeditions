@@ -165,6 +165,10 @@ a:link:hover, a:active:hover, a:visited:hover {
   background: url('/static/images/contentbox_bottom.png') no-repeat;
 }
 
+span.highlight {
+  color: #cf9d20;
+}
+
 /* Tutorials */
 
 #tutorial_header {
