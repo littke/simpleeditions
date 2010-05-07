@@ -34,8 +34,6 @@ import simpleeditions
 from simpleeditions import settings
 
 class User(db.Model):
-    public_properties = ('display_name', 'created', 'status')
-
     display_name = db.StringProperty(required=True)
     email = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
@@ -358,8 +356,8 @@ class Article(db.Model):
         that it should not be changed.
 
         """
-        db.run_in_transaction(Article._save, user, title, content, message,
-                              article_id=id)
+        return db.run_in_transaction(Article._save, user, title, content,
+                                     message, article_id=id)
 
 class ArticleRevision(db.Model):
     article = db.ReferenceProperty(Article, collection_name='revisions',

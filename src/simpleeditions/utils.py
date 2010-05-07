@@ -71,6 +71,57 @@ class TemplatedRequestHandler(webapp.RequestHandler):
         path = os.path.join(settings.TEMPLATE_DIR, template_name)
         self.response.out.write(template.render(path, kwargs))
 
+def _get_value(obj, name):
+    """Gets a value from an object. First tries to get the attribute with the
+    specified name. If that fails, it tries to use the object as a dict
+    instead. If the value is callable, the return value of the callable is
+    used.
+
+    """
+    try:
+        value = getattr(obj, name)
+    except AttributeError:
+        # If the attribute doesn't exist, attempt to use the object as a dict.
+        value = obj[name]
+    # If the value is callable, call it and use its return value.
+    return value() if callable(value) else value
+
+def get_dict(obj, attributes):
+    """Returns a dict with keys/values of a list of attributes from an object.
+
+    """
+    result = dict()
+    for attr in attributes:
+        if isinstance(attr, basestring):
+            alias = None
+        else:
+            # If a value in the attributes list is not a string, it should be
+            # two packed values: the attribute name and the key name it should
+            # have in the dict.
+            attr, alias = attr
+
+        # Since the obj variable is needed for future iterations, its value is
+        # stored in a new variable that can be manipulated.
+        value = obj
+
+        if '.' in attr:
+            # Dots in the attribute name can be used to fetch values deeper
+            # into the object structure.
+            for sub_attr in attr.split('.'):
+                value = _get_value(value, sub_attr)
+            if not alias:
+                alias = sub_attr
+        else:
+            value = _get_value(value, attr)
+
+        import logging
+        logging.info([attr, alias, value])
+
+        # Store the value in the dict.
+        result[alias if alias else attr] = value
+
+    return result
+
 def public(func):
     """A decorator that defines a function as publicly accessible.
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block page_head %}
-<link rel="canonical" href="http://{{ DOMAIN }}/{{ article.key.id }}/{{ article.slug }}">
+<link rel="canonical" href="http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}">
 {% endblock %}
 {% block page_title %}{{ article.title }}{% endblock %}
 {% block page_content %}
@@ -12,7 +12,7 @@
             <p>
                 <span class="highlight">9.78</span> in rating, <span class="highlight">3 932</span> comments.
                 {% ifequal user.key article._entity.user %}
-                <a href="/edit/{{ article.key.id }}">Edit article</a>
+                <a href="/edit/{{ article.id }}">Edit article</a>
                 {% endifequal %}
             </p>
         </div>

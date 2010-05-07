@@ -83,29 +83,34 @@ def login_required(func):
         self.render('not_logged_in.html')
     return wrapper
 
-def jsonify(obj, public=False):
+def jsonify(obj):
     """Takes complex data structures and returns them as data structures that
     simplejson can handle.
 
     """
+    # Return datetimes as a UNIX timestamp (seconds since 1970).
     if isinstance(obj, datetime.datetime):
         return int(time.mktime(obj.timetuple()))
 
-    if isinstance(obj, db.Model):
-        # Support showing only public properties. This is useful for models
-        # like User, where session etc. should not be exposed.
-        public = getattr(obj, '__public', public)
-        if public and hasattr(obj, 'public_properties'):
-            props = obj.public_properties
-        else:
-            props = obj.properties().keys()
+    # Since strings are iterable, return early for them.
+    if isinstance(obj, basestring):
+        return obj
 
-        o = {'id': obj.key().id_or_name()}
-        for name in props:
-            o[name] = jsonify(getattr(obj, name), public)
-        return o
+    # Handle dicts specifically.
+    if isinstance(obj, dict):
+        new_obj = {}
+        for key, value in obj.iteritems():
+            new_obj[key] = jsonify(value)
+        return new_obj
 
-    return obj
+    # Walk through iterable objects and return a jsonified list.
+    try:
+        iterator = iter(obj)
+    except TypeError:
+        # Return non-iterable objects as they are.
+        return obj
+    else:
+        return [jsonify(item) for item in iterator]
 
 class ApiHandler(webapp.RequestHandler):
     """Opens up the controller module to HTTP requests. Arguments should be
@@ -162,7 +167,7 @@ class ArticleHandler(utils.TemplatedRequestHandler):
         self.render('article.html',
             user=controller.get_user_info(self),
             article=article,
-            page_title=article.title)
+            page_title=article['title'])
 
 class EditArticleHandler(utils.TemplatedRequestHandler):
     @login_required
@@ -184,7 +189,7 @@ class EditArticleHandler(utils.TemplatedRequestHandler):
         article = controller.update_article(
             self, article_id, req.get('title'), req.get('content'),
             req.get('message'))
-        self.redirect('/%d/%s' % (article_id, article.slug))
+        self.redirect('/%d/%s' % (article_id, article['slug']))
 
 class HomeHandler(utils.TemplatedRequestHandler):
     def get(self):
@@ -222,7 +227,7 @@ class NewArticleHandler(utils.TemplatedRequestHandler):
         req = self.request
         article = controller.create_article(
             self, req.get('title'), req.get('content'))
-        self.redirect('/%d/%s' % (article.key().id(), article.slug))
+        self.redirect('/%d/%s' % (article['id'], article['slug']))
 
 class RegisterHandler(utils.TemplatedRequestHandler):
     def get(self):

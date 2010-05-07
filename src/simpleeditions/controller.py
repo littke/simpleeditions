@@ -26,16 +26,34 @@ views) and the back-end (models and data logic).
 """
 
 import simpleeditions
-from simpleeditions import model
+from simpleeditions import model, utils
 from simpleeditions.utils import public
+
+def _get_article_dict(article, include_content=False):
+    if include_content:
+        props = ['key.id', ('_entity.user.id', 'user_id'), 'created',
+                 'last_modified', 'slug', 'title', 'content', 'html']
+    else:
+        props = ['key.id', ('_entity.user.id', 'user_id'), 'created',
+                 'last_modified', 'slug', 'title']
+    return utils.get_dict(article, props)
+
+def _get_user_dict(user, include_private_values=False):
+    if include_private_values:
+        props = ['key.id', 'display_name', 'email', 'created', 'status']
+    else:
+        props = ['key.id', 'display_name', 'created', 'status']
+    return utils.get_dict(user, props)
 
 @public
 def create_article(handler, title, content):
-    user = get_user_info(handler)
+    user = model.User.get_current(handler)
     if not user:
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to create an article.')
-    return model.Article.create(user, title, content)
+    article = model.Article.create(user, title, content)
+
+    return _get_article_dict(article)
 
 @public
 def get_article(handler, id):
@@ -43,7 +61,8 @@ def get_article(handler, id):
     if not article:
         raise simpleeditions.ArticleNotFoundError(
             'Could not find article with id %r.' % id)
-    return public(article)
+
+    return _get_article_dict(article, True)
 
 @public
 def get_login_url(handler, auth_type, return_url='/'):
@@ -65,9 +84,11 @@ def get_user_info(handler, id=None):
         if not user:
             raise simpleeditions.UserNotFoundError(
                 'Could not find user with id %r.' % id)
-        return public(user)
+        return _get_user_dict(user)
     else:
-        return model.User.get_current(handler)
+        user = model.User.get_current(handler)
+        if user:
+            return _get_user_dict(user, True)
 
 @public
 def log_in(handler, auth_type, *args, **kwargs):
@@ -78,7 +99,7 @@ def log_in(handler, auth_type, *args, **kwargs):
 
     auth = auth_class.log_in(*args, **kwargs)
     auth.user.start_session(handler)
-    return auth.user
+    return _get_user_dict(auth.user, True)
 
 @public
 def log_out(handler):
@@ -95,16 +116,17 @@ def register(handler, auth_type, *args, **kwargs):
 
     auth = auth_class.register(*args, **kwargs)
     auth.user.start_session(handler)
-    return auth.user
+    return _get_user_dict(auth.user, True)
 
 @public
 def update_article(handler, id, title=None, content=None, message=''):
     if not isinstance(id, int):
         raise TypeError('Article id must be an integer.')
 
-    user = get_user_info(handler)
+    user = model.User.get_current(handler)
     if not user:
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to update an article.')
 
-    model.Article.update(id, user, title, content, message)
+    article = model.Article.update(id, user, title, content, message)
+    return _get_article_dict(article)
