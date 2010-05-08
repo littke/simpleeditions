@@ -314,7 +314,8 @@ class Article(db.Model):
             if not isinstance(title, basestring):
                 raise TypeError('A valid title must be provided.')
 
-            slug = re.sub('[^a-z0-9]+', '-', title.lower()).strip('-')
+            slug = title.lower().replace('\'', '')
+            slug = re.sub('[^a-z0-9]+', '-', slug).strip('-')
         else:
             slug = None
 
