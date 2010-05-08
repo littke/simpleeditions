@@ -91,7 +91,7 @@ a:link:hover, a:active:hover, a:visited:hover {
     float: left;
     position: relative;
     top: 30px;
-    left: 10px;
+    left: 27px;
 }
 
 #account {
@@ -118,7 +118,7 @@ a:link:hover, a:active:hover, a:visited:hover {
 
 #navigation ul {
     margin: 0;
-    padding: 15px 0 0 10px;
+    padding: 15px 0 0 17px;
     list-style-type: none;
 }
 
@@ -145,6 +145,15 @@ a:link:hover, a:active:hover, a:visited:hover {
 
 #intro_box {
     margin-top: 10px;
+    color: white;
+    position: relative;
+}
+
+#intro_box p {
+    position: absolute;
+    top: 60px;
+    left: 27px;
+    font-size: 13px;
 }
 
 .contentbox_top {
@@ -155,13 +164,13 @@ a:link:hover, a:active:hover, a:visited:hover {
 
 .contentbox_middle {
     background: url('/static/images/contentbox_middle.png') repeat-y;
-    padding: 7px 20px 1px;
+    padding: 12px 25px 1px;
     margin: 0 6px 0 0;
 }
 
 .contentbox_bottom {
     height: 14px;
-    margin: 0 6px 10px 0;
+    margin: 0 11px 10px 0;
     background: url('/static/images/contentbox_bottom.png') no-repeat;
 }
 
