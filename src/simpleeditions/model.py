@@ -266,6 +266,7 @@ def _validate_slug(slug):
 class Article(db.Model):
     user = db.ReferenceProperty(User, collection_name='articles',
                                 required=True)
+    user_name = db.StringProperty(required=True, indexed=False)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
     slug = db.StringProperty(required=True, validator=_validate_slug)
@@ -334,13 +335,15 @@ class Article(db.Model):
                 article.content = content
                 article.html = html
         else:
-            article = Article(user=user, slug=slug, title=title,
-                              content=content, html=html)
+            article = Article(user=user, user_name=user.display_name,
+                              slug=slug, title=title, content=content,
+                              html=html)
         article.put()
 
         # Create a revision for the current article.
         revision = ArticleRevision(
-            parent=article, article=article, user=user, title=article.title,
+            parent=article, article=article, user=user,
+            user_name=user.display_name, title=article.title,
             content=article.content, html=article.html, message=message)
         revision.put()
 
@@ -364,6 +367,7 @@ class ArticleRevision(db.Model):
                                    required=True)
     user = db.ReferenceProperty(User, collection_name='revisions',
                                 required=True)
+    user_name = db.StringProperty(required=True, indexed=False)
     created = db.DateTimeProperty(auto_now_add=True)
     title = db.StringProperty(required=True, indexed=False)
     content = db.TextProperty(required=True)

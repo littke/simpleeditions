@@ -31,11 +31,12 @@ from simpleeditions.utils import public
 
 def _get_article_dict(article, include_content=False):
     if include_content:
-        props = ['key.id', ('_entity.user.id', 'user_id'), 'created',
-                 'last_modified', 'slug', 'title', 'content', 'html']
+        props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
+                 'created', 'last_modified', 'slug', 'title', 'content',
+                 'html']
     else:
-        props = ['key.id', ('_entity.user.id', 'user_id'), 'created',
-                 'last_modified', 'slug', 'title']
+        props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
+                 'created', 'last_modified', 'slug', 'title']
     return utils.get_dict(article, props)
 
 def _get_user_dict(user, include_private_values=False):
