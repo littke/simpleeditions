@@ -25,8 +25,10 @@ urlpatterns = (
     (r'/(\d+)(?:/.*)?', view.ArticleHandler),
     (r'/edit/(\d+)', view.EditArticleHandler),
     (r'/api/(\w+)', view.ApiHandler),
+    (r'/tutorials', view.ArticlesHandler),
     (r'/new', view.NewArticleHandler),
     (r'/login', view.LoginHandler),
     (r'/logout', view.LogOutHandler),
     (r'/register', view.RegisterHandler),
+    (r'.*', view.NotFoundHandler),
 )

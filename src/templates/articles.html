@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block page_title %}Latest tutorials{% endblock %}
+{% block page_content %}
+    <div class="contentbox_top"></div>
+    <div class="contentbox_middle">
+        <h1>Latest tutorials</h1>
+        <table id="articles">
+            <thead>
+                <tr><th>Title</th><th>Author</th><th>Last update</th></tr>
+            </thead>
+            <tbody>
+            {% for article in articles %}
+                <tr>
+                    <td><a href="/{{ article.id }}/{{ article.slug }}">{{ article.title }}</a></td>
+                    <td>{{ article.user_name }}</td>
+                    <td>{{ article.last_modified }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="contentbox_bottom"></div>
+{% endblock %}

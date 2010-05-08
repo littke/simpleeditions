@@ -169,6 +169,12 @@ class ArticleHandler(utils.TemplatedRequestHandler):
             article=article,
             page_title=article['title'])
 
+class ArticlesHandler(utils.TemplatedRequestHandler):
+    def get(self):
+        self.render('articles.html',
+            user=controller.get_user_info(self),
+            articles=controller.get_articles(self))
+
 class EditArticleHandler(utils.TemplatedRequestHandler):
     @login_required
     def get(self, user, article_id):
@@ -228,6 +234,11 @@ class NewArticleHandler(utils.TemplatedRequestHandler):
         article = controller.create_article(
             self, req.get('title'), req.get('content'))
         self.redirect('/%d/%s' % (article['id'], article['slug']))
+
+class NotFoundHandler(utils.TemplatedRequestHandler):
+    def get(self):
+        self.not_found(user=controller.get_user_info(self))
+    post = get
 
 class RegisterHandler(utils.TemplatedRequestHandler):
     def get(self):

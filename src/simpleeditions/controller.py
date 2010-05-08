@@ -66,6 +66,11 @@ def get_article(handler, id):
     return _get_article_dict(article, True)
 
 @public
+def get_articles(handler):
+    articles = model.Article.all().order('-last_modified').fetch(10)
+    return [_get_article_dict(article) for article in articles]
+
+@public
 def get_login_url(handler, auth_type, return_url='/'):
     try:
         auth_class = model.AUTH_TYPES[auth_type]
