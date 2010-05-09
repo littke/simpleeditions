@@ -248,6 +248,7 @@ class Article(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now_add=True)
     last_save = db.DateTimeProperty(auto_now=True)
+    edits = db.IntegerProperty(default=0)
     views = db.IntegerProperty(default=0)
     slug = db.StringProperty(required=True, validator=_validate_slug)
     title = db.StringProperty(required=True)
@@ -315,6 +316,7 @@ class Article(db.Model):
             if content:
                 article.content = content
                 article.html = html
+            article.edits += 1
             article.last_modified = datetime.now()
         else:
             article = Article(user=user, user_name=user.display_name,

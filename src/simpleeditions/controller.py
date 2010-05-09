@@ -37,11 +37,11 @@ from simpleeditions.utils import public
 def get_article_dict(article, include_content=False):
     if include_content:
         props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
-                 'created', 'last_modified', 'views', 'slug', 'title',
+                 'created', 'last_modified', 'edits', 'views', 'slug', 'title',
                  'content', 'html']
     else:
         props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
-                 'created', 'last_modified', 'views', 'slug', 'title']
+                 'created', 'last_modified', 'edits', 'views', 'slug', 'title']
     return utils.get_dict(article, props)
 
 def get_current_user(handler):
