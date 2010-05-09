@@ -173,7 +173,7 @@ class ArticlesHandler(utils.TemplatedRequestHandler):
     def get(self):
         self.render('articles.html',
             user=controller.get_user_info(self),
-            articles=controller.get_articles(self))
+            articles=controller.get_articles(self, "-last_modified", 10, False))
 
 class EditArticleHandler(utils.TemplatedRequestHandler):
     @login_required
@@ -199,7 +199,19 @@ class EditArticleHandler(utils.TemplatedRequestHandler):
 
 class HomeHandler(utils.TemplatedRequestHandler):
     def get(self):
+        # Get all recent articles
+        articles = controller.get_articles(
+            self, order="-created", limit=5, include_content=True)
+
+        # Only show the first part of the article's content.
+        # Currently stripping at the "<!--more-->" tag, until we decide
+        # on a markdown standard for this tag.
+        for article in articles:
+            pos = article['html'].find('<!--more-->')
+            article['html'] = article['html'][:pos]
+
         self.render('home.html',
+            articles=articles,
             user=controller.get_user_info(self))
 
 class LoginHandler(utils.TemplatedRequestHandler):

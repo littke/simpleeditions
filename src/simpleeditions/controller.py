@@ -73,9 +73,9 @@ def get_article(handler, id):
     return get_article_dict(article, True)
 
 @public
-def get_articles(handler):
-    articles = model.Article.all().order('-last_modified').fetch(10)
-    return [get_article_dict(article) for article in articles]
+def get_articles(handler, order, limit, include_content=False):
+    articles = model.Article.all().order(order).fetch(limit)
+    return [get_article_dict(article, include_content) for article in articles]
 
 @public
 def get_login_url(handler, auth_type, return_url='/'):

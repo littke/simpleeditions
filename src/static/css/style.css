@@ -145,6 +145,7 @@ a:link:hover, a:active:hover, a:visited:hover {
 
 #intro_box {
     margin-top: 10px;
+    margin-bottom: -5px;
     color: white;
     position: relative;
 }
@@ -190,11 +191,19 @@ span.highlight {
     margin-right: 14px;
 }
 
-#tutorial_header h1 {
+#tutorial_header h1, #tutorial_header h2 {
     margin-bottom: 0;
-    padding-top: 3px;
+    padding-top: 6px;
+}
+#tutorial_header h2 {
+    padding-top: 4px;
 }
 
 #tutorial_header p {
-    margin-top: 4px;
+    margin-top: 2px;
+}
+
+/* Home */
+#recent_tutorials h1 {
+    margin-bottom: 0.5em;
 }

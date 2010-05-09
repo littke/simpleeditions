@@ -7,9 +7,19 @@
         to steal your candy and eat your bananas.</p>
     </div>
     <div class="contentbox_top"></div>
-    <div class="contentbox_middle">
-        <h1>Popular tutorials</h1>
-        <p>Consectetur Apple adipisicing elit, sed do eiusmod incididunt ut labore et dolore magna aliqua Shenzhen. Ut enim ad minim veniam, quis nostrud no multi-tasking ullamco laboris nisi ut aliquip iPad ex ea commodo consequat. Duis aute irure dolor iPad in reprehenderit in voluptate velit esse CEO Steve Jobs dolore eu fugiat nulla pariatur. Windows 7 ha ha ha. Excepteur sint occaecat battery life non proident, iPad in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <div class="contentbox_middle" id="recent_tutorials">
+        <h1>Recent tutorials</h1>
+        {% for article in articles %}
+        <div id="tutorial_header">
+            <img alt="" src="{{ STATIC_PATH }}/images/badges/badge_spotify.png" />
+            <h2><a href="/{{ article.id }}/{{ article.slug }}">{{ article.title }}</a></h2>
+            <p>
+                <span class="highlight">9.78</span> in rating, <span class="highlight">3 932</span> comments.
+            </p>
+        </div>
+        {{ article.html }}
+        <a href="/{{ article.id }}/{{ article.slug }}">Read more...</a>
+        {% endfor %}
         {% if user %}
         <p><a href="/new">Write a tutorial</a>!</p>
         {% endif %}
