@@ -115,9 +115,6 @@ def get_dict(obj, attributes):
         else:
             value = _get_value(value, attr)
 
-        import logging
-        logging.info([attr, alias, value])
-
         # Store the value in the dict.
         result[alias if alias else attr] = value
 

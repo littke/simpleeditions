@@ -19,6 +19,7 @@
 #
 
 import datetime
+import logging
 import time
 
 from django.utils import simplejson
@@ -146,6 +147,8 @@ class ApiHandler(webapp.RequestHandler):
             result = {'status': 'success',
                       'response': jsonify(data)}
         except BaseException, e:
+            logging.exception('API error:')
+
             res.set_status(500)
             result = {'status': 'error',
                       'response': str(e),
