@@ -18,6 +18,7 @@
 # SimpleEditions. If not, see http://www.gnu.org/licenses/.
 #
 
+import time
 import os
 import os.path
 
@@ -128,3 +129,15 @@ def public(func):
     """
     func.__public = True
     return func
+
+def set_cookie(handler, name, value, expires=None, path='/'):
+    # Build cookie data.
+    if expires:
+        ts = time.strftime('%a, %d-%b-%Y %H:%M:%S GMT', expires.timetuple())
+        cookie = '%s=%s; expires=%s; path=%s' % (name, value, ts, path)
+    else:
+        cookie = '%s=%s; path=%s' % (name, value, path)
+
+    # Send cookie to browser.
+    handler.response.headers['Set-Cookie'] = cookie
+    handler.request.cookies[name] = value

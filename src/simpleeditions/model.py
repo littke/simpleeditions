@@ -21,7 +21,6 @@
 from datetime import datetime, timedelta
 import hashlib
 import re
-import time
 import uuid
 
 from google.appengine.api import mail, users
@@ -50,7 +49,7 @@ class User(db.Model):
         # User has a session.
         query = User.all()
         query.filter('session =', session_id)
-        query.filter('expires >', datetime.utcnow())
+        query.filter('expires >', datetime.now())
         return query.get()
 
     @staticmethod
@@ -70,7 +69,7 @@ class User(db.Model):
         self.expires = None
         self.put()
 
-    def start_session(self, handler):
+    def start_session(self):
         """Gives the user a session id and stores it as a cookie in the user's
         browser.
 
@@ -78,18 +77,8 @@ class User(db.Model):
         # Create a unique session id.
         self.session = uuid.uuid4().get_hex()
         # Calculate the date/time for when the session will expire.
-        self.expires = datetime.utcnow() + timedelta(days=settings.SESSION_TTL)
+        self.expires = datetime.now() + timedelta(days=settings.SESSION_TTL)
         self.put()
-
-        # Build and set a cookie for the session.
-        ts = time.strftime('%a, %d-%b-%Y %H:%M:%S GMT',
-                           self.expires.timetuple())
-        cookie = '%s=%s; expires=%s; path=/' % ('session', self.session, ts)
-
-        # Send cookie to browser.
-        handler.response.headers['Set-Cookie'] = cookie
-        handler.request.cookies['session'] = self.session
-
 
 class UserAuthType(polymodel.PolyModel):
     """Represents a method to authenticate to the application.

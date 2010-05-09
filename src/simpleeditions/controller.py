@@ -25,6 +25,8 @@ views) and the back-end (models and data logic).
 
 """
 
+from datetime import datetime, timedelta
+
 import simpleeditions
 from simpleeditions import model, utils
 from simpleeditions.utils import public
@@ -52,6 +54,10 @@ def get_user_dict(user, include_private_values=False):
     else:
         props = ['key.id', 'display_name', 'created', 'status']
     return utils.get_dict(user, props)
+
+def start_user_session(handler, user):
+    user.start_session()
+    utils.set_cookie(handler, 'session', user.session, user.expires)
 
 @public
 def create_article(handler, title, content):
@@ -111,8 +117,12 @@ def log_in(handler, auth_type, *args, **kwargs):
         raise ValueError('Invalid authentication type.')
 
     auth = auth_class.log_in(*args, **kwargs)
-    auth.user.start_session(handler)
-    return get_user_dict(auth.user, True)
+    user = auth.user
+
+    # Start a session and create a session cookie.
+    start_user_session(handler, user)
+
+    return get_user_dict(user, True)
 
 @public
 def log_out(handler):
@@ -121,9 +131,7 @@ def log_out(handler):
         user.end_session()
 
         # Empty session cookie and force it to expire.
-        cookie = 'session=; expires=Fri, 31-Jul-1987 03:42:33 GMT'
-        handler.response.headers['Set-Cookie'] = cookie
-        del handler.request.cookies['session']
+        utils.set_cookie(handler, 'session', '', datetime(1987, 7, 31, 3, 42))
 
 @public
 def register(handler, auth_type, *args, **kwargs):
@@ -133,7 +141,7 @@ def register(handler, auth_type, *args, **kwargs):
         raise ValueError('Invalid authentication type.')
 
     auth = auth_class.register(*args, **kwargs)
-    auth.user.start_session(handler)
+    start_user_session(handler, auth.user)
     return get_user_dict(auth.user, True)
 
 @public
