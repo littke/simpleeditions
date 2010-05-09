@@ -18,9 +18,11 @@
 # SimpleEditions. If not, see http://www.gnu.org/licenses/.
 #
 
+import base64
 import datetime
 import logging
 import time
+import urllib
 
 from django.utils import simplejson
 from google.appengine.ext import db, webapp
@@ -53,10 +55,19 @@ def do_auth(handler, auth_func, *args):
     except simpleeditions.ExternalLoginNeededError:
         # The authentication method requires that the user be directed to an
         # external URL.
+
+        # Create a return path that has the POST data encoded, so that this
+        # request can be re-evaluated once the user has logged in to the
+        # external service.
+        path = '%s?continue=%s&post=%s' % (
+            req.path,
+            urllib.quote(req.get('continue', '/')),
+            base64.b64encode(urllib.urlencode(req.POST)))
+
         login_url = controller.get_login_url(
             handler,
             auth_type,
-            handler.request.path)
+            path)
         handler.redirect(login_url)
         return False
 
@@ -219,6 +230,9 @@ class HomeHandler(utils.TemplatedRequestHandler):
 
 class LoginHandler(utils.TemplatedRequestHandler):
     def get(self):
+        if self.do_get_post():
+            return
+
         self.render('login.html',
             user=controller.get_user_info(self))
 
@@ -257,6 +271,9 @@ class NotFoundHandler(utils.TemplatedRequestHandler):
 
 class RegisterHandler(utils.TemplatedRequestHandler):
     def get(self):
+        if self.do_get_post():
+            return
+
         self.render('register.html',
             user=controller.get_user_info(self))
 

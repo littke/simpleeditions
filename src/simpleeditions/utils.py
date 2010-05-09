@@ -18,6 +18,7 @@
 # SimpleEditions. If not, see http://www.gnu.org/licenses/.
 #
 
+import base64
 import time
 import os
 import os.path
@@ -32,6 +33,23 @@ class TemplatedRequestHandler(webapp.RequestHandler):
     with templates, with its render() method.
 
     """
+
+    def do_get_post(self):
+        """For handlers that allow a POST to be simulated during a GET request,
+        calling this method will take the POST data from a query string
+        parameter and add it as POST data.
+
+        This is useful when redirecting between pages, and the target page
+        should be POSTed to.
+
+        """
+        req = self.request
+        post = req.get('post')
+        if post:
+            req.method = 'POST'
+            req.body = base64.b64decode(post)
+            self.post()
+            return True
 
     def not_found(self, template_name=None, **kwargs):
         """Similar to the render() method, but with a 404 HTTP status code.
