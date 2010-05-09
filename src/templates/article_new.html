@@ -1,15 +1,15 @@
 {% extends "base.html" %}
-{% block page_title %}Write a new article{% endblock %}
+{% block page_title %}Write a new tutorial{% endblock %}
 {% block page_content %}
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
-        <h1>Write a new article</h1>
+        <h1>Write a new tutorial</h1>
         <form action="{{ request.path }}" method="post">
-            <p>Article title</p>
+            <p>Tutorial title</p>
             <p><input name="title" type="text" /></p>
-            <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
+            <p>Tutorial content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
             <p><textarea cols="50" name="content" rows="10"></textarea></p>
-            <p><input type="submit" value="Save article" />
+            <p><input type="submit" value="Save tutorial" />
         </form>
     </div>
     <div class="contentbox_bottom"></div>
