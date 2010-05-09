@@ -26,6 +26,9 @@ views) and the back-end (models and data logic).
 """
 
 from datetime import datetime, timedelta
+import os
+
+from google.appengine.api import memcache
 
 import simpleeditions
 from simpleeditions import model, utils
@@ -34,11 +37,11 @@ from simpleeditions.utils import public
 def get_article_dict(article, include_content=False):
     if include_content:
         props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
-                 'created', 'last_modified', 'slug', 'title', 'content',
-                 'html']
+                 'created', 'last_modified', 'views', 'slug', 'title',
+                 'content', 'html']
     else:
         props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
-                 'created', 'last_modified', 'slug', 'title']
+                 'created', 'last_modified', 'views', 'slug', 'title']
     return utils.get_dict(article, props)
 
 def get_current_user(handler):
@@ -75,6 +78,38 @@ def get_article(handler, id):
     if not article:
         raise simpleeditions.ArticleNotFoundError(
             'Could not find article with id %r.' % id)
+
+    # memcache key used for counting views.
+    views_key = 'article:%d:views' % id
+
+    # Don't increment views if user has article id in cookie.
+    try:
+        cookie = handler.request.cookies['articles']
+    except KeyError:
+        cookie = ':'
+    if not (':%d:' % id) in cookie:
+        cookie += ('%d:' % id)
+        utils.set_cookie(handler, 'articles', cookie,
+                         datetime.now() + timedelta(days=7))
+
+        # Id was not in cookie, increment by one if IP has not incremented
+        # 5 or more times before.
+        ip_key = 'article:%d:views:%s' % (id, os.environ['REMOTE_ADDR'])
+        if memcache.get(ip_key) < 5:
+            memcache.incr(ip_key, initial_value=0)
+            cached_views = memcache.incr(views_key, initial_value=0)
+        else:
+            cached_views = long(memcache.get(views_key) or 0)
+    else:
+        cached_views = long(memcache.get(views_key) or 0)
+
+    # Aggregate stored views with cached views.
+    article.views += cached_views
+
+    # Store views to entity once per hour and reset the cache counter.
+    if datetime.now() - article.last_save > timedelta(hours=1):
+        article.put()
+        memcache.delete(views_key)
 
     return get_article_dict(article, True)
 

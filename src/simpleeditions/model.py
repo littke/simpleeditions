@@ -246,7 +246,9 @@ class Article(db.Model):
                                 required=True)
     user_name = db.StringProperty(required=True, indexed=False)
     created = db.DateTimeProperty(auto_now_add=True)
-    last_modified = db.DateTimeProperty(auto_now=True)
+    last_modified = db.DateTimeProperty(auto_now_add=True)
+    last_save = db.DateTimeProperty(auto_now=True)
+    views = db.IntegerProperty(default=0)
     slug = db.StringProperty(required=True, validator=_validate_slug)
     title = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
@@ -313,6 +315,7 @@ class Article(db.Model):
             if content:
                 article.content = content
                 article.html = html
+            article.last_modified = datetime.now()
         else:
             article = Article(user=user, user_name=user.display_name,
                               slug=slug, title=title, content=content,

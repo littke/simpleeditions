@@ -10,7 +10,7 @@
             <img alt="" src="{{ STATIC_PATH }}/images/badges/badge_spotify.png" />
             <h1>{{ article.title }}</h1>
             <p>
-                <span class="highlight">9.78</span> in rating, <span class="highlight">3 932</span> comments.
+                <span class="highlight">{{ article.views }}</span> view{{ article.views|pluralize }}.
                 {% ifequal user.key article._entity.user %}
                 <a href="/edit/{{ article.id }}">Edit article</a>
                 {% endifequal %}
