@@ -29,7 +29,7 @@ import simpleeditions
 from simpleeditions import model, utils
 from simpleeditions.utils import public
 
-def _get_article_dict(article, include_content=False):
+def get_article_dict(article, include_content=False):
     if include_content:
         props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
                  'created', 'last_modified', 'slug', 'title', 'content',
@@ -39,7 +39,14 @@ def _get_article_dict(article, include_content=False):
                  'created', 'last_modified', 'slug', 'title']
     return utils.get_dict(article, props)
 
-def _get_user_dict(user, include_private_values=False):
+def get_current_user(handler):
+    try:
+        session_id = handler.request.cookies['session']
+        return model.User.get_session(session_id)
+    except KeyError:
+        return None
+
+def get_user_dict(user, include_private_values=False):
     if include_private_values:
         props = ['key.id', 'display_name', 'email', 'created', 'status']
     else:
@@ -48,13 +55,13 @@ def _get_user_dict(user, include_private_values=False):
 
 @public
 def create_article(handler, title, content):
-    user = model.User.get_current(handler)
+    user = get_current_user(handler)
     if not user:
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to create an article.')
     article = model.Article.create(user, title, content)
 
-    return _get_article_dict(article)
+    return get_article_dict(article)
 
 @public
 def get_article(handler, id):
@@ -63,12 +70,12 @@ def get_article(handler, id):
         raise simpleeditions.ArticleNotFoundError(
             'Could not find article with id %r.' % id)
 
-    return _get_article_dict(article, True)
+    return get_article_dict(article, True)
 
 @public
 def get_articles(handler):
     articles = model.Article.all().order('-last_modified').fetch(10)
-    return [_get_article_dict(article) for article in articles]
+    return [get_article_dict(article) for article in articles]
 
 @public
 def get_login_url(handler, auth_type, return_url='/'):
@@ -90,11 +97,11 @@ def get_user_info(handler, id=None):
         if not user:
             raise simpleeditions.UserNotFoundError(
                 'Could not find user with id %r.' % id)
-        return _get_user_dict(user)
+        return get_user_dict(user)
     else:
-        user = model.User.get_current(handler)
+        user = get_current_user(handler)
         if user:
-            return _get_user_dict(user, True)
+            return get_user_dict(user, True)
 
 @public
 def log_in(handler, auth_type, *args, **kwargs):
@@ -105,13 +112,18 @@ def log_in(handler, auth_type, *args, **kwargs):
 
     auth = auth_class.log_in(*args, **kwargs)
     auth.user.start_session(handler)
-    return _get_user_dict(auth.user, True)
+    return get_user_dict(auth.user, True)
 
 @public
 def log_out(handler):
-    user = model.User.get_current(handler)
+    user = get_current_user(handler)
     if user:
-        user.end_session(handler)
+        user.end_session()
+
+        # Empty session cookie and force it to expire.
+        cookie = 'session=; expires=Fri, 31-Jul-1987 03:42:33 GMT'
+        handler.response.headers['Set-Cookie'] = cookie
+        del handler.request.cookies['session']
 
 @public
 def register(handler, auth_type, *args, **kwargs):
@@ -122,17 +134,17 @@ def register(handler, auth_type, *args, **kwargs):
 
     auth = auth_class.register(*args, **kwargs)
     auth.user.start_session(handler)
-    return _get_user_dict(auth.user, True)
+    return get_user_dict(auth.user, True)
 
 @public
 def update_article(handler, id, title=None, content=None, message=''):
     if not isinstance(id, int):
         raise TypeError('Article id must be an integer.')
 
-    user = model.User.get_current(handler)
+    user = get_current_user(handler)
     if not user:
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to update an article.')
 
     article = model.Article.update(id, user, title, content, message)
-    return _get_article_dict(article)
+    return get_article_dict(article)

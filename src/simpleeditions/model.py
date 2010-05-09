@@ -43,21 +43,15 @@ class User(db.Model):
     expires = db.DateTimeProperty()
 
     @staticmethod
-    def get_current(handler):
+    def get_session(session_id):
         """Retrieves a User instance for the currently logged in user.
 
         """
-        try:
-            # User has a session.
-            session = handler.request.cookies['session']
-            query = User.all()
-            query.filter('session =', session)
-            query.filter('expires >', datetime.utcnow())
-            user = query.get()
-        except KeyError:
-            user = None
-
-        return user
+        # User has a session.
+        query = User.all()
+        query.filter('session =', session_id)
+        query.filter('expires >', datetime.utcnow())
+        return query.get()
 
     @staticmethod
     def register(display_name, email=None):
@@ -67,19 +61,14 @@ class User(db.Model):
         user.put()
         return user
 
-    def end_session(self, handler):
-        """Removes a session from the database and the client, effectively
-        logging the user out.
+    def end_session(self):
+        """Removes a session from the database, effectively logging the user
+        out.
 
         """
         self.session = None
         self.expires = None
         self.put()
-
-        # Empty session cookie and force it to expire.
-        cookie = 'session=; expires=Fri, 31-Jul-1987 03:42:33 GMT'
-        handler.response.headers['Set-Cookie'] = cookie
-        del handler.request.cookies['session']
 
     def start_session(self, handler):
         """Gives the user a session id and stores it as a cookie in the user's
