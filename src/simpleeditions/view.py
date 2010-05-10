@@ -172,14 +172,16 @@ class ApiHandler(webapp.RequestHandler):
 
 class ArticleHandler(utils.TemplatedRequestHandler):
     def get(self, article_id):
+        user = controller.get_user_info(self)
+
         try:
             article = controller.get_article(self, int(article_id))
         except (TypeError, ValueError, simpleeditions.NotFoundError):
-            self.not_found(user=controller.get_user_info(self))
+            self.not_found(user=user)
             return
 
         self.render('article.html',
-            user=controller.get_user_info(self),
+            user=user,
             article=article,
             page_title=article['title'])
 
@@ -198,8 +200,7 @@ class EditArticleHandler(utils.TemplatedRequestHandler):
             self.not_found(user=controller.get_user_info(self))
             return
 
-        self.render('article_edit.html',
-            user=user, article=article)
+        self.render('article_edit.html', user=user, article=article)
 
     @login_required
     def post(self, user, article_id):

@@ -11,8 +11,8 @@
             <h1>{{ article.title }}</h1>
             <p>
                 <span class="highlight">{{ article.views }}</span> view{{ article.views|pluralize }}.
-                {% ifequal user.key article._entity.user %}
-                <a href="/edit/{{ article.id }}">Edit article</a>
+                {% ifequal user.id article.user_id %}
+                <a href="/edit/{{ article.id }}">Edit tutorial</a>
                 {% endifequal %}
             </p>
         </div>
