@@ -84,7 +84,7 @@ class TemplatedRequestHandler(webapp.RequestHandler):
         kwargs.update({'DEBUG': settings.DEBUG,
                        'STATIC_PATH': settings.STATIC_PATH,
                        'DOMAIN': settings.DOMAIN,
-                       'VERSION': os.environ['CURRENT_VERSION_ID'],
+                       'VERSION': settings.VERSION,
                        'request': self.request})
 
         path = os.path.join(settings.TEMPLATE_DIR, template_name)
@@ -100,8 +100,12 @@ def _get_value(obj, name):
     try:
         value = getattr(obj, name)
     except AttributeError:
-        # If the attribute doesn't exist, attempt to use the object as a dict.
-        value = obj[name]
+        try:
+            # If the attribute doesn't exist, attempt to use the object as a dict.
+            value = obj[name]
+        except:
+            # Failing that, just return None.
+            return None
     # If the value is callable, call it and use its return value.
     return value() if callable(value) else value
 

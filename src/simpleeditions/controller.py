@@ -97,7 +97,7 @@ def get_article(handler, id):
         ip_key = 'article:%d:views:%s' % (id, os.environ['REMOTE_ADDR'])
         if memcache.get(ip_key) < 5:
             memcache.incr(ip_key, initial_value=0)
-            cached_views = memcache.incr(views_key, initial_value=0)
+            cached_views = memcache.incr(views_key, initial_value=0) or 0L
         else:
             cached_views = long(memcache.get(views_key) or 0)
     else:
