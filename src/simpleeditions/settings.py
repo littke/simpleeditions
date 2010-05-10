@@ -24,6 +24,8 @@ import os
 DOMAIN = 'www.simpleeditions.com'
 STATIC_PATH = '/static'
 TEMPLATE_DIR = 'templates'
+
+ERROR_TEMPLATE = '500.html'
 NOT_FOUND_TEMPLATE = '404.html'
 
 # The time that a session should be stored in a user's browser, in days.

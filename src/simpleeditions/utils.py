@@ -19,10 +19,14 @@
 #
 
 import base64
-import time
+import logging
 import os
 import os.path
+import sys
+import time
+import traceback
 
+from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 
@@ -33,6 +37,9 @@ class TemplatedRequestHandler(webapp.RequestHandler):
     with templates, with its render() method.
 
     """
+
+    def __init__(self):
+        self._errors = []
 
     def do_get_post(self):
         """For handlers that allow a POST to be simulated during a GET request,
@@ -51,6 +58,28 @@ class TemplatedRequestHandler(webapp.RequestHandler):
             self.post()
             return True
 
+    def add_error(self, message):
+        """Adds an error message. All errors will be available as the template
+        variable "errors".
+
+        """
+        self._errors.append(message)
+
+    def handle_exception(self, exception, debug_mode):
+        """Called if this handler throws an exception during execution.
+
+        """
+        logging.exception(exception)
+
+        # Also show a traceback if debug is enabled, or if the currently logged
+        # in Google user is an application administrator.
+        if debug_mode or users.is_current_user_admin():
+            tb = ''.join(traceback.format_exception(*sys.exc_info()))
+        else:
+            tb = None
+
+        self.render(settings.ERROR_TEMPLATE, traceback=tb)
+
     def not_found(self, template_name=None, **kwargs):
         """Similar to the render() method, but with a 404 HTTP status code.
         Also, the template_name argument is optional. If not specified, the
@@ -62,29 +91,25 @@ class TemplatedRequestHandler(webapp.RequestHandler):
         self.response.set_status(404)
         self.render(template_name, **kwargs)
 
-    def redirect(self, location, permanent=False):
-        res = self.response
-
-        res.clear()
-        res.headers['Location'] = location
-        res.set_status(301 if permanent else 302)
-
     def render(self, template_name, **kwargs):
         """Renders the specified template to the output.
 
         The template will have the following variables available, in addition
         to the ones specified in the render() method:
         - DEBUG: Whether the application is running in debug mode.
+        - DOMAIN: The domain of the application.
         - STATIC_PATH: The path under which all static content lies.
         - VERSION: The version of the application.
+        - errors: A (possibly empty) list of errors that have occurred.
         - request: The current request object. Has attributes such as 'path',
                    'query_string', etc.
 
         """
         kwargs.update({'DEBUG': settings.DEBUG,
-                       'STATIC_PATH': settings.STATIC_PATH,
                        'DOMAIN': settings.DOMAIN,
+                       'STATIC_PATH': settings.STATIC_PATH,
                        'VERSION': settings.VERSION,
+                       'errors': self._errors,
                        'request': self.request})
 
         path = os.path.join(settings.TEMPLATE_DIR, template_name)
