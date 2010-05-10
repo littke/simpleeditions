@@ -4,6 +4,16 @@
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
         <h1>Edit tutorial</h1>
+        {% if errors %}
+        <div class="error">
+            <p>Failed to save the tutorial:</p>
+            <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         <form action="{{ request.path }}" method="post">
             <p>Tutorial title</p>
             <p><input name="title" type="text" value="{{ article.title }}" /></p>

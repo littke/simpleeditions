@@ -297,6 +297,8 @@ class Article(db.Model):
 
             slug = title.lower().replace('\'', '')
             slug = re.sub('[^a-z0-9]+', '-', slug).strip('-')
+        elif not article_id:
+            raise simpleeditions.SaveArticleError('A title is required.')
         else:
             slug = None
 
@@ -305,6 +307,8 @@ class Article(db.Model):
                 raise TypeError('A valid article body must be provided.')
 
             html = markdown2.markdown(content)
+        elif not article_id:
+            raise simpleeditions.SaveArticleError('Content is required.')
         else:
             html = None
 

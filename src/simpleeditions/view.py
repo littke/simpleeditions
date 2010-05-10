@@ -193,24 +193,43 @@ class ArticlesHandler(utils.TemplatedRequestHandler):
 
 class EditArticleHandler(utils.TemplatedRequestHandler):
     @login_required
-    def get(self, user, article_id):
+    def get(self, user, article_id, errors=None):
         try:
             article = controller.get_article(self, int(article_id))
         except (TypeError, ValueError, simpleeditions.NotFoundError):
             self.not_found(user=controller.get_user_info(self))
             return
 
-        self.render('article_edit.html', user=user, article=article)
+        self.render('article_edit.html',
+            user=user, article=article, errors=errors)
 
     @login_required
     def post(self, user, article_id):
-        article_id = int(article_id)
+        errors = []
 
-        req = self.request
-        article = controller.update_article(
-            self, article_id, req.get('title'), req.get('content'),
-            req.get('message'))
-        self.redirect('/%d/%s' % (article_id, article['slug']))
+        try:
+            article_id = int(article_id)
+
+            req = self.request
+            article = controller.update_article(
+                self, article_id, req.get('title'), req.get('content'),
+                req.get('message'))
+            self.redirect('/%d/%s' % (article_id, article['slug']))
+            return
+        except (TypeError, ValueError):
+            errors.append('Your browser sent invalid values.')
+        except simpleeditions.SaveArticleError, e:
+            errors.append(e.message)
+        except:
+            errors.append('An unexpected error occurred. You could try again, '
+                          'or wait for the administrators to look into the '
+                          'error (it has been logged).')
+            logging.exception('Unexpected error when editing article:')
+
+        # If this part of the code is reached, something went wrong. Do
+        # whatever the GET handler does, and give the template any errors to
+        # be displayed.
+        self.get(article_id, errors)
 
 class HomeHandler(utils.TemplatedRequestHandler):
     def get(self):
@@ -254,16 +273,31 @@ class LogOutHandler(utils.TemplatedRequestHandler):
 
 class NewArticleHandler(utils.TemplatedRequestHandler):
     @login_required
-    def get(self, user):
-        self.render('article_new.html',
-            user=user)
+    def get(self, user, errors=None):
+        self.render('article_new.html', user=user, errors=errors)
 
     @login_required
     def post(self, user):
+        errors = []
+
         req = self.request
-        article = controller.create_article(
-            self, req.get('title'), req.get('content'))
-        self.redirect('/%d/%s' % (article['id'], article['slug']))
+        try:
+            article = controller.create_article(
+                self, req.get('title'), req.get('content'))
+            self.redirect('/%d/%s' % (article['id'], article['slug']))
+            return
+        except simpleeditions.SaveArticleError, e:
+            errors.append(e.message)
+        except:
+            errors.append('An unexpected error occurred. You could try again, '
+                          'or wait for the administrators to look into the '
+                          'error (it has been logged).')
+            logging.exception('Unexpected error when creating article:')
+
+        # If this part of the code is reached, something went wrong. Do
+        # whatever the GET handler does, and give the template any errors to
+        # be displayed.
+        self.get(errors)
 
 class NotFoundHandler(utils.TemplatedRequestHandler):
     def get(self):
