@@ -13,8 +13,8 @@
         <div id="tutorial_header">
             <img alt="" src="{{ STATIC_PATH }}/images/badges/badge_spotify.png" />
             <h2><a href="/{{ article.id }}/{{ article.slug }}">{{ article.title }}</a></h2>
-            <p>
-                <span class="highlight">9.78</span> in rating, <span class="highlight">3 932</span> comments.
+            <p class="article_extra">
+                By {{ article.user_name }}. 
             </p>
         </div>
         {{ article.html }}

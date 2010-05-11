@@ -203,6 +203,10 @@ span.highlight {
     margin-top: 2px;
 }
 
+#tutorial_header .article_extra {
+    color: #777;
+}
+
 /* Home */
 #recent_tutorials h1 {
     margin-bottom: 0.5em;

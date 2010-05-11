@@ -9,9 +9,10 @@
         <div id="tutorial_header">
             <img alt="" src="{{ STATIC_PATH }}/images/badges/badge_spotify.png" />
             <h1>{{ article.title }}</h1>
-            <p>
-                <span class="highlight">{{ article.views }}</span> view{{ article.views|pluralize }}.
+            <p class="article_extra">
+                By {{ article.user_name }}. Updated {{ article.edits }} time{{ article.edits|pluralize }}.
                 {% ifequal user.id article.user_id %}
+                <span class="highlight">{{ article.views }}</span> view{{ article.views|pluralize }}.
                 <a href="/edit/{{ article.id }}">Edit tutorial</a>
                 {% endifequal %}
             </p>
