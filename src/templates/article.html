@@ -11,9 +11,11 @@
             <h1>{{ article.title }}</h1>
             <p class="article_extra">
                 By {{ article.user_name }}.
-                {% if article.edits %}Updated {{ article.edits }} time{{ article.edits|pluralize }}, most recently {{ article.last_modified|timesince }} ago.{% endif %}
+                {% if article.edits %}
+                <span title="Updated {{ article.last_modified }}. Originally created {{ article.created|timesince }} ago.">Last updated {{ article.last_modified|timesince }} ago.</span>
+                {% endif %}
                 {% ifequal user.id article.user_id %}
-                <span class="highlight">{{ article.views }}</span> view{{ article.views|pluralize }}.
+                {{ article.views }} view{{ article.views|pluralize }}.
                 <a href="/edit/{{ article.id }}">Edit tutorial</a>
                 {% endifequal %}
             </p>
