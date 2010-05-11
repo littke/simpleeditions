@@ -2,13 +2,13 @@
 <html>
 <head>
     <title>{% block page_title %}{{ page_title }}{% endblock %} – SimpleEditions</title>
-    <link href="{{ STATIC_PATH }}/css/style.css" rel="stylesheet" type="text/css">
+    <link href="{{ "css/style.css"|static }}" rel="stylesheet" type="text/css">
     {% block page_head %}{% endblock %}
 </head>
 <body>
     <div id="headercontainer">
         <div id="header">
-            <img src="{{ STATIC_PATH }}/images/logo.png" id="logo" />
+            <img src="{{ "images/logo.png"|static }}" id="logo" />
             <div id="account">
                 {% if user %}
                 Logged in as <strong>{{ user.display_name }}</strong>. <a href="/logout">Log out</a>

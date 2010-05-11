@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2010 Jonatan Littke
@@ -19,30 +18,20 @@
 # SimpleEditions. If not, see http://www.gnu.org/licenses/.
 #
 
-"""Entry point for the SimpleEditions application.
-
-"""
-
-import logging
-import os
-import wsgiref.handlers
-
 from google.appengine.ext import webapp
-from google.appengine.ext.webapp import util
 
-import simpleeditions.settings
-import simpleeditions.urls
+from simpleeditions import settings
 
-# Register custom Django template filters/tags.
-webapp.template.register_template_library('simpleeditions.template_extensions')
+register = webapp.template.create_template_register()
 
-def main():
-    application = webapp.WSGIApplication(
-        simpleeditions.urls.urlpatterns,
-        debug=simpleeditions.settings.DEBUG)
+@register.filter
+def static(path):
+    """Modifies a path by prepending the absolute path to where static files
+    reside and adding a version-specific hash to the end of the path to make
+    the path unique for the currently deployed version.
 
-    # Run the WSGI CGI handler with the application.
-    util.run_wsgi_app(application)
+    The path should always be relative to the static path.
 
-if __name__ == '__main__':
-    main()
+    """
+    return '%s/%s?%s' % (settings.STATIC_PATH, path, settings.VERSION_HASH)
+

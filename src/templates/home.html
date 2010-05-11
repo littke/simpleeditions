@@ -2,7 +2,7 @@
 {% block page_title %}Home{% endblock %}
 {% block page_content %}
     <div id="intro_box">
-        <img alt="" src="{{ STATIC_PATH }}/images/intro_box.png" />
+        <img alt="" src="{{ "images/intro_box.png"|static }}" />
         <p>Welcome to <strong>SimpleEditions</strong> - a tutorial website aiming<br/>
         to steal your candy and eat your bananas.</p>
     </div>
@@ -11,7 +11,7 @@
         <h1>Recent tutorials</h1>
         {% for article in articles %}
         <div id="tutorial_header">
-            <img alt="" src="{{ STATIC_PATH }}/images/badges/badge_spotify.png" />
+            <img alt="" src="{{ "images/badges/badge_spotify.png"|static }}" />
             <h2><a href="/{{ article.id }}/{{ article.slug }}">{{ article.title }}</a></h2>
             <p class="article_extra">
                 By {{ article.user_name }}. 
