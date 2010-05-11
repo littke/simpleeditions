@@ -207,6 +207,19 @@ span.highlight {
     color: #777;
 }
 
+.pros, .cons {
+  list-style-type: none;
+  padding-left: 22px;
+}
+
+span.plus {
+  color: green;
+}
+
+span.minus {
+  color: red;
+}
+
 /* Home */
 #recent_tutorials h1 {
     margin-bottom: 0.5em;
