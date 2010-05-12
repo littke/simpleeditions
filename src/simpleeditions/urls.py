@@ -21,15 +21,26 @@
 from simpleeditions import view
 
 urlpatterns = (
+    # Content pages
     (r'/', view.HomeHandler),
+    (r'/(about)', view.StaticPageHandler),
+
+    # List of articles
+    (r'/tutorials', view.ArticlesHandler),
+
+    # Pages for an article
     (r'/(\d+)(?:/.*)?', view.ArticleHandler),
     (r'/edit/(\d+)', view.EditArticleHandler),
-    (r'/api/(\w+)', view.ApiHandler),
-    (r'/tutorials', view.ArticlesHandler),
     (r'/new', view.NewArticleHandler),
-    (r'/(about)', view.StaticPageHandler),
+
+    # Account control
     (r'/login', view.LoginHandler),
     (r'/logout', view.LogOutHandler),
     (r'/register', view.RegisterHandler),
+
+    # API handler
+    (r'/api/(\w+)', view.ApiHandler),
+
+    # All other paths go to the 404 page
     (r'.*', view.NotFoundHandler),
 )
