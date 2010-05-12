@@ -27,6 +27,7 @@ urlpatterns = (
     (r'/api/(\w+)', view.ApiHandler),
     (r'/tutorials', view.ArticlesHandler),
     (r'/new', view.NewArticleHandler),
+    (r'/(about)', view.StaticPageHandler),
     (r'/login', view.LoginHandler),
     (r'/logout', view.LogOutHandler),
     (r'/register', view.RegisterHandler),

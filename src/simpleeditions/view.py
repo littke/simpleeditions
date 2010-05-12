@@ -262,6 +262,14 @@ class LogOutHandler(utils.TemplatedRequestHandler):
         redirect_to = self.request.get('continue', '/')
         self.redirect(redirect_to)
 
+class StaticPageHandler(utils.TemplatedRequestHandler):
+
+    def get(self, page_slug):
+        static_pages = ['about.html']
+        page = "%s.html" % page_slug
+        if page in static_pages:
+            self.render(page, user=controller.get_user_info(self))
+
 class NewArticleHandler(utils.TemplatedRequestHandler):
     @login_required
     def get(self, user):
