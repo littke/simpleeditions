@@ -11,28 +11,26 @@ body {
 }
 
 h1, h2, h3, h4 {
-	margin: 0 0 0.25em;
-	font-weight: normal;
-	line-height: 1em;
+    margin: 0 0 0.25em;
+    padding-top: 0.9em;
+    font-weight: normal;
+    line-height: 1em;
 }
 
 h1 {
+    padding-top: 0;
     text-shadow: 0px 1px 1px #fff;
     -khtml-text-shadow: 0px 1px 1px #fff;
     -moz-text-shadow: 0px 1px 1px #fff;
 }
 
 h2 {
-    margin-top: 0;
     font-weight: normal;
     font-size: 1.618em;
     line-height: 1.3em;
     color: #333;
 }
 
-p + h2 {
-    margin-top: 1.5em;
-}
 
 h3 {
     font-size: 1.1em;
