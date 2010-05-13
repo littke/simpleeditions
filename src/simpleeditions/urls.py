@@ -36,7 +36,7 @@ urlpatterns = (
     # Account control
     (r'/login', view.LoginHandler),
     (r'/logout', view.LogOutHandler),
-    (r'/register', view.RegisterHandler),
+    (r'/(?:register|join)', view.RegisterHandler),
 
     # API handler
     (r'/api/(\w+)', view.ApiHandler),
