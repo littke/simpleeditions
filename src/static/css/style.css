@@ -97,8 +97,8 @@ a:link:hover, a:active:hover, a:visited:hover {
 #account {
     float: left;
     position: absolute;
-    right: 10px;
-    top: 60px;
+    right: 20px;
+    top: 54px;
     color: #ddd;
 }
 
@@ -165,7 +165,7 @@ a:link:hover, a:active:hover, a:visited:hover {
 
 .contentbox_middle {
     background: url('/static/images/contentbox_middle.png') repeat-y;
-    padding: 12px 25px 1px;
+    padding: 12px 65px 1px 25px;
     margin: 0 6px 0 0;
 }
 
@@ -183,7 +183,7 @@ span.highlight {
 
 #tutorial_header {
     height: 50px;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
 }
 
 #tutorial_header img {
