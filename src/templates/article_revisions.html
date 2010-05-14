@@ -13,7 +13,7 @@
             <tbody>
             {% for revision in revisions %}
                 <tr>
-                    <td><a href="/revisions/{{ revision.article_id }}/{{ revision.id }}">{{ revision.number }}</a></td>
+                    <td><a href="{{ revision.number }}">{{ revision.number }}</a></td>
                     <td>{{ revision.user_name }}</td>
                     <td>{{ revision.created|timesince }} ago</td>
                     <td>{{ revision.message }}</td>

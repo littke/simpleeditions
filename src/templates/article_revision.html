@@ -8,8 +8,8 @@
             <h1>{{ revision.title }}</h1>
             <p class="article_extra">
                 Edit #{{ revision.number }}, made at {{ revision.created }} by {{ revision.user_name }}.<br />
-                {% if revision.previous_id %}<a href="{{ revision.previous_id }}">&larr; Previous revision</a>{% endif %}
-                {% if revision.next_id %}<a href="{{ revision.next_id }}">Next revision &rarr;</a>{% endif %}
+                {% if revision.previous %}<a href="{{ revision.previous }}">&larr; Previous revision</a>{% endif %}
+                {% if revision.next %}<a href="{{ revision.next }}">Next revision &rarr;</a>{% endif %}
             </p>
         </div>
         {{ revision.html }}

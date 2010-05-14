@@ -329,20 +329,26 @@ class Article(db.Model):
         article.put()
 
         # Create a revision for the current article.
-        # Get a query that references all revisions for the current article.
-        revisions = ArticleRevision.all().ancestor(article)
-        # The revision number is denormalized for performance reasons.
-        number = revisions.count() + 1
+
+        # Get the next revision number. This is a number that starts at 1 for
+        # the first revision, and then increments for every new revision. Since
+        # revisions will never be deleted, it is safe to consider the revision
+        # number as being the same as the number of edits made to the article,
+        # plus one.
+        number = article.edits + 1
         if number > 1:
             # There is an earlier revision that needs to be referenced and
-            # updated.
-            previous = revisions.order('-created').get()
+            # updated. Get it.
+            key = ArticleRevision.build_key(article, str(number - 1))
+            previous = db.get(key)
         else:
             previous = None
 
+        # The revision number is used as the key for the revision. This allows
+        # well-performing queries for specific revisions.
         revision = ArticleRevision(
-            parent=article, previous=previous, user=user,
-            user_name=user.display_name, number=number, title=article.title,
+            key_name=str(number), parent=article, previous=previous, user=user,
+            user_name=user.display_name, title=article.title,
             content=article.content, html=article.html, message=message)
         revision.put()
 
@@ -373,16 +379,38 @@ class ArticleRevision(db.Model):
                                 required=True)
     user_name = db.StringProperty(required=True, indexed=False)
     created = db.DateTimeProperty(auto_now_add=True)
-    number = db.IntegerProperty()
     title = db.StringProperty(required=True, indexed=False)
     content = db.TextProperty(required=True)
     html = db.TextProperty(required=True)
     message = db.StringProperty(indexed=False)
 
     @classmethod
-    def all_for_article(cls, article_id):
-        return cls.all().ancestor(db.Key.from_path('Article', article_id))
+    def all_for_article(cls, article):
+        """Returns a Query instance that will only return revision instances
+        that are bound to the specificed article id/key/instance.
+
+        """
+        # Convert Article instance to a Key instance.
+        if isinstance(article, Article):
+            article = article.key()
+        # Convert numeric article id to a Key instance.
+        elif isinstance(article, (int, long)):
+            article = db.Key.from_path('Article', article)
+        return cls.all().ancestor(article)
 
     @classmethod
-    def get_for_article(cls, article_id, id):
-        return db.get(db.Key.from_path('Article', article_id, cls.kind(), id))
+    def build_key(cls, article, revision):
+        """Returns a key referencing a specific revision instance given an
+        article id/key/instance and a revision number.
+
+        """
+        # Convert Article instance to a Key instance.
+        if isinstance(article, Article):
+            article = article.key()
+        # Convert numeric article id to a Key instance.
+        elif isinstance(article, (int, long)):
+            article = db.Key.from_path('Article', article)
+        # Build a key that references the requested revision for the specified
+        # article.
+        return db.Key.from_path(cls.kind(), str(revision), parent=article)
+

@@ -49,10 +49,10 @@ def get_current_user(handler):
         return None
 
 def get_revision_dict(revision, include_content=False):
-    props = ['key.id', ('parent_key.id', 'article_id'),
-             ('_entity.previous.id', 'previous_id'),
-             ('_entity.next.id', 'next_id'), ('_entity.user.id', 'user_id'),
-             'user_name', 'created', 'number', 'title', 'message']
+    props = [('key.name', 'number'), ('parent_key.id', 'article_id'),
+             ('_entity.previous.name', 'previous'),
+             ('_entity.next.name', 'next'), ('_entity.user.id', 'user_id'),
+             'user_name', 'created', 'title', 'message']
     if include_content:
         props += ['content', 'html']
     return utils.get_dict(revision, props)
@@ -133,17 +133,18 @@ def get_login_url(handler, auth_type, return_url='/'):
     return auth_class.get_login_url(return_url)
 
 @public
-def get_revision(handler, article_id, id):
-    revision = model.ArticleRevision.get_for_article(article_id, id)
+def get_revision(handler, article_id, revision):
+    key = model.ArticleRevision.build_key(int(article_id), revision)
+    revision = model.ArticleRevision.get(key)
     if not revision:
         raise simpleeditions.RevisionNotFoundError(
             'Could not find article, revision pair with ids %r, %r.' % (
-                article_id, id))
+                article_id, revision))
     return get_revision_dict(revision, True)
 
 @public
 def get_revisions(handler, article_id):
-    query = model.ArticleRevision.all_for_article(article_id)
+    query = model.ArticleRevision.all_for_article(int(article_id))
     revisions = query.order('-created').fetch(10)
     return [get_revision_dict(revision) for revision in revisions]
 

@@ -310,11 +310,11 @@ class RegisterHandler(utils.TemplatedRequestHandler):
             user=controller.get_user_info(self))
 
 class ArticleRevisionHandler(utils.TemplatedRequestHandler):
-    def get(self, article_id, id):
+    def get(self, article_id, revision):
         user = controller.get_user_info(self)
 
         try:
-            revision = controller.get_revision(self, int(article_id), int(id))
+            revision = controller.get_revision(self, int(article_id), revision)
         except (TypeError, ValueError, simpleeditions.NotFoundError):
             self.not_found(user=user)
             return
