@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block page_title %}{{ revision.title }} (r{{ revision.number }}){% endblock %}
+{% block page_content %}
+    <div class="contentbox_top"></div>
+    <div class="contentbox_middle">
+        <div id="tutorial_header">
+            <img alt="" src="{{ "images/badges/badge_spotify.png"|static }}" />
+            <h1>{{ revision.title }}</h1>
+            <p class="article_extra">
+                Edit #{{ revision.number }}, made at {{ revision.created }} by {{ revision.user_name }}.<br />
+                {% if revision.previous_id %}<a href="{{ revision.previous_id }}">&larr; Previous revision</a>{% endif %}
+                {% if revision.next_id %}<a href="{{ revision.next_id }}">Next revision &rarr;</a>{% endif %}
+            </p>
+        </div>
+        {{ revision.html }}
+    </div>
+    <div class="contentbox_bottom"></div>
+{% endblock %}

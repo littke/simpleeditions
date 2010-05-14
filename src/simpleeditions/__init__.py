@@ -50,6 +50,9 @@ class NotFoundError(Error):
 class ArticleNotFoundError(NotFoundError):
     """Raised when an article cannot be found."""
 
+class RevisionNotFoundError(NotFoundError):
+    """Raised when a revision cannot be found."""
+
 class UserNotFoundError(NotFoundError):
     """Raised when a user cannot be found."""
 

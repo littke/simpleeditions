@@ -48,6 +48,15 @@ def get_current_user(handler):
     except KeyError:
         return None
 
+def get_revision_dict(revision, include_content=False):
+    props = ['key.id', ('parent_key.id', 'article_id'),
+             ('_entity.previous.id', 'previous_id'),
+             ('_entity.next.id', 'next_id'), ('_entity.user.id', 'user_id'),
+             'user_name', 'created', 'number', 'title', 'message']
+    if include_content:
+        props += ['content', 'html']
+    return utils.get_dict(revision, props)
+
 def get_user_dict(user, include_private_values=False):
     props = ['key.id', 'display_name', 'created', 'status']
     if include_private_values:
@@ -122,6 +131,21 @@ def get_login_url(handler, auth_type, return_url='/'):
         raise ValueError('Invalid authentication type.')
 
     return auth_class.get_login_url(return_url)
+
+@public
+def get_revision(handler, article_id, id):
+    revision = model.ArticleRevision.get_for_article(article_id, id)
+    if not revision:
+        raise simpleeditions.RevisionNotFoundError(
+            'Could not find article, revision pair with ids %r, %r.' % (
+                article_id, id))
+    return get_revision_dict(revision, True)
+
+@public
+def get_revisions(handler, article_id):
+    query = model.ArticleRevision.all_for_article(article_id)
+    revisions = query.order('-created').fetch(10)
+    return [get_revision_dict(revision) for revision in revisions]
 
 @public
 def get_user_info(handler, id=None):

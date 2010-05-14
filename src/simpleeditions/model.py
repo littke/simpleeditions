@@ -329,11 +329,27 @@ class Article(db.Model):
         article.put()
 
         # Create a revision for the current article.
+        # Get a query that references all revisions for the current article.
+        revisions = ArticleRevision.all().ancestor(article)
+        # The revision number is denormalized for performance reasons.
+        number = revisions.count() + 1
+        if number > 1:
+            # There is an earlier revision that needs to be referenced and
+            # updated.
+            previous = revisions.order('-created').get()
+        else:
+            previous = None
+
         revision = ArticleRevision(
-            parent=article, article=article, user=user,
-            user_name=user.display_name, title=article.title,
+            parent=article, previous=previous, user=user,
+            user_name=user.display_name, number=number, title=article.title,
             content=article.content, html=article.html, message=message)
         revision.put()
+
+        if previous:
+            # Give the previous revision a reference to the new revision.
+            previous.next = revision
+            previous.put()
 
         return article
 
@@ -351,17 +367,22 @@ class Article(db.Model):
                                      message, article_id=id)
 
 class ArticleRevision(db.Model):
-    article = db.ReferenceProperty(Article, collection_name='revisions',
-                                   required=True)
+    previous = db.SelfReferenceProperty(collection_name='_unused1')
+    next = db.SelfReferenceProperty(collection_name='_unused2')
     user = db.ReferenceProperty(User, collection_name='revisions',
                                 required=True)
     user_name = db.StringProperty(required=True, indexed=False)
     created = db.DateTimeProperty(auto_now_add=True)
+    number = db.IntegerProperty()
     title = db.StringProperty(required=True, indexed=False)
     content = db.TextProperty(required=True)
     html = db.TextProperty(required=True)
     message = db.StringProperty(indexed=False)
 
-    def put(self, **kwargs):
-        assert not self.is_saved(), 'ArticleRevision can only be saved once.'
-        super(ArticleRevision, self).put(**kwargs)
+    @classmethod
+    def all_for_article(cls, article_id):
+        return cls.all().ancestor(db.Key.from_path('Article', article_id))
+
+    @classmethod
+    def get_for_article(cls, article_id, id):
+        return db.get(db.Key.from_path('Article', article_id, cls.kind(), id))

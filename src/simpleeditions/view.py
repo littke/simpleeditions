@@ -308,3 +308,33 @@ class RegisterHandler(utils.TemplatedRequestHandler):
 
         self.render('register_success.html',
             user=controller.get_user_info(self))
+
+class ArticleRevisionHandler(utils.TemplatedRequestHandler):
+    def get(self, article_id, id):
+        user = controller.get_user_info(self)
+
+        try:
+            revision = controller.get_revision(self, int(article_id), int(id))
+        except (TypeError, ValueError, simpleeditions.NotFoundError):
+            self.not_found(user=user)
+            return
+
+        self.render('article_revision.html',
+            user=user,
+            revision=revision)
+
+class ArticleRevisionsHandler(utils.TemplatedRequestHandler):
+    def get(self, article_id):
+        user = controller.get_user_info(self)
+
+        try:
+            article = controller.get_article(self, int(article_id))
+            revisions = controller.get_revisions(self, int(article_id))
+        except (TypeError, ValueError, simpleeditions.NotFoundError):
+            self.not_found(user=user)
+            return
+
+        self.render('article_revisions.html',
+            user=user,
+            article=article,
+            revisions=revisions)
