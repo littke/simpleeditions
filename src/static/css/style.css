@@ -125,13 +125,42 @@ a:link:hover, a:active:hover, a:visited:hover {
     display: inline;
 }
 
-#navigation ul li a {
+#navigation ul li a, #footer ul li a {
     color: #363636;
     text-decoration: none;
     text-shadow: 0px 1px 1px #fff;
     -khtml-text-shadow: 0px 1px 1px #fff;
     -moz-text-shadow: 0px 1px 1px #fff;
 }
+
+#navigation ul li a:hover, #footer ul li a:hover {
+    color: #000;
+}
+
+#footer {
+    margin: 0 auto 20px;
+    width: 860px;
+    background: url('/static/images/footer.png') no-repeat;
+    text-align: left;
+    height: 53px;
+}
+
+#footer ul {
+    list-style-type: none;
+    padding: 17px 0 0 250px;
+}
+
+#footer ul li {
+    margin: 0 5px;
+    display: inline;
+    font-size: 11px;
+}
+
+#footer ul li a {
+    color: #565656;
+}
+
+
 
 /* Content */
 
