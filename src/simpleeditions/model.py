@@ -373,8 +373,8 @@ class Article(db.Model):
                                      message, article_id=id)
 
 class ArticleRevision(db.Model):
-    previous = db.SelfReferenceProperty(collection_name='_unused1')
-    next = db.SelfReferenceProperty(collection_name='_unused2')
+    previous = db.SelfReferenceProperty(indexed=False, collection_name='_1')
+    next = db.SelfReferenceProperty(indexed=False, collection_name='_2')
     user = db.ReferenceProperty(User, collection_name='revisions',
                                 required=True)
     user_name = db.StringProperty(required=True, indexed=False)
@@ -413,4 +413,3 @@ class ArticleRevision(db.Model):
         # Build a key that references the requested revision for the specified
         # article.
         return db.Key.from_path(cls.kind(), str(revision), parent=article)
-
