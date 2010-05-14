@@ -32,6 +32,53 @@ import markdown2
 import simpleeditions
 from simpleeditions import settings
 
+def get_key(value, kind, parent=None):
+    """Returns a key from value.
+
+    """
+    if issubclass(kind, db.Model):
+        kind = kind.kind()
+    elif not isinstance(kind, basestring):
+        raise TypeError('Invalid type (kind); should be a Model subclass or a '
+                        'string.')
+
+    if isinstance(value, db.Key):
+        assert value.kind() == kind, 'Tried to use a Key of the wrong kind.'
+        assert value.parent() == parent, 'Invalid Key parent.'
+        return value
+    elif isinstance(value, db.Model):
+        assert value.kind() == kind, 'Tried to use a Model of the wrong kind.'
+        assert value.parent_key() == parent, 'Invalid Model parent.'
+        return value.key()
+
+    if isinstance(value, (basestring, int, long)):
+        return db.Key.from_path(kind, value, parent=parent)
+    else:
+        raise TypeError('Invalid type (value); expected string, number, Key '
+                        'or %s.' % kind)
+
+def get_instance(value, model, parent=None):
+    """Returns a model instance from value. If value is a string, gets by key
+    name; if value is an integer, gets by id; if value is a key, gets by key
+    and if value is an instance, returns the instance.
+
+    """
+    if not issubclass(model, db.Model):
+        raise TypeError('Invalid type (model); expected subclass of Model.')
+
+    if isinstance(value, basestring):
+        return model.get_by_key_name(value, parent=parent)
+    elif isinstance(value, (int, long)):
+        return model.get_by_id(value, parent=parent)
+    elif isinstance(value, db.Key):
+        return db.get(value)
+    elif isinstance(value, model):
+        return value
+    else:
+        raise TypeError('Invalid type (value); expected string, number, Key '
+                        'or %s.' % model.__name__)
+
+
 class User(db.Model):
     display_name = db.StringProperty(required=True)
     email = db.StringProperty()
@@ -124,8 +171,9 @@ class LocalAuth(UserAuthType):
 
     @staticmethod
     def connect(user, auth_email, password):
-        if not isinstance(user, User):
-            raise TypeError('Did not get a valid User instance.')
+        user = get_instance(user, User)
+        if not user:
+            raise ValueError('Did not get a valid user.')
 
         auth = LocalAuth(
             parent=user,
@@ -180,8 +228,9 @@ class GoogleAuth(UserAuthType):
 
     @staticmethod
     def connect(user):
-        if not isinstance(user, User):
-            raise TypeError('Did not get a valid User instance.')
+        user = get_instance(user, User)
+        if not user:
+            raise ValueError('Did not get a valid user.')
 
         auth = GoogleAuth(
             parent=user,
@@ -256,22 +305,23 @@ class Article(db.Model):
     html = db.TextProperty(required=True)
 
     @staticmethod
-    def _save(user, title=None, content=None, message='', article_id=None):
+    def _save(user, title=None, content=None, message='', article=None):
         """Updates an article with the specified values. If no article is
         supplied, a new article will be created. This method should ALWAYS
         run in a transaction to ensure data consistency.
 
         """
-        if not isinstance(user, User):
-            raise TypeError('A valid user must be provided.')
+        user = get_instance(user, User)
+        if not user:
+            raise ValueError('A valid user must be provided.')
 
         if not isinstance(message, basestring):
             raise TypeError('Message must be a string.')
 
-        if article_id is not None:
-            article = Article.get_by_id(article_id)
+        if article:
+            article = get_instance(article, Article)
             if not article:
-                raise ValueError('A valid article id must be provided when '
+                raise ValueError('A valid article must be provided when '
                                  'updating.')
 
             # If the values do not change, behave as if no value was supplied
@@ -288,8 +338,6 @@ class Article(db.Model):
             if article._entity['user'] != user.key():
                 raise simpleeditions.SaveArticleError(
                     'You do not have the permissions to update that article.')
-        else:
-            article = None
 
         if title:
             if not isinstance(title, basestring):
@@ -297,7 +345,7 @@ class Article(db.Model):
 
             slug = title.lower().replace('\'', '')
             slug = re.sub('[^a-z0-9]+', '-', slug).strip('-')
-        elif not article_id:
+        elif not article:
             raise simpleeditions.SaveArticleError('A title is required.')
         else:
             slug = None
@@ -307,7 +355,7 @@ class Article(db.Model):
                 raise TypeError('A valid article body must be provided.')
 
             html = markdown2.markdown(content)
-        elif not article_id:
+        elif not article:
             raise simpleeditions.SaveArticleError('Content is required.')
         else:
             html = None
@@ -364,13 +412,13 @@ class Article(db.Model):
         return db.run_in_transaction(Article._save, user, title, content)
 
     @staticmethod
-    def update(id, user, title=None, content=None, message=''):
+    def update(article, user, title=None, content=None, message=''):
         """Updates the article. An empty/false value for title or content means
         that it should not be changed.
 
         """
         return db.run_in_transaction(Article._save, user, title, content,
-                                     message, article_id=id)
+                                     message, article=article)
 
 class ArticleRevision(db.Model):
     previous = db.SelfReferenceProperty(indexed=False, collection_name='_1')
@@ -390,12 +438,7 @@ class ArticleRevision(db.Model):
         that are bound to the specificed article id/key/instance.
 
         """
-        # Convert Article instance to a Key instance.
-        if isinstance(article, Article):
-            article = article.key()
-        # Convert numeric article id to a Key instance.
-        elif isinstance(article, (int, long)):
-            article = db.Key.from_path('Article', article)
+        article = get_key(article, Article)
         return cls.all().ancestor(article)
 
     @classmethod
@@ -404,12 +447,7 @@ class ArticleRevision(db.Model):
         article id/key/instance and a revision number.
 
         """
-        # Convert Article instance to a Key instance.
-        if isinstance(article, Article):
-            article = article.key()
-        # Convert numeric article id to a Key instance.
-        elif isinstance(article, (int, long)):
-            article = db.Key.from_path('Article', article)
+        article = get_key(article, Article)
         # Build a key that references the requested revision for the specified
         # article.
         return db.Key.from_path(cls.kind(), str(revision), parent=article)
