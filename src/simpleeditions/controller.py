@@ -35,13 +35,10 @@ from simpleeditions import model, utils
 from simpleeditions.utils import public
 
 def get_article_dict(article, include_content=False):
+    props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name', 'created',
+             'last_modified', 'edits', 'views', 'slug', 'title']
     if include_content:
-        props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
-                 'created', 'last_modified', 'edits', 'views', 'slug', 'title',
-                 'content', 'html']
-    else:
-        props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
-                 'created', 'last_modified', 'edits', 'views', 'slug', 'title']
+        props += ['content', 'html']
     return utils.get_dict(article, props)
 
 def get_current_user(handler):
@@ -52,10 +49,9 @@ def get_current_user(handler):
         return None
 
 def get_user_dict(user, include_private_values=False):
+    props = ['key.id', 'display_name', 'created', 'status']
     if include_private_values:
-        props = ['key.id', 'display_name', 'email', 'created', 'status']
-    else:
-        props = ['key.id', 'display_name', 'created', 'status']
+        props += ['email']
     return utils.get_dict(user, props)
 
 def start_user_session(handler, user):
