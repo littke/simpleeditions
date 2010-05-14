@@ -185,6 +185,36 @@ class ArticleHandler(utils.TemplatedRequestHandler):
             article=article,
             page_title=article['title'])
 
+class ArticleRevisionHandler(utils.TemplatedRequestHandler):
+    def get(self, article_id, revision):
+        user = controller.get_user_info(self)
+
+        try:
+            revision = controller.get_revision(self, int(article_id), revision)
+        except (TypeError, ValueError, simpleeditions.NotFoundError):
+            self.not_found(user=user)
+            return
+
+        self.render('article_revision.html',
+            user=user,
+            revision=revision)
+
+class ArticleRevisionsHandler(utils.TemplatedRequestHandler):
+    def get(self, article_id):
+        user = controller.get_user_info(self)
+
+        try:
+            article = controller.get_article(self, int(article_id))
+            revisions = controller.get_revisions(self, int(article_id))
+        except (TypeError, ValueError, simpleeditions.NotFoundError):
+            self.not_found(user=user)
+            return
+
+        self.render('article_revisions.html',
+            user=user,
+            article=article,
+            revisions=revisions)
+
 class ArticlesHandler(utils.TemplatedRequestHandler):
     def get(self):
         self.render('articles.html',
@@ -262,14 +292,6 @@ class LogOutHandler(utils.TemplatedRequestHandler):
         redirect_to = self.request.get('continue', '/')
         self.redirect(redirect_to)
 
-class StaticPageHandler(utils.TemplatedRequestHandler):
-
-    def get(self, page_slug):
-        static_pages = ['about.html']
-        page = "%s.html" % page_slug
-        if page in static_pages:
-            self.render(page, user=controller.get_user_info(self))
-
 class NewArticleHandler(utils.TemplatedRequestHandler):
     @login_required
     def get(self, user):
@@ -309,32 +331,12 @@ class RegisterHandler(utils.TemplatedRequestHandler):
         self.render('register_success.html',
             user=controller.get_user_info(self))
 
-class ArticleRevisionHandler(utils.TemplatedRequestHandler):
-    def get(self, article_id, revision):
+_static_pages = ['about.html']
+class StaticPageHandler(utils.TemplatedRequestHandler):
+    def get(self, page_slug):
+        page = '%s.html' % page_slug
         user = controller.get_user_info(self)
-
-        try:
-            revision = controller.get_revision(self, int(article_id), revision)
-        except (TypeError, ValueError, simpleeditions.NotFoundError):
+        if page in _static_pages:
+            self.render(page, user=user)
+        else:
             self.not_found(user=user)
-            return
-
-        self.render('article_revision.html',
-            user=user,
-            revision=revision)
-
-class ArticleRevisionsHandler(utils.TemplatedRequestHandler):
-    def get(self, article_id):
-        user = controller.get_user_info(self)
-
-        try:
-            article = controller.get_article(self, int(article_id))
-            revisions = controller.get_revisions(self, int(article_id))
-        except (TypeError, ValueError, simpleeditions.NotFoundError):
-            self.not_found(user=user)
-            return
-
-        self.render('article_revisions.html',
-            user=user,
-            article=article,
-            revisions=revisions)
