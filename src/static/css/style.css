@@ -91,6 +91,10 @@ img {
     clear: both;
 }
 
+.divider-margin {
+    margin: 8px 0;
+}
+
 /* Header */
 
 #headercontainer {
