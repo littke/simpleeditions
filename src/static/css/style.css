@@ -56,6 +56,21 @@ a:link:hover, a:active:hover, a:visited:hover {
     border-color: #999;
 }
 
+table .odd td {
+    background-color: #E9E9E9;
+}
+
+table .even td {
+}
+
+table {
+    border-spacing: 0;
+}
+
+table td, table th {
+    padding: 4px;
+}
+
 /* Handy classes for various use */
 
 .error {

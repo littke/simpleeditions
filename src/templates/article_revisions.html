@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block page_title %}{{ article.title }} – Revisions{% endblock %}
+{% block page_head %}
+    <style type="text/css">
+    table#articles td {
+        vertical-align: top;
+    }
+    </style>
+{% endblock %} 
 {% block page_content %}
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
@@ -8,11 +15,16 @@
         <h2>Revisions</h2>
         <table id="articles">
             <thead>
-                <tr><th>#</th><th>Author</th><th>Updated</th><th>Message</th></tr>
+                <tr>
+                    <th>#</th>
+                    <th width="100">Author</th>
+                    <th width="160">Updated</th>
+                    <th>Message</th>
+                </tr>
             </thead>
             <tbody>
             {% for revision in revisions %}
-                <tr>
+                <tr class="{% cycle odd,even %}">
                     <td><a href="{{ revision.number }}">{{ revision.number }}</a></td>
                     <td>{{ revision.user_name }}</td>
                     <td>{{ revision.created|timesince }} ago</td>
