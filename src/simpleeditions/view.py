@@ -261,6 +261,7 @@ class EditArticleHandler(utils.TemplatedRequestHandler):
             self.redirect('/%d/%s' % (article_id, article['slug']))
             return
         except (TypeError, ValueError):
+            logging.exception('Presumed browser sent erroneous values:')
             self.add_error('Your browser sent invalid values.')
         except simpleeditions.SaveArticleError, e:
             self.add_error(e.message)
