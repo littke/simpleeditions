@@ -7,7 +7,11 @@
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
         <div id="tutorial_header">
+            {% if article.icon %}
+            <img alt="" src="/content/{{ article.id }}/{{ article.icon }}" />
+            {% else %}
             <img alt="" src="{{ "images/badges/badge_spotify.png"|static }}" />
+            {% endif %}
             <h1>{{ article.title }}</h1>
             <p class="article_extra">
                 By {{ article.user_name }}.

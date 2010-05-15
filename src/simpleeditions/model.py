@@ -18,6 +18,7 @@
 # SimpleEditions. If not, see http://www.gnu.org/licenses/.
 #
 
+import base64
 from datetime import datetime, timedelta
 import hashlib
 import re
@@ -277,6 +278,40 @@ AUTH_TYPES = dict(
     google=GoogleAuth,
 )
 
+class Blob(db.Model):
+    """Represents a user-submitted binary object. For example, an image.
+
+    """
+    user = db.ReferenceProperty(User, collection_name='blobs', required=True)
+    user_name = db.StringProperty(required=True, indexed=False)
+    created = db.DateTimeProperty(auto_now_add=True)
+    data = db.BlobProperty(required=True)
+    content_type = db.StringProperty(required=True, indexed=False)
+    size = db.IntegerProperty(required=True)
+    description = db.StringProperty(indexed=False)
+
+    @classmethod
+    def create(cls, user, data, content_type, article=None, description=''):
+        user = get_instance(user, User)
+        if not user:
+            raise ValueError('Did not get a valid user.')
+
+        if article:
+            article = get_instance(article, Article)
+            if not article:
+                raise ValueError('Did not get a valid article.')
+
+        size = len(data)
+
+        blob = cls(key_name=uuid.uuid4().get_hex(), parent=article, user=user,
+                   user_name=user.display_name, data=data,
+                   content_type=content_type, size=size)
+        blob.put()
+        return blob
+
+    def data_as_base64(self):
+        return base64.b64encode(self.data)
+
 
 # Method for validating article slugs.
 _validate_slug_re = None
@@ -294,6 +329,7 @@ class Article(db.Model):
     user = db.ReferenceProperty(User, collection_name='articles',
                                 required=True)
     user_name = db.StringProperty(required=True, indexed=False)
+    icon = db.ReferenceProperty(Blob)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now_add=True)
     last_save = db.DateTimeProperty(auto_now=True)
@@ -410,6 +446,23 @@ class Article(db.Model):
     @staticmethod
     def create(user, title, content):
         return db.run_in_transaction(Article._save, user, title, content)
+
+    @staticmethod
+    def set_icon(article, user, icon):
+        """Changes the icon of an article.
+
+        """
+        article = get_instance(article, Article)
+
+        user = get_key(user, User)
+        if user != article._entity['user']:
+            raise simpleeditions.SaveArticleError(
+                'You do not have the permissions to change the icon of that '
+                'article.')
+
+        icon = get_key(icon, Blob, article.key())
+        article.icon = icon
+        article.put()
 
     @staticmethod
     def update(article, user, title=None, content=None, message=''):

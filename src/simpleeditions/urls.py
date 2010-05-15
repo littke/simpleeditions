@@ -40,6 +40,9 @@ urlpatterns = (
     (r'/logout', view.LogOutHandler),
     (r'/(?:register|join)', view.RegisterHandler),
 
+    # Uploaded files handler
+    (r'/content/(?:(\d+)/)?([a-f0-9]{32})', view.BlobHandler),
+
     # API handler
     (r'/api/(\w+)', view.ApiHandler),
 

@@ -28,18 +28,30 @@ views) and the back-end (models and data logic).
 from datetime import datetime, timedelta
 import os
 
-from google.appengine.api import memcache
+from google.appengine.api import images, memcache
 
 import simpleeditions
 from simpleeditions import model, utils
 from simpleeditions.utils import public
 
 def get_article_dict(article, include_content=False):
-    props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name', 'created',
-             'last_modified', 'edits', 'views', 'slug', 'title']
+    props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
+             ('_entity.icon.name', 'icon'), 'created', 'last_modified',
+             'edits', 'views', 'slug', 'title']
     if include_content:
         props += ['content', 'html']
     return utils.get_dict(article, props)
+
+def get_blob(name, article=None):
+    if article:
+        article = model.get_key(article, model.Article)
+    return model.Blob.get_by_key_name(name, parent=article)
+
+def get_blob_dict(blob, include_data=False):
+    props = ['key.name', ('_entity.user.id', 'user_id'), 'user_name',
+             'created', 'content_type', 'size']
+    if include_data:
+        props += [('data_as_base64', 'data')]
 
 def get_current_user(handler):
     try:
@@ -199,6 +211,25 @@ def register(handler, auth_type, *args, **kwargs):
     auth = auth_class.register(*args, **kwargs)
     start_user_session(handler, auth.user)
     return get_user_dict(auth.user, True)
+
+@public
+def set_article_icon(handler, article_id, data):
+    """Sets the icon of an article. Expects an article id and binary data for
+    the image to use as an icon.
+
+    """
+    user = get_current_user(handler)
+    if not user:
+        raise simpleeditions.NotLoggedInError(
+            'You must be logged in to create icons.')
+
+    # Resize image to 50x52 and store the result as PNG.
+    data = images.resize(data, 50, 52)
+    icon = model.Blob.create(user, data, 'image/png', article_id)
+    # Give the article the new icon.
+    model.Article.set_icon(article_id, user, icon)
+
+    return get_blob_dict(icon)
 
 @public
 def update_article(handler, id, title=None, content=None, message=''):
