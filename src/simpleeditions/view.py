@@ -21,14 +21,108 @@
 import base64
 import datetime
 import logging
+import os.path
+import sys
 import time
+import traceback
 import urllib
 
 from django.utils import simplejson
+from google.appengine.api import users
 from google.appengine.ext import db, webapp
+from google.appengine.ext.webapp import template
 
 import simpleeditions
 from simpleeditions import controller, settings, utils
+
+class TemplatedRequestHandler(webapp.RequestHandler):
+    """Simplifies handling requests. In particular, it simplifies working
+    with templates, with its render() method.
+
+    """
+
+    def __init__(self):
+        self._errors = []
+
+    def add_error(self, message):
+        """Adds an error message. All errors will be available as the template
+        variable "errors".
+
+        """
+        self._errors.append(message)
+
+    def do_get_post(self):
+        """For handlers that allow a POST to be simulated during a GET request,
+        calling this method will take the POST data from a query string
+        parameter and add it as POST data.
+
+        This is useful when redirecting between pages, and the target page
+        should be POSTed to.
+
+        """
+        req = self.request
+        post = req.get('post')
+        if post:
+            req.method = 'POST'
+            req.body = base64.b64decode(post)
+            self.post()
+            return True
+
+    def handle_exception(self, exception, debug_mode):
+        """Called if this handler throws an exception during execution.
+
+        """
+        logging.exception(exception)
+
+        # Also show a traceback if debug is enabled, or if the currently logged
+        # in Google user is an application administrator.
+        if debug_mode or users.is_current_user_admin():
+            tb = ''.join(traceback.format_exception(*sys.exc_info()))
+        else:
+            tb = None
+
+        self.render(settings.ERROR_TEMPLATE, traceback=tb)
+
+    def initialize(self, request, response):
+        super(TemplatedRequestHandler, self).initialize(request, response)
+        self.user = controller.get_user_info(self)
+
+    def not_found(self, template_name=None, **kwargs):
+        """Similar to the render() method, but with a 404 HTTP status code.
+        Also, the template_name argument is optional. If not specified, the
+        NOT_FOUND_TEMPLATE setting will be used instead.
+
+        """
+        if not template_name:
+            template_name = settings.NOT_FOUND_TEMPLATE
+        self.response.set_status(404)
+        self.render(template_name, **kwargs)
+
+    def render(self, template_name, **kwargs):
+        """Renders the specified template to the output.
+
+        The template will have the following variables available, in addition
+        to the ones specified in the render() method:
+        - DEBUG: Whether the application is running in debug mode.
+        - DOMAIN: The domain of the application.
+        - STATIC_PATH: The path under which all static content lies.
+        - VERSION: The version of the application.
+        - errors: A (possibly empty) list of errors that have occurred.
+        - request: The current request object. Has attributes such as 'path',
+                   'query_string', etc.
+
+        """
+        kwargs.update({'DEBUG': settings.DEBUG,
+                       'DOMAIN': settings.DOMAIN,
+                       'STATIC_PATH': settings.STATIC_PATH,
+                       'VERSION': settings.VERSION,
+                       'errors': self._errors,
+                       'request': self.request,
+                       'user': self.user})
+
+        path = os.path.join(settings.TEMPLATE_DIR, template_name)
+        self.response.out.write(template.render(path, kwargs))
+
 
 def do_auth(handler, auth_func, *args):
     """Performs authentication based on the available form values.
@@ -88,9 +182,8 @@ def login_required(func):
 
     """
     def wrapper(self, *args, **kwargs):
-        user = controller.get_user_info(self)
-        if user:
-            return func(self, user, *args, **kwargs)
+        if self.user:
+            return func(self, *args, **kwargs)
         self.response.set_status(403)
         self.render('not_logged_in.html')
     return wrapper
@@ -167,58 +260,48 @@ class ApiHandler(webapp.RequestHandler):
                       'type': type(e).__name__}
 
         # Write the response as JSON.
-        res.headers['Content-type'] = 'application/json'
+        res.headers['Content-Type'] = 'application/json'
         res.out.write(simplejson.dumps(result, separators=(',', ':')))
 
-class ArticleHandler(utils.TemplatedRequestHandler):
+class ArticleHandler(TemplatedRequestHandler):
     def get(self, article_id):
-        user = controller.get_user_info(self)
-
         try:
             article = controller.get_article(self, int(article_id))
         except (TypeError, ValueError, simpleeditions.NotFoundError):
-            self.not_found(user=user)
+            self.not_found()
             return
 
         self.render('article.html',
-            user=user,
             article=article,
             page_title=article['title'])
 
-class ArticleRevisionHandler(utils.TemplatedRequestHandler):
+class ArticleRevisionHandler(TemplatedRequestHandler):
     def get(self, article_id, revision):
-        user = controller.get_user_info(self)
-
         try:
             revision = controller.get_revision(self, int(article_id), revision)
         except (TypeError, ValueError, simpleeditions.NotFoundError):
-            self.not_found(user=user)
+            self.not_found()
             return
 
         self.render('article_revision.html',
-            user=user,
             revision=revision)
 
-class ArticleRevisionsHandler(utils.TemplatedRequestHandler):
+class ArticleRevisionsHandler(TemplatedRequestHandler):
     def get(self, article_id):
-        user = controller.get_user_info(self)
-
         try:
             article = controller.get_article(self, int(article_id))
             revisions = controller.get_revisions(self, int(article_id))
         except (TypeError, ValueError, simpleeditions.NotFoundError):
-            self.not_found(user=user)
+            self.not_found()
             return
 
         self.render('article_revisions.html',
-            user=user,
             article=article,
             revisions=revisions)
 
-class ArticlesHandler(utils.TemplatedRequestHandler):
+class ArticlesHandler(TemplatedRequestHandler):
     def get(self):
         self.render('articles.html',
-            user=controller.get_user_info(self),
             articles=controller.get_articles(self, "-last_modified", 10, False))
 
 class BlobHandler(webapp.RequestHandler):
@@ -232,20 +315,20 @@ class BlobHandler(webapp.RequestHandler):
         res.headers['Content-Type'] = blob.content_type
         res.out.write(blob.data)
 
-class EditArticleHandler(utils.TemplatedRequestHandler):
+class EditArticleHandler(TemplatedRequestHandler):
     @login_required
-    def get(self, user, article_id):
+    def get(self, article_id):
         try:
             article = controller.get_article(self, int(article_id))
         except (TypeError, ValueError, simpleeditions.NotFoundError):
-            self.not_found(user=controller.get_user_info(self))
+            self.not_found()
             return
 
         self.render('article_edit.html',
-            user=user, article=article)
+            article=article)
 
     @login_required
-    def post(self, user, article_id):
+    def post(self, article_id):
         try:
             article_id = int(article_id)
 
@@ -269,7 +352,7 @@ class EditArticleHandler(utils.TemplatedRequestHandler):
         # Some kind of error has occurred; show the edit page again.
         self.get(article_id)
 
-class HomeHandler(utils.TemplatedRequestHandler):
+class HomeHandler(TemplatedRequestHandler):
     def get(self):
         # Get all recent articles
         articles = controller.get_articles(
@@ -283,16 +366,14 @@ class HomeHandler(utils.TemplatedRequestHandler):
             article['html'] = article['html'][:pos]
 
         self.render('home.html',
-            articles=articles,
-            user=controller.get_user_info(self))
+            articles=articles)
 
-class LoginHandler(utils.TemplatedRequestHandler):
+class LoginHandler(TemplatedRequestHandler):
     def get(self):
         if self.do_get_post():
             return
 
-        self.render('login.html',
-            user=controller.get_user_info(self))
+        self.render('login.html')
 
     def post(self):
         if not do_auth(self, controller.log_in):
@@ -302,20 +383,20 @@ class LoginHandler(utils.TemplatedRequestHandler):
         redirect_to = self.request.get('continue', '/')
         self.redirect(redirect_to)
 
-class LogOutHandler(utils.TemplatedRequestHandler):
+class LogOutHandler(TemplatedRequestHandler):
     def get(self):
         controller.log_out(self)
 
         redirect_to = self.request.get('continue', '/')
         self.redirect(redirect_to)
 
-class NewArticleHandler(utils.TemplatedRequestHandler):
+class NewArticleHandler(TemplatedRequestHandler):
     @login_required
-    def get(self, user):
-        self.render('article_new.html', user=user)
+    def get(self):
+        self.render('article_new.html')
 
     @login_required
-    def post(self, user):
+    def post(self):
         req = self.request
         try:
             article = controller.create_article(
@@ -333,32 +414,32 @@ class NewArticleHandler(utils.TemplatedRequestHandler):
         # Some kind of error has occurred; show the create page again.
         self.get()
 
-class NotFoundHandler(utils.TemplatedRequestHandler):
+class NotFoundHandler(TemplatedRequestHandler):
     def get(self):
-        self.not_found(user=controller.get_user_info(self))
+        self.not_found()
     post = get
 
-class RegisterHandler(utils.TemplatedRequestHandler):
+class RegisterHandler(TemplatedRequestHandler):
     def get(self):
         if self.do_get_post():
             return
 
-        self.render('register.html',
-            user=controller.get_user_info(self))
+        self.render('register.html')
 
     def post(self):
         if not do_auth(self, controller.register):
             return
 
-        self.render('register_success.html',
-            user=controller.get_user_info(self))
+        # Renew user info, since the user just registered and should be logged
+        # in.
+        self.user = controller.get_user_info(self)
+        self.render('register_success.html')
 
 _static_pages = ['about.html']
-class StaticPageHandler(utils.TemplatedRequestHandler):
+class StaticPageHandler(TemplatedRequestHandler):
     def get(self, page_slug):
         page = '%s.html' % page_slug
-        user = controller.get_user_info(self)
         if page in _static_pages:
-            self.render(page, user=user)
+            self.render(page)
         else:
-            self.not_found(user=user)
+            self.not_found()
