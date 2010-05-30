@@ -300,3 +300,11 @@ span.minus {
 #recent_tutorials h1 {
     margin-bottom: 0.5em;
 }
+
+#recent_tutorials h2 a {
+    color: #252525;
+}
+
+#recent_tutorials h2 a:hover {
+    border-bottom: 1px black dotted;
+}
