@@ -241,7 +241,7 @@ span.highlight {
 /* Tutorials */
 
 #tutorial_header {
-    height: 50px;
+    height: 52px;
     margin-bottom: 20px;
 }
 
@@ -252,15 +252,23 @@ span.highlight {
 
 #tutorial_header h1, #tutorial_header h2 {
     margin-bottom: 0;
-    padding-top: 6px;
-}
-#tutorial_header h2 {
     padding-top: 4px;
+    margin-right: 14px;
 }
 
 #tutorial_header p {
-    margin-top: 2px;
+    margin-top: 1px;
 }
+
+/* When the titles are in a list, we use h2s instead of h1s */
+#tutorial_header h2 {
+    padding-top: 5px;
+}
+
+#tutorial_header h2 + p {
+    margin-top: -3px;
+}
+
 
 #tutorial_header .article_extra {
     color: #777;
