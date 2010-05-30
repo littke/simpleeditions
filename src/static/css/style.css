@@ -132,6 +132,10 @@ li {
     color: #ddd;
 }
 
+#account a:hover {
+    border-bottom: 1px white dotted;
+}
+
 /* Navigation */
 
 #navigation {
@@ -163,6 +167,7 @@ li {
 
 #navigation ul li a:hover, #footer ul li a:hover {
     color: #000;
+    border-bottom: 1px black dotted;
 }
 
 #footer {
