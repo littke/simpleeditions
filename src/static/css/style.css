@@ -103,6 +103,7 @@ li {
 
 #headercontainer {
     background: url('/static/images/header_bg.png') repeat-x;
+    background-color: black;
 }
 
 #header {
@@ -212,6 +213,7 @@ li {
     margin-bottom: -5px;
     color: white;
     position: relative;
+    height: 147px;
 }
 
 #intro_box p {
