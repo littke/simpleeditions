@@ -23,8 +23,11 @@
         </div>
         <div id="tutorial_content">
           {{ article.html }}
+          <a href="/{{ article.id }}/{{ article.slug }}">Read more...</a>
         </div>
-        <a href="/{{ article.id }}/{{ article.slug }}">Read more...</a>
+        {% if not forloop.last %}
+        <img src="{{ "images/divider.png"|static }}" class="divider-margin" />
+        {% endif %}
         {% endfor %}
         {% if user %}
         <p><a href="/new">Write a tutorial</a>!</p>
