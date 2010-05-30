@@ -21,7 +21,9 @@
                 By {{ article.user_name }}. 
             </p>
         </div>
-        {{ article.html }}
+        <div id="tutorial_content">
+          {{ article.html }}
+        </div>
         <a href="/{{ article.id }}/{{ article.slug }}">Read more...</a>
         {% endfor %}
         {% if user %}

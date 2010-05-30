@@ -266,6 +266,10 @@ span.highlight {
     color: #777;
 }
 
+#tutorial_content {
+    width: 600px;
+}
+
 .pros, .cons {
   list-style-type: none;
   padding-left: 22px;
