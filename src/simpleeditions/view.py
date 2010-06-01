@@ -155,7 +155,7 @@ def do_auth(handler, auth_func, *args):
         # external service.
         path = '%s?continue=%s&post=%s' % (
             req.path,
-            urllib.quote(req.get('continue', '/')),
+            urllib.quote_plus(req.get('continue', '/')),
             base64.b64encode(urllib.urlencode(req.POST)))
 
         login_url = controller.get_login_url(
