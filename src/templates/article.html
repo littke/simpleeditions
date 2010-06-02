@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 {% block page_head %}
+<meta property="fb:app_id" content="{{ FACEBOOK_APP_ID }}">
+{% if article.icon %}
+<meta property="og:image" content="http://{{ DOMAIN }}/content/{{ article.icon }}">
+{% endif %}
+<meta property="og:site_name" content="SimpleEditions">
+<meta property="og:title" content="{{ article.title }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}">
 <link rel="canonical" href="http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}">
 {% endblock %}
 {% block page_title %}{{ article.title }}{% endblock %}
@@ -23,10 +31,28 @@
                 <a href="/edit/{{ article.id }}">Edit tutorial</a>
                 {% endifequal %}
             </p>
+            <p><fb:like layout="button_count"></fb:like></p>
         </div>
         <div id="tutorial_content">
           {{ article.html }}
         </div>
     </div>
     <div class="contentbox_bottom"></div>
+{% endblock %}
+{% block page_foot %}
+    <div id="fb-root"></div>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({appId: '{{ FACEBOOK_APP_ID }}', status: true, cookie: true,
+                 xfbml: true});
+      };
+      (function() {
+        var e = document.createElement('script');
+        e.type = 'text/javascript';
+        e.src = document.location.protocol +
+          '//connect.facebook.net/en_US/all.js';
+        e.async = true;
+        document.getElementById('fb-root').appendChild(e);
+      }());
+    </script>
 {% endblock %}

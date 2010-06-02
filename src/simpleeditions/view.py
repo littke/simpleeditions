@@ -114,6 +114,7 @@ class TemplatedRequestHandler(webapp.RequestHandler):
         """
         kwargs.update({'DEBUG': settings.DEBUG,
                        'DOMAIN': settings.DOMAIN,
+                       'FACEBOOK_APP_ID': settings.FACEBOOK_APP_ID,
                        'STATIC_PATH': settings.STATIC_PATH,
                        'VERSION': settings.VERSION,
                        'errors': self._errors,

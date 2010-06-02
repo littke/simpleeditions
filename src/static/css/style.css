@@ -264,7 +264,7 @@ span.highlight {
 }
 
 #tutorial_header p {
-    margin-top: 1px;
+    margin: 1px 0 0;
 }
 
 /* When the titles are in a list, we use h2s instead of h1s */
@@ -279,6 +279,8 @@ span.highlight {
 
 #tutorial_header .article_extra {
     color: #777;
+    float: left;
+    padding-right: 10px;
 }
 
 #tutorial_content {

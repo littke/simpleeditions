@@ -28,6 +28,10 @@ TEMPLATE_DIR = 'templates'
 ERROR_TEMPLATE = '500.html'
 NOT_FOUND_TEMPLATE = '404.html'
 
+# The id of the Facebook page that represents the site. Used for Open Graph
+# support.
+FACEBOOK_APP_ID = 127002890657738
+
 # The time that a session should be stored in a user's browser, in days.
 SESSION_TTL = 7
 
