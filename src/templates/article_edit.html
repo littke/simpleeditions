@@ -14,9 +14,11 @@
             </ul>
         </div>
         {% endif %}
-        <form action="{{ request.path }}" method="post">
+        <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
             <p>Tutorial title</p>
             <p><input name="title" type="text" value="{{ article.title }}" /></p>
+            <p>Icon (optional)</p>
+            <p><input name="icon" type="file" /></p>
             <p>Tutorial content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
             <p><textarea cols="100" name="content" rows="50">{{ article.content }}</textarea></p>
             <p>Edit message (optional)</p>

@@ -4,7 +4,11 @@
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
         <div id="tutorial_header">
+            {% if revision.icon %}
+            <img alt="" src="/content/{{ revision.icon }}" />
+            {% else %}
             <img alt="" src="{{ "images/badges/badge_spotify.png"|static }}" />
+            {% endif %}
             <h1>{{ revision.title }}</h1>
             <p class="article_extra">
                 Edit #{{ revision.number }}, made at {{ revision.created }} by {{ revision.user_name }}.<br />

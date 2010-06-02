@@ -34,6 +34,11 @@ import simpleeditions
 from simpleeditions import model, utils
 from simpleeditions.utils import public
 
+def create_icon(user, icon_data):
+    # Resize image to 50x52 and store the result as PNG.
+    icon_data = images.resize(icon_data, 50, 52)
+    return model.Blob.create(user, icon_data, 'image/png')
+
 def get_article_dict(article, include_content=False):
     props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
              ('_entity.icon.name', 'icon'), 'created', 'last_modified',
@@ -70,7 +75,8 @@ def get_revision_dict(revision, include_content=False):
     props = [('key.name', 'number'), ('parent_key.id', 'article_id'),
              ('_entity.previous.name', 'previous'),
              ('_entity.next.name', 'next'), ('_entity.user.id', 'user_id'),
-             'user_name', 'created', 'title', 'message']
+             'user_name', ('_entity.icon.name', 'icon'), 'created', 'title',
+             'message']
     if include_content:
         props += ['content', 'html']
     return utils.get_dict(revision, props)
@@ -100,12 +106,15 @@ def connect(handler, auth_type, **kwargs):
     auth_class.connect(user, **kwargs)
 
 @public
-def create_article(handler, title, content):
+def create_article(handler, title, content, icon_data=None):
     user = get_current_user(handler)
     if not user:
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to create an article.')
-    article = model.Article.create(user, title, content)
+
+    icon_blob = create_icon(user, icon_data) if icon_data else None
+
+    article = model.Article.create(user, title, content, icon_blob)
 
     return get_article_dict(article)
 
@@ -225,26 +234,8 @@ def register(handler, auth_type, **kwargs):
     return get_user_dict(auth.user, True)
 
 @public
-def set_article_icon(handler, article_id, data):
-    """Sets the icon of an article. Expects an article id and binary data for
-    the image to use as an icon.
-
-    """
-    user = get_current_user(handler)
-    if not user:
-        raise simpleeditions.NotLoggedInError(
-            'You must be logged in to create icons.')
-
-    # Resize image to 50x52 and store the result as PNG.
-    data = images.resize(data, 50, 52)
-    icon = model.Blob.create(user, data, 'image/png', article_id)
-    # Give the article the new icon.
-    model.Article.set_icon(article_id, user, icon)
-
-    return get_blob_dict(icon)
-
-@public
-def update_article(handler, id, title=None, content=None, message=''):
+def update_article(handler, id, title=None, content=None, icon_data=None,
+                   message=''):
     if not isinstance(id, int):
         raise TypeError('Article id must be an integer.')
 
@@ -253,5 +244,8 @@ def update_article(handler, id, title=None, content=None, message=''):
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to update an article.')
 
-    article = model.Article.update(id, user, title, content, message)
+    icon_blob = create_icon(user, icon_data) if icon_data else None
+
+    article = model.Article.update(id, user, title, content, icon_blob,
+                                   message)
     return get_article_dict(article)

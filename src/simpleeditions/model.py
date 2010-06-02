@@ -295,19 +295,14 @@ class Blob(db.Model):
     description = db.StringProperty(indexed=False)
 
     @classmethod
-    def create(cls, user, data, content_type, article=None, description=''):
+    def create(cls, user, data, content_type, description=''):
         user = get_instance(user, User)
         if not user:
             raise ValueError('Did not get a valid user.')
 
-        if article:
-            article = get_instance(article, Article)
-            if not article:
-                raise ValueError('Did not get a valid article.')
-
         size = len(data)
 
-        blob = cls(key_name=uuid.uuid4().get_hex(), parent=article, user=user,
+        blob = cls(key_name=uuid.uuid4().get_hex(), user=user,
                    user_name=user.display_name, data=data,
                    content_type=content_type, size=size)
         blob.put()
@@ -345,7 +340,8 @@ class Article(db.Model):
     html = db.TextProperty(required=True)
 
     @staticmethod
-    def _save(user, title=None, content=None, message='', article=None):
+    def _save(user, title=None, content=None, icon=None, message='',
+              article=None):
         """Updates an article with the specified values. If no article is
         supplied, a new article will be created. This method should ALWAYS
         run in a transaction to ensure data consistency.
@@ -354,6 +350,8 @@ class Article(db.Model):
         user = get_instance(user, User)
         if not user:
             raise ValueError('A valid user must be provided.')
+
+        icon = get_key(icon, Blob)
 
         if not isinstance(message, basestring):
             raise TypeError('Message must be a string.')
@@ -370,8 +368,10 @@ class Article(db.Model):
                 title = None
             if content == article.content:
                 content = None
+            if icon == article._entity['icon']:
+                icon = None
 
-            if not title and not content:
+            if not title and not content and not icon:
                 raise simpleeditions.SaveArticleError('Nothing to update.')
 
             # Right now, only the owner of the article may update it.
@@ -408,12 +408,14 @@ class Article(db.Model):
             if content:
                 article.content = content
                 article.html = html
+            if icon:
+                article.icon = icon
             article.edits += 1
             article.last_modified = datetime.now()
         else:
             article = Article(user=user, user_name=user.display_name,
-                              slug=slug, title=title, content=content,
-                              html=html)
+                              icon=icon, slug=slug, title=title,
+                              content=content, html=html)
         article.put()
 
         # Create a revision for the current article.
@@ -436,8 +438,9 @@ class Article(db.Model):
         # well-performing queries for specific revisions.
         revision = ArticleRevision(
             key_name=str(number), parent=article, previous=previous, user=user,
-            user_name=user.display_name, title=article.title,
-            content=article.content, html=article.html, message=message)
+            user_name=user.display_name, icon=article._entity['icon'],
+            title=article.title, content=article.content, html=article.html,
+            message=message)
         revision.put()
 
         if previous:
@@ -448,33 +451,16 @@ class Article(db.Model):
         return article
 
     @staticmethod
-    def create(user, title, content):
-        return db.run_in_transaction(Article._save, user, title, content)
+    def create(user, title, content, icon=None):
+        return db.run_in_transaction(Article._save, user, title, content, icon)
 
     @staticmethod
-    def set_icon(article, user, icon):
-        """Changes the icon of an article.
-
-        """
-        article = get_instance(article, Article)
-
-        user = get_key(user, User)
-        if user != article._entity['user']:
-            raise simpleeditions.SaveArticleError(
-                'You do not have the permissions to change the icon of that '
-                'article.')
-
-        icon = get_key(icon, Blob, article.key())
-        article.icon = icon
-        article.put()
-
-    @staticmethod
-    def update(article, user, title=None, content=None, message=''):
+    def update(article, user, title=None, content=None, icon=None, message=''):
         """Updates the article. An empty/false value for title or content means
         that it should not be changed.
 
         """
-        return db.run_in_transaction(Article._save, user, title, content,
+        return db.run_in_transaction(Article._save, user, title, content, icon,
                                      message, article=article)
 
 class ArticleRevision(db.Model):
@@ -483,6 +469,7 @@ class ArticleRevision(db.Model):
     user = db.ReferenceProperty(User, collection_name='revisions',
                                 required=True)
     user_name = db.StringProperty(required=True, indexed=False)
+    icon = db.ReferenceProperty(Blob)
     created = db.DateTimeProperty(auto_now_add=True)
     title = db.StringProperty(required=True, indexed=False)
     content = db.TextProperty(required=True)

@@ -305,10 +305,10 @@ class ArticlesHandler(TemplatedRequestHandler):
             articles=controller.get_articles(self, "-last_modified", 10, False))
 
 class BlobHandler(webapp.RequestHandler):
-    def get(self, article_id, blob_key):
+    def get(self, blob_key):
         res = self.response
 
-        blob = controller.get_blob(blob_key, int(article_id))
+        blob = controller.get_blob(blob_key)
         if not blob:
             res.set_status(404)
             return
@@ -335,11 +335,7 @@ class EditArticleHandler(TemplatedRequestHandler):
             req = self.request
             article = controller.update_article(
                 self, article_id, req.get('title'), req.get('content'),
-                req.get('message'))
-
-            icon_data = req.get('icon')
-            if icon_data:
-                controller.set_article_icon(self, article_id, icon_data)
+                req.get('icon'), req.get('message'))
 
             self.redirect('/%d/%s' % (article_id, article['slug']))
             return
@@ -400,11 +396,7 @@ class NewArticleHandler(TemplatedRequestHandler):
         req = self.request
         try:
             article = controller.create_article(
-                self, req.get('title'), req.get('content'))
-
-            icon_data = req.get('icon')
-            if icon_data:
-                controller.set_article_icon(self, article['id'], icon_data)
+                self, req.get('title'), req.get('content'), req.get('icon'))
 
             self.redirect('/%d/%s' % (article['id'], article['slug']))
             return

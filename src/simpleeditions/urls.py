@@ -41,7 +41,7 @@ urlpatterns = (
     (r'/(?:register|join)', view.RegisterHandler),
 
     # Uploaded files handler
-    (r'/content/(?:(\d+)/)?([a-f0-9]{32})', view.BlobHandler),
+    (r'/content/([a-f0-9]{32})', view.BlobHandler),
 
     # API handler
     (r'/api/(\w+)', view.ApiHandler),
