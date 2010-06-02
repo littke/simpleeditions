@@ -12,7 +12,7 @@
         {% for article in articles %}
         <div id="tutorial_header">
             {% if article.icon %}
-            <img alt="" src="/content/{{ article.id }}/{{ article.icon }}" />
+            <img alt="" src="/content/{{ article.icon }}" />
             {% else %}
             <img alt="" src="{{ "images/badges/badge_spotify.png"|static }}" />
             {% endif %}
