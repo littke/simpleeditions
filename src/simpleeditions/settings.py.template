@@ -21,16 +21,18 @@
 import hashlib
 import os
 
-DOMAIN = 'www.simpleeditions.com'
+DOMAIN = 'www.example.com'
 STATIC_PATH = '/static'
 TEMPLATE_DIR = 'templates'
 
 ERROR_TEMPLATE = '500.html'
 NOT_FOUND_TEMPLATE = '404.html'
 
-# The id of the Facebook page that represents the site. Used for Open Graph
-# support.
-FACEBOOK_APP_ID = 127002890657738
+# The id of the Facebook application that represents the site. Used for
+# Facebook Connect and Open Graph support.
+FACEBOOK_APP_ID = 0
+# The secret key used to verify Facebook data.
+FACEBOOK_SECRET = ''
 
 # The time that a session should be stored in a user's browser, in days.
 SESSION_TTL = 7
