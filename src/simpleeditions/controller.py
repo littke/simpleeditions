@@ -86,6 +86,20 @@ def start_user_session(handler, user):
     utils.set_cookie(handler, 'session', user.session, user.expires)
 
 @public
+def connect(handler, auth_type, **kwargs):
+    """Adds an authentication method to the current user.
+
+    """
+    user = get_current_user(handler)
+    if not user:
+        raise simpleeditions.NotLoggedInError(
+            'You must be logged in to be able to add an authentication method '
+            'to your account.')
+
+    auth_class = get_auth_class(auth_type)
+    auth_class.connect(user, **kwargs)
+
+@public
 def create_article(handler, title, content):
     user = get_current_user(handler)
     if not user:
@@ -182,20 +196,6 @@ def get_user_info(handler, id=None):
         user = get_current_user(handler)
         if user:
             return get_user_dict(user, True)
-
-@public
-def connect(handler, auth_type, **kwargs):
-    """Adds an authentication method to the current user.
-
-    """
-    user = get_current_user(handler)
-    if not user:
-        raise simpleeditions.NotLoggedInError(
-            'You must be logged in to be able to add an authentication method '
-            'to your account.')
-
-    auth_class = get_auth_class(auth_type)
-    auth_class.connect(user, **kwargs)
 
 @public
 def log_in(handler, auth_type, **kwargs):
