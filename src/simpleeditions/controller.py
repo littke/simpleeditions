@@ -42,6 +42,12 @@ def get_article_dict(article, include_content=False):
         props += ['content', 'html']
     return utils.get_dict(article, props)
 
+def get_auth_class(auth_type):
+    try:
+        return model.AUTH_TYPES[auth_type]
+    except KeyError:
+        raise ValueError('Invalid authentication type.')
+
 def get_blob(name, article=None):
     if article:
         article = model.get_key(article, model.Article)
@@ -178,13 +184,9 @@ def get_user_info(handler, id=None):
             return get_user_dict(user, True)
 
 @public
-def log_in(handler, auth_type, *args, **kwargs):
-    try:
-        auth_class = model.AUTH_TYPES[auth_type]
-    except KeyError:
-        raise ValueError('Invalid authentication type.')
-
-    auth = auth_class.log_in(*args, **kwargs)
+def log_in(handler, auth_type, **kwargs):
+    auth_class = get_auth_class(auth_type)
+    auth = auth_class.log_in(**kwargs)
     user = auth.user
 
     # Start a session and create a session cookie.
@@ -202,13 +204,9 @@ def log_out(handler):
         utils.set_cookie(handler, 'session', '', datetime(1987, 7, 31, 3, 42))
 
 @public
-def register(handler, auth_type, *args, **kwargs):
-    try:
-        auth_class = model.AUTH_TYPES[auth_type]
-    except KeyError:
-        raise ValueError('Invalid authentication type.')
-
-    auth = auth_class.register(*args, **kwargs)
+def register(handler, auth_type, **kwargs):
+    auth_class = get_auth_class(auth_type)
+    auth = auth_class.register(**kwargs)
     start_user_session(handler, auth.user)
     return get_user_dict(auth.user, True)
 
