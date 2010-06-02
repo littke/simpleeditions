@@ -138,8 +138,20 @@ class UserAuthType(polymodel.PolyModel):
     @staticmethod
     def _register(auth_class, display_name, email=None, *args, **kwargs):
         user = User.register(display_name, email)
-        auth = auth_class.connect(user, *args, **kwargs)
+        auth = auth_class.add_to_user(user, *args, **kwargs)
         return auth
+
+    @classmethod
+    def connect(cls, user, *args, **kwargs):
+        """Connects an authentication type to a user.
+
+        """
+        user = get_instance(user, User)
+        if not user:
+            raise ValueError('Did not get a valid user.')
+
+        cls.validate(*args, **kwargs)
+        return cls.add_to_user(user, *args, **kwargs)
 
     @classmethod
     def register(cls, display_name, email=None, *args, **kwargs):
@@ -171,11 +183,7 @@ class LocalAuth(UserAuthType):
     password = db.StringProperty(required=True, indexed=False)
 
     @staticmethod
-    def connect(user, auth_email, password):
-        user = get_instance(user, User)
-        if not user:
-            raise ValueError('Did not get a valid user.')
-
+    def add_to_user(user, auth_email, password):
         auth = LocalAuth(
             parent=user,
             user=user,
@@ -228,11 +236,7 @@ class GoogleAuth(UserAuthType):
     google_user = db.UserProperty(required=True)
 
     @staticmethod
-    def connect(user):
-        user = get_instance(user, User)
-        if not user:
-            raise ValueError('Did not get a valid user.')
-
+    def add_to_user(user):
         auth = GoogleAuth(
             parent=user,
             user=user,
