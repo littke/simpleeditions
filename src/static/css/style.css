@@ -39,6 +39,33 @@ h3 {
     color: #1E2630;
 }
 
+input, textarea, select {
+    padding: 4px;
+    font: 12px/18px "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
+    border: 1px solid #cecece;
+    border-radius: 3px;
+    -khtml-border-radius: 3px;
+    -moz-border-radius: 3px;
+    color: #252525;
+    background-color: white;
+}
+
+button, input[type="reset"], input[type="button"], input[type="submit"] {
+    padding: 4px 17px;
+    box-shadow: 1px 1px 0px #777;
+    -moz-box-shadow: 1px 1px 0px #777;
+    -khtml-box-shadow: 1px 1px 0px #777;
+    border: 1px solid #c0c0c0;
+    cursor: pointer;
+}
+
+button:active, input[type="reset"]:active, input[type="button"]:active, input[type="submit"]:active {
+    border: 1px solid #ddd;
+    color: black;
+    position: relative;
+    top: 1px;
+}
+
 a {
     text-decoration: none;
 }
