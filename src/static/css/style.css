@@ -314,6 +314,7 @@ span.highlight {
     width: 600px;
 }
 
+/* Tutorial content tags */
 .pros, .cons {
   list-style-type: none;
   padding-left: 22px;
@@ -325,6 +326,15 @@ span.plus {
 
 span.minus {
   color: red;
+}
+
+.default-border {
+  border: 1px solid #ddd;
+}
+
+.right-align {
+  float: right;
+  margin: 10px 0 10px 10px;
 }
 
 /* Home */
