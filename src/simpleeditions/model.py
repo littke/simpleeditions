@@ -351,7 +351,8 @@ class Article(db.Model):
         if not user:
             raise ValueError('A valid user must be provided.')
 
-        icon = get_key(icon, Blob)
+        if icon:
+            icon = get_key(icon, Blob)
 
         if not isinstance(message, basestring):
             raise TypeError('Message must be a string.')
