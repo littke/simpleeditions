@@ -19,19 +19,23 @@
 #
 
 import base64
+import cgi
 from datetime import datetime, timedelta
 import hashlib
 import re
+import time
+import urllib
 import uuid
 
-from google.appengine.api import mail, users
+from google.appengine.api import mail, urlfetch, users
 from google.appengine.ext import db
 from google.appengine.ext.db import polymodel
 
+import facebook
 import markdown2
 
 import simpleeditions
-from simpleeditions import settings
+from simpleeditions import settings, utils
 
 def get_key(value, kind, parent=None):
     """Returns a key from value.
@@ -175,6 +179,104 @@ class UserAuthType(polymodel.PolyModel):
 
         """
 
+class FacebookAuth(UserAuthType):
+    """Supports authenticating to the application using Facebook.
+
+    """
+    facebook_uid = db.IntegerProperty(required=True)
+
+    @staticmethod
+    def add_to_user(handler, user):
+        auth = FacebookAuth(
+            parent=user,
+            user=user,
+            facebook_uid=FacebookAuth.get_current_uid(handler))
+        auth.put()
+        return auth
+
+    @staticmethod
+    def get_current_uid(handler):
+        user = facebook.get_user_from_cookie(
+            handler.request.cookies,
+            str(settings.FACEBOOK_APP_ID),
+            settings.FACEBOOK_SECRET)
+
+        if not user:
+            # No Facebook cookie available; check if we're in the process of
+            # authing.
+            code = handler.request.get('code')
+            if code:
+                # Since the redirect_uri is arbitrary, the current URL is used,
+                # without the code parameter. This should always be the same as
+                # the redirect_uri used for the previous request.
+                redirect_uri = re.sub('&code=[^&]+', '', handler.request.url)
+
+                result = urlfetch.fetch(
+                    'https://graph.facebook.com/oauth/access_token'
+                    '?client_id=%s&redirect_uri=%s&client_secret=%s'
+                    '&code=%s' % (settings.FACEBOOK_APP_ID,
+                                  urllib.quote_plus(redirect_uri),
+                                  settings.FACEBOOK_SECRET,
+                                  urllib.quote_plus(code)))
+                # Get a dict of the data returned by Facebook. It will look
+                # like the following example:
+                # {'access_token': '...', 'expires': '5860'}
+                data = dict((k, v[-1]) for k, v in
+                            cgi.parse_qs(result.content).items())
+                # Get the UID of the current Facebook user.
+                graph = facebook.GraphAPI(data['access_token'])
+                user = graph.get_object('me')
+                data['uid'] = user['id']
+
+                # Store the user information in a cookie to avoid doing this
+                # expensive request too often.
+                # This cookie uses the same structure as the one created by the
+                # Facebook JavaScript library.
+                exp = datetime.now() + timedelta(seconds=int(data['expires']))
+                data['expires'] = int(time.mktime(exp.timetuple()))
+                payload = ''.join('%s=%s' % (k, data[k]) for k in
+                                  sorted(data.keys()))
+                sig = hashlib.md5(payload + settings.FACEBOOK_SECRET)
+                data['sig'] = sig.hexdigest()
+                utils.set_cookie(handler,
+                    'fbs_%s' % settings.FACEBOOK_APP_ID,
+                    '"%s"' % urllib.urlencode(data),
+                    exp)
+
+                return int(user['id'])
+
+            raise simpleeditions.ExternalLoginNeededError(
+                'You must log in with Facebook first.')
+
+        return int(user['uid'])
+
+    @staticmethod
+    def get_login_url(return_path='/'):
+        return_url = urllib.quote_plus('http://%s%s' % (
+            settings.DOMAIN, return_path))
+        return ('https://graph.facebook.com/oauth/authorize?client_id=%s'
+                '&redirect_uri=%s' % (settings.FACEBOOK_APP_ID, return_url))
+
+    @staticmethod
+    def log_in(handler):
+        uid = FacebookAuth.get_current_uid(handler)
+
+        auth = FacebookAuth.gql('WHERE facebook_uid = :1', uid).get()
+        if not auth:
+            raise simpleeditions.NotConnectedError(
+                'Facebook user %d is not connected to this application.' % uid)
+
+        # No error so far means the user has been successfully authenticated.
+        return auth
+
+    @staticmethod
+    def validate(handler):
+        uid = FacebookAuth.get_current_uid(handler)
+
+        qry = FacebookAuth.all(keys_only=True).filter('facebook_uid', uid)
+        if qry.get():
+            raise simpleeditions.ConnectError('Facebook user is already in use.')
+
 class LocalAuth(UserAuthType):
     """Supports authenticating to the application using the application
     datastore only.
@@ -280,6 +382,7 @@ class GoogleAuth(UserAuthType):
 
 AUTH_TYPES = dict(
     local=LocalAuth,
+    facebook=FacebookAuth,
     google=GoogleAuth,
 )
 
