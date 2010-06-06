@@ -103,7 +103,7 @@ def connect(handler, auth_type, **kwargs):
             'to your account.')
 
     auth_class = get_auth_class(auth_type)
-    auth_class.connect(user, **kwargs)
+    auth_class.connect(handler, user, **kwargs)
 
 @public
 def create_article(handler, title, content, icon_data=None):
@@ -209,7 +209,7 @@ def get_user_info(handler, id=None):
 @public
 def log_in(handler, auth_type, **kwargs):
     auth_class = get_auth_class(auth_type)
-    auth = auth_class.log_in(**kwargs)
+    auth = auth_class.log_in(handler, **kwargs)
     user = auth.user
 
     # Start a session and create a session cookie.
@@ -229,7 +229,7 @@ def log_out(handler):
 @public
 def register(handler, auth_type, **kwargs):
     auth_class = get_auth_class(auth_type)
-    auth = auth_class.register(**kwargs)
+    auth = auth_class.register(handler, **kwargs)
     start_user_session(handler, auth.user)
     return get_user_dict(auth.user, True)
 
