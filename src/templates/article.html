@@ -28,7 +28,7 @@
                 {% endif %}
                 {% ifequal user.id article.user_id %}
                 {{ article.views }} view{{ article.views|pluralize }}.
-                <a href="/edit/{{ article.id }}">Edit tutorial</a>
+                <a href="/{{ article.id }}/manage/edit">Edit tutorial</a>
                 {% endifequal %}
             </p>
             <p><fb:like layout="button_count"></fb:like></p>

@@ -29,11 +29,11 @@ urlpatterns = (
     (r'/tutorials', view.ArticlesHandler),
 
     # Pages for an article
-    (r'/(\d+)(?:/.*)?', view.ArticleHandler),
-    (r'/edit/(\d+)', view.EditArticleHandler),
+    (r'/(\d+)(?:/[a-z0-9-]+)?', view.ArticleHandler),
+    (r'/(\d+)/manage/edit', view.EditArticleHandler),
+    (r'/(\d+)/manage/revisions/', view.ArticleRevisionsHandler),
+    (r'/(\d+)/manage/revisions/(\d+)', view.ArticleRevisionHandler),
     (r'/new', view.NewArticleHandler),
-    (r'/revisions/(\d+)/', view.ArticleRevisionsHandler),
-    (r'/revisions/(\d+)/(\d+)', view.ArticleRevisionHandler),
 
     # Account control
     (r'/login', view.LoginHandler),
