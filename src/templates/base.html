@@ -1,15 +1,20 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://opengraphprotocol.org/schema/"
+      xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
     <title>{% block page_title %}{{ page_title }}{% endblock %} – SimpleEditions</title>
     <link href="{{ "css/style.css"|static }}" rel="stylesheet" type="text/css" />
     <link href="{{ "images/favicon.ico"|static }}" rel="shortcut icon" />
+    <meta property="fb:app_id" content="{{ FACEBOOK_APP_ID }}" />
+    <meta property="og:site_name" content="SimpleEditions" />
     {% block page_head %}{% endblock %}
 </head>
 <body>
     <div id="headercontainer">
         <div id="header">
-            <a href="/"><img src="{{ "images/logo.png"|static }}" id="logo" /></a>
+            <a href="/"><img alt="SimpleEditions" src="{{ "images/logo.png"|static }}" id="logo" /></a>
             <div id="account">
                 {% if user %}
                 Logged in as <strong>{{ user.display_name }}</strong>. <a href="/logout">Log out</a>

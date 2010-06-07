@@ -1,14 +1,12 @@
 {% extends "base.html" %}
 {% block page_head %}
-<meta property="fb:app_id" content="{{ FACEBOOK_APP_ID }}">
-{% if article.icon %}
-<meta property="og:image" content="http://{{ DOMAIN }}/content/{{ article.icon }}.png">
-{% endif %}
-<meta property="og:site_name" content="SimpleEditions">
-<meta property="og:title" content="{{ article.title }}">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}">
-<link rel="canonical" href="http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}">
+    {% if article.icon %}
+    <meta property="og:image" content="http://{{ DOMAIN }}/content/{{ article.icon }}.png" />
+    {% endif %}
+    <meta property="og:title" content="{{ article.title }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}" />
+    <link rel="canonical" href="http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}" />
 {% endblock %}
 {% block page_title %}{{ article.title }}{% endblock %}
 {% block page_content %}
@@ -41,7 +39,7 @@
 {% endblock %}
 {% block page_foot %}
     <div id="fb-root"></div>
-    <script>
+    <script type="text/javascript">
       window.fbAsyncInit = function() {
         FB.init({appId: '{{ FACEBOOK_APP_ID }}', status: true, cookie: true,
                  xfbml: true});
