@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block page_title %}Write a new tutorial{% endblock %}
+{% block page_title %}Write a new article{% endblock %}
 {% block page_content %}
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
-        <h1>Write a new tutorial</h1>
+        <h1>Write a new article</h1>
         {% if errors %}
         <div class="error">
-            <p>Failed to save the tutorial:</p>
+            <p>Failed to save the article:</p>
             <ul>
             {% for error in errors %}
                 <li>{{ error }}</li>
@@ -15,13 +15,13 @@
         </div>
         {% endif %}
         <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
-            <p>Tutorial title</p>
+            <p>Article title</p>
             <p><input name="title" type="text" /></p>
             <p>Icon (optional)</p>
             <p><input name="icon" type="file" /></p>
-            <p>Tutorial content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
+            <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
             <p><textarea cols="100" name="content" rows="50"></textarea></p>
-            <p><input type="submit" value="Save tutorial" />
+            <p><input type="submit" value="Save article" />
         </form>
     </div>
     <div class="contentbox_bottom"></div>

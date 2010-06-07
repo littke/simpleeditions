@@ -8,11 +8,11 @@
     </div>
     <div class="contentbox_top"></div>
     <div class="contentbox_middle" id="recent_tutorials">
-        <h1>Recent tutorials</h1>
+        <h1>Recent articles</h1>
         {% for article in articles %}
         <div id="tutorial_header">
             {% if article.icon %}
-            <img alt="" src="/content/{{ article.icon }}" />
+            <img alt="" src="/content/{{ article.icon }}.png" />
             {% else %}
             <img alt="" src="{{ "images/badges/badge_spotify.png"|static }}" />
             {% endif %}
@@ -30,7 +30,7 @@
         {% endif %}
         {% endfor %}
         {% if user %}
-        <p><a href="/new">Write a tutorial</a>!</p>
+        <p><a href="/new">Write an article</a>!</p>
         {% endif %}
     </div>
     <div class="contentbox_bottom"></div>

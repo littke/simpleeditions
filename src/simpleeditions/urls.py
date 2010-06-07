@@ -26,7 +26,7 @@ urlpatterns = (
     (r'/(about)', view.StaticPageHandler),
 
     # List of articles
-    (r'/tutorials', view.ArticlesHandler),
+    (r'/articles', view.ArticlesHandler),
 
     # Pages for an article
     (r'/(\d+)(?:/[a-z0-9-]+)?', view.ArticleHandler),
@@ -38,10 +38,10 @@ urlpatterns = (
     # Account control
     (r'/login', view.LoginHandler),
     (r'/logout', view.LogOutHandler),
-    (r'/(?:register|join)', view.RegisterHandler),
+    (r'/join', view.RegisterHandler),
 
     # Uploaded files handler
-    (r'/content/([a-f0-9]{32})', view.BlobHandler),
+    (r'/content/([a-f0-9]{32})(?:\.[a-z0-9]+)?', view.BlobHandler),
 
     # API handler
     (r'/api/(\w+)', view.ApiHandler),

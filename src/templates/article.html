@@ -2,7 +2,7 @@
 {% block page_head %}
 <meta property="fb:app_id" content="{{ FACEBOOK_APP_ID }}">
 {% if article.icon %}
-<meta property="og:image" content="http://{{ DOMAIN }}/content/{{ article.icon }}">
+<meta property="og:image" content="http://{{ DOMAIN }}/content/{{ article.icon }}.png">
 {% endif %}
 <meta property="og:site_name" content="SimpleEditions">
 <meta property="og:title" content="{{ article.title }}">
@@ -16,7 +16,7 @@
     <div class="contentbox_middle">
         <div id="tutorial_header">
             {% if article.icon %}
-            <img alt="" src="/content/{{ article.icon }}" />
+            <img alt="" src="/content/{{ article.icon }}.png" />
             {% else %}
             <img alt="" src="{{ "images/badges/badge_spotify.png"|static }}" />
             {% endif %}
@@ -28,7 +28,7 @@
                 {% endif %}
                 {% ifequal user.id article.user_id %}
                 {{ article.views }} view{{ article.views|pluralize }}.
-                <a href="/{{ article.id }}/manage/edit">Edit tutorial</a>
+                <a href="/{{ article.id }}/manage/edit">Edit article</a>
                 {% endifequal %}
             </p>
             <p><fb:like layout="button_count"></fb:like></p>
