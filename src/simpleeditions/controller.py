@@ -152,8 +152,8 @@ def get_article(handler, id):
     # Aggregate stored views with cached views.
     article.views += cached_views
 
-    # Store views to entity once per hour and reset the cache counter.
-    if datetime.now() - article.last_save > timedelta(hours=1):
+    # Store views to entity once every 10 minutes and reset the cache counter.
+    if datetime.now() - article.last_save > timedelta(minutes=10):
         article.put()
         memcache.delete(views_key)
 
