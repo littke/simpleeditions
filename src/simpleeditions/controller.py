@@ -31,7 +31,7 @@ import os
 from google.appengine.api import images, memcache
 
 import simpleeditions
-from simpleeditions import model, utils
+from simpleeditions import model, settings, utils
 from simpleeditions.utils import public
 
 def create_icon(user, icon_data):
@@ -127,27 +127,33 @@ def get_article(handler, id):
 
     # memcache key used for counting views.
     views_key = 'article:%d:views' % id
+    cached_views = None
 
-    # Don't increment views if user has article id in cookie.
-    try:
-        cookie = handler.request.cookies['articles']
-    except KeyError:
-        cookie = ':'
-    if not (':%d:' % id) in cookie:
-        cookie += ('%d:' % id)
-        utils.set_cookie(handler, 'articles', cookie,
-                         datetime.now() + timedelta(days=7))
-
-        # Id was not in cookie, increment by one if IP has not incremented
-        # 5 or more times before.
-        ip_key = 'article:%d:views:%s' % (id, os.environ['REMOTE_ADDR'])
-        if memcache.get(ip_key) < 5:
-            memcache.incr(ip_key, initial_value=0)
-            cached_views = memcache.incr(views_key, initial_value=0) or 0L
-        else:
-            cached_views = long(memcache.get(views_key) or 0)
+    # Don't count views from certain crawler bots to avoid upping the number of
+    # views for non-human visits.
+    for user_agent in settings.IGNORED_USER_AGENTS:
+        if user_agent in os.environ['HTTP_USER_AGENT']:
+            break
     else:
-        cached_views = long(memcache.get(views_key) or 0)
+        # Don't increment views if user has article id in cookie.
+        try:
+            cookie = handler.request.cookies['articles']
+        except KeyError:
+            cookie = ':'
+        if not (':%d:' % id) in cookie:
+            cookie += ('%d:' % id)
+            utils.set_cookie(handler, 'articles', cookie,
+                             datetime.now() + timedelta(days=7))
+
+            # Id was not in cookie, increment by one if IP has not incremented
+            # 5 or more times before.
+            ip_key = 'article:%d:views:%s' % (id, os.environ['REMOTE_ADDR'])
+            if memcache.get(ip_key) < 5:
+                memcache.incr(ip_key, initial_value=0)
+                cached_views = memcache.incr(views_key, initial_value=0) or 0L
+
+    if cached_views is None:
+        cached_views = long(memcache.get(views_key) or 0L)
 
     # Aggregate stored views with cached views.
     article.views += cached_views

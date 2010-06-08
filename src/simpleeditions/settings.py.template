@@ -34,6 +34,10 @@ FACEBOOK_APP_ID = 0
 # The secret key used to verify Facebook data.
 FACEBOOK_SECRET = ''
 
+# Substrings of the identifiers for user agents that are ignored when measuring
+# human interaction.
+IGNORED_USER_AGENTS = ('facebookexternalhit', 'Googlebot')
+
 # The time that a session should be stored in a user's browser, in days.
 SESSION_TTL = 7
 
