@@ -492,10 +492,22 @@ class Article(db.Model):
         if title:
             if not isinstance(title, basestring):
                 raise TypeError('A valid title must be provided.')
+            if len(title) > 50:
+                raise simpleeditions.SaveArticleError(
+                    'The title of an article may not be longer than 50 '
+                    'characters.')
             slug = title.lower().replace('\'', '')
             slug = re.sub('[^a-z0-9]+', '-', slug).strip('-')
         else:
             slug = None
+
+        if description:
+            if not isinstance(description, basestring):
+                raise TypeError('A valid description must be provided.')
+            if len(description) > 500:
+                raise simpleeditions.SaveArticleError(
+                    'The description of an article may not be longer than 500 '
+                    'characters.')
 
         if content:
             if not isinstance(content, basestring):
@@ -519,10 +531,14 @@ class Article(db.Model):
             article.edits += 1
             article.last_modified = datetime.now()
         else:
-            article = Article(user=user, user_name=user.display_name,
-                              icon=icon, slug=slug, title=title,
-                              description=description, content=content,
-                              html=html)
+            try:
+                article = Article(user=user, user_name=user.display_name,
+                                  icon=icon, slug=slug, title=title,
+                                  description=description, content=content,
+                                  html=html)
+            except db.BadValueError, e:
+                raise simpleeditions.SaveArticleError(
+                    'All required fields must be filled (%s).' % e)
         article.put()
 
         # Create a revision for the current article.
@@ -540,6 +556,10 @@ class Article(db.Model):
             previous = db.get(key)
         else:
             previous = None
+
+        if len(message) > 500:
+            raise simpleeditions.SaveArticleError(
+                'The edit message cannot be any longer than 500 characters.')
 
         # The revision number is used as the key for the revision. This allows
         # well-performing queries for specific revisions.

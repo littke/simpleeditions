@@ -112,7 +112,13 @@ def create_article(handler, title, description, content, icon_data=None):
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to create an article.')
 
-    icon_blob = create_icon(user, icon_data) if icon_data else None
+    try:
+        icon_blob = create_icon(user, icon_data) if icon_data else None
+    except images.BadImageError:
+        raise simpleeditions.SaveArticleError(
+            'The supplied file could not be used as an icon. Try another '
+            'image.')
+
     article = model.Article.create(user, title, description, content,
                                    icon_blob)
 
@@ -259,7 +265,13 @@ def update_article(handler, id, title=None, description=None, content=None,
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to update an article.')
 
-    icon_blob = create_icon(user, icon_data) if icon_data else None
+    try:
+        icon_blob = create_icon(user, icon_data) if icon_data else None
+    except images.BadImageError:
+        raise simpleeditions.SaveArticleError(
+            'The supplied file could not be used as an icon. Try another '
+            'image.')
+
     article = model.Article.update(id, user, title, description, content,
                                    icon_blob, message)
     return get_article_dict(article)
