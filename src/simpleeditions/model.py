@@ -83,6 +83,13 @@ def get_instance(value, model, parent=None):
         raise TypeError('Invalid type (value); expected string, number, Key '
                         'or %s.' % model.__name__)
 
+def get_rpc():
+    """Returns an RPC object tuned for queries that don't have to be 100%
+    accurate. Queries using this RPC object may return up to a couple of
+    seconds out-of-date data.
+
+    """
+    return db.create_rpc(deadline=5, read_policy=db.EVENTUAL_CONSISTENCY)
 
 class User(db.Model):
     display_name = db.StringProperty(required=True)

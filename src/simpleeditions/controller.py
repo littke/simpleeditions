@@ -167,7 +167,8 @@ def get_article(handler, id):
 
 @public
 def get_articles(handler, order, limit, include_content=False):
-    articles = model.Article.all().order(order).fetch(limit)
+    rpc = model.get_rpc()
+    articles = model.Article.all().order(order).fetch(limit, rpc=rpc)
     return [get_article_dict(article, include_content) for article in articles]
 
 @public
@@ -191,8 +192,9 @@ def get_revision(handler, article_id, revision):
 
 @public
 def get_revisions(handler, article_id):
+    rpc = model.get_rpc()
     query = model.ArticleRevision.all_for_article(int(article_id))
-    revisions = query.order('-created').fetch(10)
+    revisions = query.order('-created').fetch(10, rpc=rpc)
     return [get_revision_dict(revision) for revision in revisions]
 
 @public
@@ -202,7 +204,8 @@ def get_user_info(handler, id=None):
 
     """
     if id:
-        user = model.User.get_by_id(id)
+        rpc = model.get_rpc()
+        user = model.User.get_by_id(id, rpc=rpc)
         if not user:
             raise simpleeditions.UserNotFoundError(
                 'Could not find user with id %r.' % id)
