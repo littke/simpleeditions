@@ -85,7 +85,13 @@ class TemplatedRequestHandler(webapp.RequestHandler):
 
     def initialize(self, request, response):
         super(TemplatedRequestHandler, self).initialize(request, response)
-        self.user = controller.get_user_info(self)
+        # The public API for getting the current user is not used here since
+        # we want access to the actual User instance as well as the data dict.
+        self.user_obj = controller.get_current_user(self)
+        if self.user_obj:
+            self.user = controller.get_user_dict(self.user_obj, True)
+        else:
+            self.user = None
 
     def not_found(self, template_name=None, **kwargs):
         """Similar to the render() method, but with a 404 HTTP status code.
@@ -177,10 +183,6 @@ def login_required(func):
     If the user is not logged in, a "Not logged in" message will be shown,
     encouraging the user to log in.
 
-    To avoid losing the user object which is fetched to check whether the
-    user is logged in, it is added as the first argument (after the self
-    argument) to the function.
-
     """
     def wrapper(self, *args, **kwargs):
         if self.user:
@@ -218,7 +220,7 @@ def jsonify(obj):
     else:
         return [jsonify(item) for item in iterator]
 
-class ApiHandler(webapp.RequestHandler):
+class ApiHandler(TemplatedRequestHandler):
     """Opens up the controller module to HTTP requests. Arguments should be
     JSON encoded. Result will be JSON encoded.
 

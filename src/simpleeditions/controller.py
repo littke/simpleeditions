@@ -96,7 +96,7 @@ def connect(handler, auth_type, **kwargs):
     """Adds an authentication method to the current user.
 
     """
-    user = get_current_user(handler)
+    user = handler.user_obj
     if not user:
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to be able to add an authentication method '
@@ -107,7 +107,7 @@ def connect(handler, auth_type, **kwargs):
 
 @public
 def create_article(handler, title, content, icon_data=None):
-    user = get_current_user(handler)
+    user = handler.user_obj
     if not user:
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to create an article.')
@@ -208,9 +208,10 @@ def get_user_info(handler, id=None):
                 'Could not find user with id %r.' % id)
         return get_user_dict(user)
     else:
-        user = get_current_user(handler)
-        if user:
-            return get_user_dict(user, True)
+        # This behavior is slightly backwards, with the controller getting data
+        # from a view-provided value, but it's necessary to avoid getting the
+        # user more than once.
+        return handler.user
 
 @public
 def log_in(handler, auth_type, **kwargs):
@@ -225,7 +226,7 @@ def log_in(handler, auth_type, **kwargs):
 
 @public
 def log_out(handler):
-    user = get_current_user(handler)
+    user = handler.user_obj
     if user:
         user.end_session()
 
@@ -245,7 +246,7 @@ def update_article(handler, id, title=None, content=None, icon_data=None,
     if not isinstance(id, int):
         raise TypeError('Article id must be an integer.')
 
-    user = get_current_user(handler)
+    user = handler.user_obj
     if not user:
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to update an article.')
