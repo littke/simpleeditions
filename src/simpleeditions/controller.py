@@ -220,7 +220,7 @@ def get_user_info(handler, id=None):
 def log_in(handler, auth_type, **kwargs):
     auth_class = get_auth_class(auth_type)
     auth = auth_class.log_in(handler, **kwargs)
-    user = auth.user
+    user = auth.parent()
 
     # Start a session and create a session cookie.
     start_user_session(handler, user)
@@ -238,10 +238,15 @@ def log_out(handler):
 
 @public
 def register(handler, auth_type, **kwargs):
+    if handler.user_obj:
+        raise simpleeditions.RegisterError(
+            'You cannot register while logged in.')
+
     auth_class = get_auth_class(auth_type)
     auth = auth_class.register(handler, **kwargs)
-    start_user_session(handler, auth.user)
-    return get_user_dict(auth.user, True)
+    user = auth.parent()
+    start_user_session(handler, user)
+    return get_user_dict(user, True)
 
 @public
 def update_article(handler, id, title=None, description=None, content=None,

@@ -143,9 +143,6 @@ class UserAuthType(polymodel.PolyModel):
     """Represents a method to authenticate to the application.
 
     """
-    user = db.ReferenceProperty(User, collection_name='auth_types',
-                                required=True)
-
     @staticmethod
     def _register(auth_class, handler, display_name, email=None, *args,
                   **kwargs):
@@ -196,7 +193,6 @@ class FacebookAuth(UserAuthType):
     def add_to_user(handler, user):
         auth = FacebookAuth(
             parent=user,
-            user=user,
             facebook_uid=FacebookAuth.get_current_uid(handler))
         auth.put()
         return auth
@@ -296,7 +292,6 @@ class LocalAuth(UserAuthType):
     def add_to_user(handler, user, auth_email, password):
         auth = LocalAuth(
             parent=user,
-            user=user,
             email=auth_email.strip().lower(),
             password=hashlib.sha256(password).hexdigest())
         auth.put()
@@ -349,7 +344,6 @@ class GoogleAuth(UserAuthType):
     def add_to_user(handler, user):
         auth = GoogleAuth(
             parent=user,
-            user=user,
             google_user=users.get_current_user())
         auth.put()
         return auth
