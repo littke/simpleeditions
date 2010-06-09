@@ -42,7 +42,7 @@ def create_icon(user, icon_data):
 def get_article_dict(article, include_content=False):
     props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
              ('_entity.icon.name', 'icon'), 'created', 'last_modified',
-             'edits', 'views', 'slug', 'title']
+             'edits', 'views', 'slug', 'title', 'description']
     if include_content:
         props += ['content', 'html']
     return utils.get_dict(article, props)
@@ -76,7 +76,7 @@ def get_revision_dict(revision, include_content=False):
              ('_entity.previous.name', 'previous'),
              ('_entity.next.name', 'next'), ('_entity.user.id', 'user_id'),
              'user_name', ('_entity.icon.name', 'icon'), 'created', 'title',
-             'message']
+             'description', 'message']
     if include_content:
         props += ['content', 'html']
     return utils.get_dict(revision, props)
@@ -106,15 +106,15 @@ def connect(handler, auth_type, **kwargs):
     auth_class.connect(handler, user, **kwargs)
 
 @public
-def create_article(handler, title, content, icon_data=None):
+def create_article(handler, title, description, content, icon_data=None):
     user = handler.user_obj
     if not user:
         raise simpleeditions.NotLoggedInError(
             'You must be logged in to create an article.')
 
     icon_blob = create_icon(user, icon_data) if icon_data else None
-
-    article = model.Article.create(user, title, content, icon_blob)
+    article = model.Article.create(user, title, description, content,
+                                   icon_blob)
 
     return get_article_dict(article)
 
@@ -244,8 +244,8 @@ def register(handler, auth_type, **kwargs):
     return get_user_dict(auth.user, True)
 
 @public
-def update_article(handler, id, title=None, content=None, icon_data=None,
-                   message=''):
+def update_article(handler, id, title=None, description=None, content=None,
+                   icon_data=None, message=''):
     if not isinstance(id, int):
         raise TypeError('Article id must be an integer.')
 
@@ -255,7 +255,6 @@ def update_article(handler, id, title=None, content=None, icon_data=None,
             'You must be logged in to update an article.')
 
     icon_blob = create_icon(user, icon_data) if icon_data else None
-
-    article = model.Article.update(id, user, title, content, icon_blob,
-                                   message)
+    article = model.Article.update(id, user, title, description, content,
+                                   icon_blob, message)
     return get_article_dict(article)

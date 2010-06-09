@@ -337,8 +337,8 @@ class EditArticleHandler(TemplatedRequestHandler):
 
             req = self.request
             article = controller.update_article(
-                self, article_id, req.get('title'), req.get('content'),
-                req.get('icon'), req.get('message'))
+                self, article_id, req.get('title'), req.get('description'),
+                req.get('content'), req.get('icon'), req.get('message'))
 
             self.redirect('/%d/%s' % (article_id, article['slug']))
             return
@@ -353,16 +353,7 @@ class EditArticleHandler(TemplatedRequestHandler):
 
 class HomeHandler(TemplatedRequestHandler):
     def get(self):
-        # Get all recent articles
-        articles = controller.get_articles(
-            self, order="-created", limit=5, include_content=True)
-
-        # Only show the first part of the article's content.
-        # Currently stripping at the "<!--more-->" tag, until we decide
-        # on a markdown standard for this tag.
-        for article in articles:
-            pos = article['html'].find('<!--more-->')
-            article['html'] = article['html'][:pos]
+        articles = controller.get_articles(self, order='-created', limit=5)
 
         self.render('home.html',
             articles=articles)
@@ -399,7 +390,8 @@ class NewArticleHandler(TemplatedRequestHandler):
         req = self.request
         try:
             article = controller.create_article(
-                self, req.get('title'), req.get('content'), req.get('icon'))
+                self, req.get('title'), req.get('description'),
+                req.get('content'), req.get('icon'))
 
             self.redirect('/%d/%s' % (article['id'], article['slug']))
             return

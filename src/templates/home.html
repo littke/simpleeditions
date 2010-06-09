@@ -22,7 +22,7 @@
             </p>
         </div>
         <div id="tutorial_content">
-          {{ article.html }}
+          {{ article.description|linebreaks }}
           <a href="/{{ article.id }}/{{ article.slug }}">Read more...</a>
         </div>
         {% if not forloop.last %}

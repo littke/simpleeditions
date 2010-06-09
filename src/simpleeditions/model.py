@@ -447,12 +447,14 @@ class Article(db.Model):
     views = db.IntegerProperty(default=0)
     slug = db.StringProperty(required=True, validator=_validate_slug)
     title = db.StringProperty(required=True)
+    description = db.StringProperty(required=True, multiline=True,
+                                    indexed=False)
     content = db.TextProperty(required=True)
     html = db.TextProperty(required=True)
 
     @staticmethod
-    def _save(user, title=None, content=None, icon=None, message='',
-              article=None):
+    def _save(user, title=None, description=None, content=None, icon=None,
+              message='', article=None):
         """Updates an article with the specified values. If no article is
         supplied, a new article will be created. This method should ALWAYS
         run in a transaction to ensure data consistency.
@@ -478,12 +480,14 @@ class Article(db.Model):
             # at all.
             if title == article.title:
                 title = None
+            if description == article.description:
+                description = None
             if content == article.content:
                 content = None
             if icon == article._entity['icon']:
                 icon = None
 
-            if not title and not content and not icon:
+            if not (title or description or content or icon):
                 raise simpleeditions.SaveArticleError('Nothing to update.')
 
             # Right now, only the owner of the article may update it.
@@ -494,21 +498,15 @@ class Article(db.Model):
         if title:
             if not isinstance(title, basestring):
                 raise TypeError('A valid title must be provided.')
-
             slug = title.lower().replace('\'', '')
             slug = re.sub('[^a-z0-9]+', '-', slug).strip('-')
-        elif not article:
-            raise simpleeditions.SaveArticleError('A title is required.')
         else:
             slug = None
 
         if content:
             if not isinstance(content, basestring):
                 raise TypeError('A valid article body must be provided.')
-
             html = markdown2.markdown(content)
-        elif not article:
-            raise simpleeditions.SaveArticleError('Content is required.')
         else:
             html = None
 
@@ -517,6 +515,8 @@ class Article(db.Model):
             if title:
                 article.title = title
                 article.slug = slug
+            if description:
+                article.description = description
             if content:
                 article.content = content
                 article.html = html
@@ -527,7 +527,8 @@ class Article(db.Model):
         else:
             article = Article(user=user, user_name=user.display_name,
                               icon=icon, slug=slug, title=title,
-                              content=content, html=html)
+                              description=description, content=content,
+                              html=html)
         article.put()
 
         # Create a revision for the current article.
@@ -551,8 +552,8 @@ class Article(db.Model):
         revision = ArticleRevision(
             key_name=str(number), parent=article, previous=previous, user=user,
             user_name=user.display_name, icon=article._entity['icon'],
-            title=article.title, content=article.content, html=article.html,
-            message=message)
+            title=article.title, description=article.description,
+            content=article.content, html=article.html, message=message)
         revision.put()
 
         if previous:
@@ -563,17 +564,19 @@ class Article(db.Model):
         return article
 
     @staticmethod
-    def create(user, title, content, icon=None):
-        return db.run_in_transaction(Article._save, user, title, content, icon)
+    def create(user, title, description, content, icon=None):
+        return db.run_in_transaction(Article._save, user, title, description,
+                                     content, icon)
 
     @staticmethod
-    def update(article, user, title=None, content=None, icon=None, message=''):
+    def update(article, user, title=None, description=None, content=None,
+               icon=None, message=''):
         """Updates the article. An empty/false value for title or content means
         that it should not be changed.
 
         """
-        return db.run_in_transaction(Article._save, user, title, content, icon,
-                                     message, article=article)
+        return db.run_in_transaction(Article._save, user, title, description,
+                                     content, icon, message, article=article)
 
 class ArticleRevision(db.Model):
     previous = db.SelfReferenceProperty(indexed=False, collection_name='_1')
@@ -584,6 +587,8 @@ class ArticleRevision(db.Model):
     icon = db.ReferenceProperty(Blob)
     created = db.DateTimeProperty(auto_now_add=True)
     title = db.StringProperty(required=True, indexed=False)
+    description = db.StringProperty(required=True, multiline=True,
+                                    indexed=False)
     content = db.TextProperty(required=True)
     html = db.TextProperty(required=True)
     message = db.StringProperty(indexed=False)
