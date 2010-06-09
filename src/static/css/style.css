@@ -217,6 +217,12 @@ li {
     font-size: 11px;
 }
 
+#footer ul li.version {
+    color: #777;
+    float: right;
+    padding-right: 25px;
+}
+
 #footer ul li a {
     color: #565656;
 }
