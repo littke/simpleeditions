@@ -36,7 +36,7 @@ FACEBOOK_SECRET = ''
 
 # Substrings of the identifiers for user agents that are ignored when measuring
 # human interaction.
-IGNORED_USER_AGENTS = ('facebookexternalhit', 'Googlebot')
+IGNORED_USER_AGENTS = ('BrowserMob RBU', 'facebookexternalhit', 'Googlebot')
 
 # The time that a session should be stored in a user's browser, in days.
 SESSION_TTL = 7
