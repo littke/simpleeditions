@@ -506,10 +506,14 @@ class Article(db.Model):
             if not (title or description or content or icon):
                 raise simpleeditions.SaveArticleError('Nothing to update.')
 
-            # Right now, only the owner of the article may update it.
-            if article._entity['user'] != user.key():
+            # Only staff and the owner of the article may update it.
+            if (article._entity['user'] != user.key() and
+                not user.can('edit-any-article')):
                 raise simpleeditions.SaveArticleError(
                     'You do not have the permissions to update that article.')
+        elif not user.can('create-article'):
+            raise simpleeditions.SaveArticleError(
+                'You do not have the permissions to create an article.')
 
         if title:
             if not isinstance(title, basestring):

@@ -4,6 +4,9 @@
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
         <h1>Edit article</h1>
+        {% if not user_can_edit %}
+        <p class="warning"><strong>Note:</strong> You may not save any changes this article.</p>
+        {% endif %}
         {% if errors %}
         <div class="error">
             <p>Failed to save the article:</p>
@@ -25,7 +28,7 @@
             <p><textarea cols="100" name="content" rows="50">{{ article.content }}</textarea></p>
             <p>Edit message (optional)</p>
             <input name="message" type="text" />
-            <p><input type="submit" value="Save article" />
+            <p><input{% if not user_can_edit %} disabled="disabled"{% endif %} type="submit" value="Save article" />
         </form>
         <a href="/{{ article.id }}/manage/revisions/">View the edit log</a>
     </div>

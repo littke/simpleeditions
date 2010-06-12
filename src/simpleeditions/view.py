@@ -277,9 +277,12 @@ class ArticleHandler(TemplatedRequestHandler):
             self.not_found()
             return
 
+        user = self.user_obj
         self.render('article.html',
             article=article,
-            page_title=article['title'])
+            page_title=article['title'],
+            user_can_edit=user and (user.key().id() == article['user_id'] or
+                                    user.can('edit-any-article')))
 
 class ArticleRevisionHandler(TemplatedRequestHandler):
     def get(self, article_id, revision):
@@ -330,8 +333,11 @@ class EditArticleHandler(TemplatedRequestHandler):
             self.not_found()
             return
 
+        user = self.user_obj
         self.render('article_edit.html',
-            article=article)
+            article=article,
+            user_can_edit=user and (user.key().id() == article['user_id'] or
+                                    user.can('edit-any-article')))
 
     @login_required
     def post(self, article_id):

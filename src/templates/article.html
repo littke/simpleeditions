@@ -24,10 +24,10 @@
                 {% if article.edits %}
                 <span title="Updated {{ article.last_modified }}. Originally created {{ article.created|timesince }} ago.">Last updated {{ article.last_modified|timesince }} ago.</span>
                 {% endif %}
-                {% ifequal user.id article.user_id %}
+                {% if user_can_edit %}
                 {{ article.views }} view{{ article.views|pluralize }}.
                 <a href="/{{ article.id }}/manage/edit">Edit article</a>
-                {% endifequal %}
+                {% endif %}
             </p>
             <p><fb:like layout="button_count"></fb:like></p>
         </div>
