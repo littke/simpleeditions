@@ -95,10 +95,20 @@ class User(db.Model):
     display_name = db.StringProperty(required=True)
     email = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
-    status = db.StringProperty(choices=('inactive', 'member', 'admin'),
+    status = db.StringProperty(choices=('inactive', 'member', 'contributor',
+                                        'staff', 'admin'),
                                default='member')
     session = db.StringProperty()
     expires = db.DateTimeProperty()
+
+    # Actions that require permissions paired with functions that return True
+    # if the supplied user has the permission.
+    actions = {
+        'create-article':
+            lambda user: user.status in ('contributor', 'staff', 'admin'),
+        'edit-any-article':
+            lambda user: user.status in ('staff', 'admin'),
+    }
 
     @staticmethod
     def get_session(session_id):
@@ -119,6 +129,15 @@ class User(db.Model):
         user.put()
         return user
 
+    def can(self, action):
+        """Returns True if the user has permission to do the specified action.
+
+        """
+        try:
+            return self.actions[action](self)
+        except KeyError:
+            raise ValueError('Unknown action %s.' % action)
+
     def end_session(self):
         """Removes a session from the database, effectively logging the user
         out.
@@ -138,6 +157,7 @@ class User(db.Model):
         # Calculate the date/time for when the session will expire.
         self.expires = datetime.now() + timedelta(days=settings.SESSION_TTL)
         self.put()
+
 
 class UserAuthType(polymodel.PolyModel):
     """Represents a method to authenticate to the application.

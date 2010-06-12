@@ -85,7 +85,12 @@ def get_user_dict(user, include_private_values=False):
     props = ['key.id', 'display_name', 'created', 'status']
     if include_private_values:
         props += ['email']
-    return utils.get_dict(user, props)
+    user_dict = utils.get_dict(user, props)
+
+    for action in user.actions:
+        user_dict['can_%s' % action.replace('-', '_')] = user.can(action)
+
+    return user_dict
 
 def start_user_session(handler, user):
     user.start_session()
