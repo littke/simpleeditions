@@ -369,7 +369,13 @@ class LoginHandler(TemplatedRequestHandler):
         self.render('login.html')
 
     def post(self):
-        if not do_auth(self, controller.log_in):
+        try:
+            if not do_auth(self, controller.log_in):
+                return
+        except (simpleeditions.LogInError,
+                simpleeditions.NotConnectedError), e:
+            self.add_error(str(e))
+            self.render('login.html')
             return
 
         # User successfully logged in.
@@ -417,7 +423,13 @@ class RegisterHandler(TemplatedRequestHandler):
         self.render('register.html')
 
     def post(self):
-        if not do_auth(self, controller.register):
+        try:
+            if not do_auth(self, controller.register):
+                return
+        except (simpleeditions.RegisterError,
+                simpleeditions.ConnectError), e:
+            self.add_error(str(e))
+            self.render('register.html')
             return
 
         # Renew user info, since the user just registered and should be logged

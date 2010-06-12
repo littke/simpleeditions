@@ -230,7 +230,23 @@ def get_user_info(handler, id=None):
 @public
 def log_in(handler, auth_type, **kwargs):
     auth_class = get_auth_class(auth_type)
-    auth = auth_class.log_in(handler, **kwargs)
+
+    # Check whether user provided values that are not supported by the chosen
+    # auth type.
+    code = auth_class.log_in.func_code
+    args = code.co_varnames[1:code.co_argcount]
+    extra_args = set(kwargs) - set(args)
+    if extra_args:
+        raise simpleeditions.LogInError(
+            'Got unexpected values: %s' % ', '.join(extra_args))
+
+    try:
+        auth = auth_class.log_in(handler, **kwargs)
+    except TypeError:
+        raise simpleeditions.LogInError(
+            'Could not log in with the provided information. Make sure all '
+            'values (%s) were supplied.' % ', '.join(args))
+
     user = auth.parent()
 
     # Start a session and create a session cookie.
@@ -254,7 +270,23 @@ def register(handler, auth_type, **kwargs):
             'You cannot register while logged in.')
 
     auth_class = get_auth_class(auth_type)
-    auth = auth_class.register(handler, **kwargs)
+
+    # Check whether user provided values that are not supported by the chosen
+    # auth type.
+    code = auth_class.register.func_code
+    args = code.co_varnames[2:code.co_argcount]
+    extra_args = set(kwargs) - set(args)
+    if extra_args:
+        raise simpleeditions.RegisterError(
+            'Got unexpected values: %s' % ', '.join(extra_args))
+
+    try:
+        auth = auth_class.register(handler, **kwargs)
+    except TypeError:
+        raise simpleeditions.RegisterError(
+            'Could not register with the provided information. Make sure all '
+            'values (%s) were supplied.' % ', '.join(args))
+
     user = auth.parent()
     start_user_session(handler, user)
     return get_user_dict(user, True)

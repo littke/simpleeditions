@@ -386,7 +386,8 @@ class GoogleAuth(UserAuthType):
         auth = GoogleAuth.gql('WHERE google_user = :1', google_user).get()
         if not auth:
             raise simpleeditions.NotConnectedError(
-                'That Google user is not connected to this application.')
+                'Google user %s is not connected to this application. '
+                'You need to register.' % google_user.nickname())
 
         # No error so far means the user has been successfully authenticated.
         return auth
@@ -399,7 +400,8 @@ class GoogleAuth(UserAuthType):
                 'You must log in with Google first.')
         qry = GoogleAuth.all(keys_only=True).filter('google_user', google_user)
         if qry.get():
-            raise simpleeditions.ConnectError('Google user is already in use.')
+            raise simpleeditions.ConnectError(
+                'Google user %s is already in use.' % google_user.nickname())
 
 AUTH_TYPES = dict(
     local=LocalAuth,
