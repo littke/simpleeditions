@@ -85,13 +85,7 @@ class TemplatedRequestHandler(webapp.RequestHandler):
 
     def initialize(self, request, response):
         super(TemplatedRequestHandler, self).initialize(request, response)
-        # The public API for getting the current user is not used here since
-        # we want access to the actual User instance as well as the data dict.
-        self.user_obj = controller.get_current_user(self)
-        if self.user_obj:
-            self.user = controller.get_user_dict(self.user_obj, True)
-        else:
-            self.user = None
+        self.update_user()
 
     def not_found(self, template_name=None, **kwargs):
         """Similar to the render() method, but with a 404 HTTP status code.
@@ -129,6 +123,15 @@ class TemplatedRequestHandler(webapp.RequestHandler):
 
         path = os.path.join(settings.TEMPLATE_DIR, template_name)
         self.response.out.write(template.render(path, kwargs))
+
+    def update_user(self):
+        # The public API for getting the current user is not used here since
+        # we want access to the actual User instance as well as the data dict.
+        self.user_obj = controller.get_current_user(self)
+        if self.user_obj:
+            self.user = controller.get_user_dict(self.user_obj, True)
+        else:
+            self.user = None
 
 
 def do_auth(handler, auth_func, *args):
@@ -419,7 +422,7 @@ class RegisterHandler(TemplatedRequestHandler):
 
         # Renew user info, since the user just registered and should be logged
         # in.
-        self.user = controller.get_user_info(self)
+        self.update_user()
         self.render('register_success.html')
 
 _static_pages = ['about.html']
