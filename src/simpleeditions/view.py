@@ -130,6 +130,9 @@ class TemplatedRequestHandler(webapp.RequestHandler):
         self.user_obj = controller.get_current_user(self)
         if self.user_obj:
             self.user = controller.get_user_dict(self.user_obj, True)
+            logging.info('Logged in user: %s (id: %d)' % (
+                self.user_obj.display_name,
+                self.user_obj.key().id()))
         else:
             self.user = None
 
