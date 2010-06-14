@@ -29,6 +29,7 @@ from datetime import datetime, timedelta
 import os
 
 from google.appengine.api import images, memcache
+from google.appengine.runtime import apiproxy_errors
 
 import simpleeditions
 from simpleeditions import model, settings, utils
@@ -124,8 +125,13 @@ def create_article(handler, title, description, content, icon_data=None):
             'The supplied file could not be used as an icon. Try another '
             'image.')
 
-    article = model.Article.create(user, title, description, content,
-                                   icon_blob)
+    try:
+        article = model.Article.create(user, title, description, content,
+                                       icon_blob)
+    except apiproxy_errors.CapabilityDisabledError:
+        raise simpleeditions.SaveArticleError(
+            'Sorry, the database is currently in maintenance. Try again '
+            'later.')
 
     return get_article_dict(article)
 
@@ -275,8 +281,14 @@ def update_article(handler, id, title=None, description=None, content=None,
             'The supplied file could not be used as an icon. Try another '
             'image.')
 
-    article = model.Article.update(id, user, title, description, content,
-                                   icon_blob, message)
+    try:
+        article = model.Article.update(id, user, title, description, content,
+                                       icon_blob, message)
+    except apiproxy_errors.CapabilityDisabledError:
+        raise simpleeditions.SaveArticleError(
+            'Sorry, the database is currently in maintenance. Try again '
+            'later.')
+
     return get_article_dict(article)
 
 @public
@@ -325,6 +337,11 @@ def view_article(handler, id):
 
         # Store views to entity once every 10 minutes and reset the cache
         # counter.
-        if datetime.now() - article.last_save > timedelta(minutes=10):
-            article.put()
-            memcache.delete(views_key)
+        try:
+            if datetime.now() - article.last_save > timedelta(minutes=10):
+                article.put()
+                memcache.delete(views_key)
+        # In maintenance periods, avoid throwing errors when viewing an
+        # article.
+        except apiproxy_errors.CapabilityDisabledError:
+            pass
