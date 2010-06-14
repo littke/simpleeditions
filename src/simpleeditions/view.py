@@ -275,7 +275,7 @@ class ApiHandler(TemplatedRequestHandler):
 class ArticleHandler(TemplatedRequestHandler):
     def get(self, article_id):
         try:
-            article = controller.get_article(self, int(article_id))
+            article = controller.get_article(self, int(article_id), True, True)
         except (TypeError, ValueError, simpleeditions.NotFoundError):
             self.not_found()
             return
