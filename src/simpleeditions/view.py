@@ -328,7 +328,7 @@ class EditArticleHandler(TemplatedRequestHandler):
     @login_required
     def get(self, article_id):
         try:
-            article = controller.get_article(self, int(article_id))
+            article = controller.get_article(self, int(article_id), True)
         except (TypeError, ValueError, simpleeditions.NotFoundError):
             self.not_found()
             return

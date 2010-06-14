@@ -130,51 +130,16 @@ def create_article(handler, title, description, content, icon_data=None):
     return get_article_dict(article)
 
 @public
-def get_article(handler, id):
+def get_article(handler, id, include_content=False, view=False):
     article = model.Article.get_by_id(id)
     if not article:
         raise simpleeditions.ArticleNotFoundError(
             'Could not find article with id %r.' % id)
 
-    # memcache key used for counting views.
-    views_key = 'article:%d:views' % id
-    cached_views = None
+    if view:
+        view_article(handler, article)
 
-    # Don't count views from certain crawler bots to avoid upping the number of
-    # views for non-human visits.
-    for user_agent in settings.IGNORED_USER_AGENTS:
-        if user_agent in os.environ['HTTP_USER_AGENT']:
-            break
-    else:
-        # Don't increment views if user has article id in cookie.
-        try:
-            cookie = handler.request.cookies['articles']
-        except KeyError:
-            cookie = ':'
-        if not (':%d:' % id) in cookie:
-            cookie += ('%d:' % id)
-            utils.set_cookie(handler, 'articles', cookie,
-                             datetime.now() + timedelta(days=7))
-
-            # Id was not in cookie, increment by one if IP has not incremented
-            # 5 or more times before.
-            ip_key = 'article:%d:views:%s' % (id, os.environ['REMOTE_ADDR'])
-            if memcache.get(ip_key) < 5:
-                memcache.incr(ip_key, initial_value=0)
-                cached_views = memcache.incr(views_key, initial_value=0) or 0L
-
-    if cached_views is None:
-        cached_views = long(memcache.get(views_key) or 0L)
-
-    # Aggregate stored views with cached views.
-    article.views += cached_views
-
-    # Store views to entity once every 10 minutes and reset the cache counter.
-    if datetime.now() - article.last_save > timedelta(minutes=10):
-        article.put()
-        memcache.delete(views_key)
-
-    return get_article_dict(article, True)
+    return get_article_dict(article, include_content)
 
 @public
 def get_articles(handler, order, limit, include_content=False):
@@ -313,3 +278,53 @@ def update_article(handler, id, title=None, description=None, content=None,
     article = model.Article.update(id, user, title, description, content,
                                    icon_blob, message)
     return get_article_dict(article)
+
+@public
+def view_article(handler, id):
+    if isinstance(id, model.Article):
+        article = id
+        id = article.key().id()
+    elif isinstance(id, (int, long)):
+        article = None
+    else:
+        raise TypeError('Invalid article id.')
+
+    # Don't count views from certain crawler bots to avoid upping the number of
+    # views for non-human visits.
+    for user_agent in settings.IGNORED_USER_AGENTS:
+        if user_agent in os.environ['HTTP_USER_AGENT']:
+            return
+
+    # memcache key used for counting views.
+    views_key = 'article:%d:views' % id
+    cached_views = None
+
+    # Don't increment views if user has article id in cookie.
+    try:
+        cookie = handler.request.cookies['articles']
+    except KeyError:
+        cookie = ':'
+    if not (':%d:' % id) in cookie:
+        cookie += ('%d:' % id)
+        utils.set_cookie(handler, 'articles', cookie,
+                         datetime.now() + timedelta(days=7))
+
+        # Id was not in cookie, increment by one if IP has not incremented
+        # 5 or more times before.
+        ip_key = 'article:%d:views:%s' % (id, os.environ['REMOTE_ADDR'])
+        if memcache.get(ip_key) < 5:
+            memcache.incr(ip_key, initial_value=0)
+            cached_views = memcache.incr(views_key, initial_value=0) or 0L
+
+    if cached_views is None:
+        cached_views = long(memcache.get(views_key) or 0L)
+
+    if article:
+        # Aggregate stored views with cached views.
+        article.views += cached_views
+
+        # Store views to entity once every 10 minutes and reset the cache
+        # counter.
+        if datetime.now() - article.last_save > timedelta(minutes=10):
+            article.put()
+            memcache.delete(views_key)
