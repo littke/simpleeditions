@@ -108,6 +108,8 @@ class User(db.Model):
             lambda user: user.status in ('contributor', 'staff', 'admin'),
         'edit-any-article':
             lambda user: user.status in ('staff', 'admin'),
+        'upload-files':
+            lambda user: user.status in ('contributor', 'staff', 'admin'),
     }
 
     @staticmethod
