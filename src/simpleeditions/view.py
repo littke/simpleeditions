@@ -283,7 +283,6 @@ class ArticleHandler(TemplatedRequestHandler):
         user = self.user_obj
         self.render('article.html',
             article=article,
-            page_title=article['title'],
             user_can_edit=user and (user.key().id() == article['user_id'] or
                                     user.can('edit-any-article')))
 
