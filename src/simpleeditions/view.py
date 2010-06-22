@@ -19,7 +19,7 @@
 #
 
 import base64
-import datetime
+from datetime import datetime, timedelta
 import logging
 import os.path
 import sys
@@ -203,7 +203,7 @@ def jsonify(obj):
 
     """
     # Return datetimes as a UNIX timestamp (seconds since 1970).
-    if isinstance(obj, datetime.datetime):
+    if isinstance(obj, datetime):
         return int(time.mktime(obj.timetuple()))
 
     # Since strings are iterable, return early for them.
@@ -323,7 +323,15 @@ class BlobHandler(webapp.RequestHandler):
         if not blob:
             res.set_status(404)
             return
+
+        cache_time = timedelta(days=365)
+        expires = datetime.now() + cache_time
+
+        res.headers['Expires'] = expires.strftime('%a, %d %b %Y %H:%M:%S GMT')
+        res.headers['Cache-Control'] = 'public, max-age=%d' % (
+            cache_time.days * 86400 + cache_time.seconds)
         res.headers['Content-Type'] = blob.content_type
+
         res.out.write(blob.data)
 
 class EditArticleHandler(TemplatedRequestHandler):
