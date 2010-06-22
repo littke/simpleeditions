@@ -33,5 +33,6 @@ def static(path):
     The path should always be relative to the static path.
 
     """
-    return '%s/%s?%s' % (settings.STATIC_PATH, path, settings.VERSION_HASH)
-
+    return '/s/%(version)s/%(path)s' % {
+        'path': path,
+        'version': settings.VERSION_HASH}

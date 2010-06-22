@@ -22,7 +22,6 @@ import hashlib
 import os
 
 DOMAIN = 'www.example.com'
-STATIC_PATH = '/static'
 TEMPLATE_DIR = 'templates'
 
 ERROR_TEMPLATE = '500.html'

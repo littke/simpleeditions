@@ -103,20 +103,21 @@ class TemplatedRequestHandler(webapp.RequestHandler):
 
         The template will have the following variables available, in addition
         to the ones specified in the render() method:
+        - ANALYTICS_TRACKER_ID: The Google Analytics tracker id.
         - DEBUG: Whether the application is running in debug mode.
         - DOMAIN: The domain of the application.
-        - STATIC_PATH: The path under which all static content lies.
+        - FACEBOOK_APP_ID: The Facebook application id.
         - VERSION: The version of the application.
         - errors: A (possibly empty) list of errors that have occurred.
         - request: The current request object. Has attributes such as 'path',
                    'query_string', etc.
+        - user: Information about the currently logged in user (if any).
 
         """
         kwargs.update({'ANALYTICS_TRACKER_ID': settings.ANALYTICS_TRACKER_ID,
                        'DEBUG': settings.DEBUG,
                        'DOMAIN': settings.DOMAIN,
                        'FACEBOOK_APP_ID': settings.FACEBOOK_APP_ID,
-                       'STATIC_PATH': settings.STATIC_PATH,
                        'VERSION': settings.VERSION,
                        'errors': self._errors,
                        'request': self.request,

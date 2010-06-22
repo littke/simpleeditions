@@ -129,7 +129,7 @@ li {
 /* Header */
 
 #headercontainer {
-    background: url('/static/images/header_bg.png') repeat-x;
+    background: url('images/header_bg.png') repeat-x;
     background-color: black;
 }
 
@@ -168,7 +168,7 @@ li {
 
 #navigation {
     text-align: left;
-    background: url('/static/images/nav_bg.png') no-repeat;
+    background: url('images/nav_bg.png') no-repeat;
     height: 50px;
     width: 860px;
     margin: 15px auto 0;
@@ -201,7 +201,7 @@ li {
 #footer {
     margin: 0 auto 20px;
     width: 860px;
-    background: url('/static/images/footer.png') no-repeat;
+    background: url('images/footer.png') no-repeat;
     text-align: left;
     height: 53px;
 }
@@ -259,11 +259,11 @@ li {
 .contentbox_top {
     height: 15px;
     margin: 10px 6px 0 0;
-    background: url('/static/images/contentbox_top.png') no-repeat;
+    background: url('images/contentbox_top.png') no-repeat;
 }
 
 .contentbox_middle {
-    background: url('/static/images/contentbox_middle.png') repeat-y;
+    background: url('images/contentbox_middle.png') repeat-y;
     padding: 12px 65px 1px 25px;
     margin: 0 6px 0 0;
 }
@@ -271,7 +271,7 @@ li {
 .contentbox_bottom {
     height: 14px;
     margin: 0 6px 10px 0;
-    background: url('/static/images/contentbox_bottom.png') no-repeat;
+    background: url('images/contentbox_bottom.png') no-repeat;
 }
 
 span.highlight {

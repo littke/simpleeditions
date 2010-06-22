@@ -6,8 +6,9 @@ api_version: 1
 default_expiration: "365d"
 
 handlers:
-- url: /static
-  static_dir: static
+- url: /s/[a-f0-9]{5}/(.*)
+  static_files: static/\1
+  upload: static/.*
 
 - url: /favicon.ico
   static_files: static/images/favicon.ico
