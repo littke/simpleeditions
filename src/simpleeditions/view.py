@@ -112,7 +112,8 @@ class TemplatedRequestHandler(webapp.RequestHandler):
                    'query_string', etc.
 
         """
-        kwargs.update({'DEBUG': settings.DEBUG,
+        kwargs.update({'ANALYTICS_TRACKER_ID': settings.ANALYTICS_TRACKER_ID,
+                       'DEBUG': settings.DEBUG,
                        'DOMAIN': settings.DOMAIN,
                        'FACEBOOK_APP_ID': settings.FACEBOOK_APP_ID,
                        'STATIC_PATH': settings.STATIC_PATH,

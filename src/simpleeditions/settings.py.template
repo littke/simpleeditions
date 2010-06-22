@@ -28,6 +28,9 @@ TEMPLATE_DIR = 'templates'
 ERROR_TEMPLATE = '500.html'
 NOT_FOUND_TEMPLATE = '404.html'
 
+# The Google Analytics tracker id.
+ANALYTICS_TRACKER_ID = ''
+
 # The id of the Facebook application that represents the site. Used for
 # Facebook Connect and Open Graph support.
 FACEBOOK_APP_ID = 0
