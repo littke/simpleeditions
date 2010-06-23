@@ -362,12 +362,9 @@ span.minus {
 }
 
 /* Register */
-#register h1, #registration_form, #subtext {
-  text-align: center;
-}
 
 #register form {
-  margin: 10px auto;
+  margin: 10px 0;
   text-align: left;
   width: 230px;
 }
