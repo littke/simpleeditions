@@ -26,7 +26,7 @@
           <a href="/{{ article.id }}/{{ article.slug }}">Read more...</a>
         </div>
         {% if not forloop.last %}
-        <img src="{{ "images/divider.png"|static }}" class="divider-margin" />
+        <img src="{{ "images/divider.png"|static }}" class="divider-margin" alt="-- Divider --"/>
         {% endif %}
         {% endfor %}
         {% if user.can_create_article %}
