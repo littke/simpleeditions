@@ -9,6 +9,9 @@
     <link href="{{ "images/favicon.ico"|static }}" rel="shortcut icon" />
     <meta property="fb:app_id" content="{{ FACEBOOK_APP_ID }}" />
     <meta property="og:site_name" content="SimpleEditions" />
+    <meta name="keywords" content="{% block keywords %}tutorial, tutorials, how to, do it yourself, simpleedition{% endblock %}" />
+    <meta name="description" content="{% block description %}SimpleEditions is a tutorial website aiming to make it easy to learn by focusing on 
+    high quality articles. We're an open source project that anyone can enjoy and participate in.{% endblock %}" />
     {% block page_head %}{% endblock %}
 </head>
 <body>
