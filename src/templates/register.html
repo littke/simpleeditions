@@ -2,8 +2,9 @@
 {% block page_title %}Join{% endblock %}
 {% block page_content %}
     <div class="contentbox_top"></div>
-    <div class="contentbox_middle">
-        <h1>Join</h1>
+    <div class="contentbox_middle" id="register">
+        <h1>Join SimpleEditions</h1>
+        <p id="subtext">Good choice, matey.</p>
         {% if errors %}
         <div class="error">
             <p>Failed to register:</p>
@@ -14,24 +15,24 @@
             </ul>
         </div>
         {% endif %}
-        <form action="{{ request.path }}" method="post">
-            <p>To create an account, enter your desired user details below.</p>
-            <p>Display name</p>
-            <p><input name="display_name" type="text" /></p>
-            <p>E-mail (optional)</p>
-            <p><input name="email" type="text" /></p>
-            <p>Authentication type</p>
-            <p><select name="auth_type">
-                <option value="local">Local</option>
-                <option value="facebook">Facebook</option>
-                <option value="google">Google</option>
-            </select></p>
-            <p>E-mail for login (local only)</p>
-            <p><input name="auth_email" type="text" /></p>
-            <p>Password (local only)</p>
-            <p><input name="password" type="password" /></p>
-            <p><input type="submit" value="Join" />
-        </form>
+        <div id="registration_form">
+            <form action="{{ request.path }}" method="post">
+            <input type="hidden" name="auth_type" value="local"/>
+                <label for="display_name">Display name</label>
+                <input id="display_name" name="display_name" type="text" />
+
+                <label for="auth_email">E-mail</label>
+                <input id="auth_email" name="auth_email" type="text" />
+                <div class="explanation">Won't be seen by others. Only used for login.</div>
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" />
+                <div class="explanation">At least 6 characters.</div>
+
+                <input class="breaker" id="submit" type="submit" value="Join" />
+                <div class="breaker"></div>
+            </form>
+        </div>
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}

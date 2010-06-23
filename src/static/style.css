@@ -360,3 +360,35 @@ span.minus {
 #edit_message {
   width: 200px;
 }
+
+/* Register */
+#register h1, #registration_form, #subtext {
+  text-align: center;
+}
+
+#register form {
+  margin: 10px auto;
+  text-align: left;
+  width: 230px;
+}
+
+#register label {
+  display: block;
+  margin: 5px 0 0 5px;
+  font-size: 13px;
+}
+
+#register input {
+  width: 220px;
+}
+
+input#submit {
+  width: 228px;
+  margin-top: 10px;
+}
+
+#register div.explanation {
+  font-size: 9px;
+  margin-left: 5px;
+  color: #555;
+}
