@@ -22,6 +22,7 @@ import base64
 import cgi
 from datetime import datetime, timedelta
 import hashlib
+import os
 import re
 import time
 import urllib
@@ -308,14 +309,16 @@ class LocalAuth(UserAuthType):
 
     """
     email = db.EmailProperty(required=True)
-    password = db.StringProperty(required=True, indexed=False)
+    password = db.ByteStringProperty(required=True, indexed=False)
 
     @staticmethod
     def add_to_user(handler, user, auth_email, password):
+        password = password.encode('utf-8')
+        salt = os.urandom(4)
         auth = LocalAuth(
             parent=user,
             email=auth_email.strip().lower(),
-            password=hashlib.sha256(password).hexdigest())
+            password=salt + hashlib.sha256(password + salt).digest())
         auth.put()
         return auth
 
@@ -329,7 +332,11 @@ class LocalAuth(UserAuthType):
         """
         email = auth_email.strip().lower()
         auth = LocalAuth.gql('WHERE email = :1', email).get()
-        if not auth or hashlib.sha256(password).hexdigest() != auth.password:
+        if auth:
+            password = password.encode('utf-8')
+            salt = auth.password[:4]
+            hash = auth.password[4:]
+        if not auth or hashlib.sha256(password + salt).digest() != hash:
             raise simpleeditions.LogInError(
                 'Wrong e-mail address or password.')
 
