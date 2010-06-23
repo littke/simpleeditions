@@ -10,7 +10,7 @@
     <div class="contentbox_middle" id="recent_tutorials">
         <h1>Recent articles</h1>
         {% for article in articles %}
-        <div id="tutorial_header">
+        <div class="tutorial_header">
             {% if article.icon %}
             <img alt="" src="/content/{{ article.icon }}.png" />
             {% else %}
@@ -21,7 +21,7 @@
                 By {{ article.user_name }}. 
             </p>
         </div>
-        <div id="tutorial_content">
+        <div class="tutorial_content">
           {{ article.description|linebreaks }}
           <a href="/{{ article.id }}/{{ article.slug }}">Read more...</a>
         </div>

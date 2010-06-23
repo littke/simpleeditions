@@ -280,43 +280,43 @@ span.highlight {
 
 /* Tutorials */
 
-#tutorial_header {
+.tutorial_header {
     height: 52px;
     margin-bottom: 20px;
 }
 
-#tutorial_header img {
+.tutorial_header img {
     float: left;
     margin-right: 14px;
 }
 
-#tutorial_header h1, #tutorial_header h2 {
+.tutorial_header h1, .tutorial_header h2 {
     margin-bottom: 0;
     padding-top: 4px;
     margin-right: 14px;
 }
 
-#tutorial_header p {
+.tutorial_header p {
     margin: 1px 0 0;
 }
 
 /* When the titles are in a list, we use h2s instead of h1s */
-#tutorial_header h2 {
+.tutorial_header h2 {
     padding-top: 5px;
 }
 
-#tutorial_header h2 + p {
+.tutorial_header h2 + p {
     margin-top: -3px;
 }
 
 
-#tutorial_header .article_extra {
+.tutorial_header .article_extra {
     color: #777;
     float: left;
     padding-right: 10px;
 }
 
-#tutorial_content {
+.tutorial_content {
     width: 600px;
 }
 
