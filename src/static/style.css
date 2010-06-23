@@ -355,3 +355,8 @@ span.minus {
 #recent_tutorials h2 a:hover {
     border-bottom: 1px black dotted;
 }
+
+/* Edit article */
+#edit_message {
+  width: 200px;
+}

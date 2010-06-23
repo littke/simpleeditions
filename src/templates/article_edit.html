@@ -3,34 +3,36 @@
 {% block page_content %}
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
-        <h1>Edit article</h1>
-        {% if not user_can_edit %}
-        <p class="warning"><strong>Note:</strong> You may not save any changes this article.</p>
-        {% endif %}
-        {% if errors %}
-        <div class="error">
-            <p>Failed to save the article:</p>
-            <ul>
-            {% for error in errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-            </ul>
+        <div id="edit_article">
+            <h1>Edit article</h1>
+            {% if not user_can_edit %}
+            <p class="warning"><strong>Note:</strong> You may not save any changes this article.</p>
+            {% endif %}
+            {% if errors %}
+            <div class="error">
+                <p>Failed to save the article:</p>
+                <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
+                <p>Article title</p>
+                <p><input name="title" type="text" value="{{ article.title }}" /></p>
+                <p>Icon (optional)</p>
+                <p><input name="icon" type="file" /></p>
+                <p>Article description</p>
+                <p><textarea cols="100" name="description" rows="5">{{ article.description }}</textarea></p>
+                <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
+                <p><textarea cols="100" name="content" rows="35">{{ article.content }}</textarea></p>
+                <p>Edit message (optional)</p>
+                <input name="message" id="edit_message" type="text" />
+                <p><input{% if not user_can_edit %} disabled="disabled"{% endif %} type="submit" value="Save article" />
+            </form>
+            <a href="/{{ article.id }}/manage/revisions/">View the edit log</a>
         </div>
-        {% endif %}
-        <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
-            <p>Article title</p>
-            <p><input name="title" type="text" value="{{ article.title }}" /></p>
-            <p>Icon (optional)</p>
-            <p><input name="icon" type="file" /></p>
-            <p>Article description</p>
-            <p><textarea cols="100" name="description" rows="5">{{ article.description }}</textarea></p>
-            <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
-            <p><textarea cols="100" name="content" rows="50">{{ article.content }}</textarea></p>
-            <p>Edit message (optional)</p>
-            <input name="message" type="text" />
-            <p><input{% if not user_can_edit %} disabled="disabled"{% endif %} type="submit" value="Save article" />
-        </form>
-        <a href="/{{ article.id }}/manage/revisions/">View the edit log</a>
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}
