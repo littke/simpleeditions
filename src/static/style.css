@@ -171,7 +171,7 @@ li {
     background: url('images/nav_bg.png') no-repeat;
     height: 50px;
     width: 860px;
-    margin: 15px auto 0;
+    margin: 13px auto 0;
 }
 
 #navigation ul {
@@ -258,7 +258,7 @@ li {
 
 .contentbox_top {
     height: 15px;
-    margin: 10px 6px 0 0;
+    margin: 4px 6px 0 0;
     background: url('images/contentbox_top.png') no-repeat;
 }
 
