@@ -243,7 +243,6 @@ li {
 
 #intro_box {
     margin-top: 5px;
-    margin-bottom: -5px;
     color: white;
     position: relative;
     height: 147px;
@@ -270,7 +269,7 @@ li {
 
 .contentbox_bottom {
     height: 14px;
-    margin: 0 6px 10px 0;
+    margin: 0 6px 0 0;
     background: url('images/contentbox_bottom.png') no-repeat;
 }
 
