@@ -360,25 +360,45 @@ span.minus {
   width: 200px;
 }
 
-/* Register */
+/* Register and join */
 
-#register form {
-  margin: 10px 0;
-  text-align: left;
-  width: 230px;
+#login #thirdpartylogin input {
+  width: 105px;
+  float: left;
+  margin-left: 10px;
+  background-position: 11px 5px;
+  padding-left: 32px;
 }
 
-#register label {
+#google-submit {
+  background: url('images/logos/google_16x16.png') no-repeat;
+  width: 98px !important;
+}
+
+#facebook-submit {
+  background: url('images/logos/facebook_16x16.png') no-repeat;
+}
+
+#login #thirdpartylogin p {
+  font-size: 10px;
+  color: #555;
+}
+
+#login form, #register form {
+  margin: 10px 0;
+}
+
+#login label, #register label {
   display: block;
-  margin: 5px 0 0 5px;
+  margin: 5px 0 0 0;
   font-size: 13px;
 }
 
-#register input {
+#login input, #register input {
   width: 220px;
 }
 
-input#submit {
+#login input#submit, #register input#submit {
   width: 228px;
   margin-top: 10px;
 }

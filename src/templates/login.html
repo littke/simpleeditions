@@ -2,7 +2,7 @@
 {% block page_title %}Log in{% endblock %}
 {% block page_content %}
     <div class="contentbox_top"></div>
-    <div class="contentbox_middle">
+    <div class="contentbox_middle" id="login">
         <h1>Log in</h1>
         {% if errors %}
         <div class="error">
@@ -15,19 +15,30 @@
         </div>
         {% endif %}
         <form action="{{ request.path }}{% if request.query_string %}?{{ request.query_string }}{% endif %}" method="post">
-            <p>To log in, enter your credentials below.</p>
-            <p>Authentication type</p>
-            <p><select name="auth_type">
-                <option value="local">Local</option>
-                <option value="facebook">Facebook</option>
-                <option value="google">Google</option>
-            </select></p>
-            <p>E-mail for login (local only)</p>
-            <p><input name="auth_email" type="text" /></p>
-            <p>Password (local only)</p>
-            <p><input name="password" type="password" /></p>
-            <p><input type="submit" value="Log in" />
+            <input type="hidden" name="auth_type" value="local"/>
+            <label for="auth_email">E-mail</label>
+            <input id="auth_email" name="auth_email" type="text" tabindex="1" />
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" tabindex="2" />
+
+            <p><input class="breaker" id="submit" type="submit" value="Log in" tabindex="3" /></p>
+            <div class="breaker"></div>
         </form>
+        <img src="{{ "images/divider.png"|static }}" class="divider-margin" alt="-- Divider --"/>
+        <div id="thirdpartylogin">
+            <p>Or login with:</p>
+            <form action="{{ request.path }}{% if request.query_string %}?{{ request.query_string }}{% endif %}" method="post">
+            <input type="hidden" name="auth_type" value="google"/>
+                <input type="submit" id="google-submit" value="Google" />
+            </form>
+            <form action="{{ request.path }}{% if request.query_string %}?{{ request.query_string }}{% endif %}" method="post">
+            <input type="hidden" name="auth_type" value="facebook"/>
+                <input type="submit" id="facebook-submit" value="Facebook" />
+            </form>
+            <div class="breaker"></div>
+            <p>This only works if you created your SimpleEditions account via Facebook or Google.</p>
+        </div>
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}
