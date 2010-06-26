@@ -366,12 +366,18 @@ class LocalAuth(UserAuthType):
 
     @staticmethod
     def add_to_user(handler, user, password):
+        if not user.email:
+            raise simpleeditions.ConnectError(
+                'You must enter an e-mail when using password authentication.')
+
         password = password.encode('utf-8')
         salt = os.urandom(4)
+
         auth = LocalAuth(
             parent=user,
             password=salt + hashlib.sha256(password + salt).digest())
         auth.put()
+
         return auth
 
     @staticmethod
