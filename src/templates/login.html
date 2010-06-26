@@ -29,11 +29,11 @@
         <div id="thirdpartylogin">
             <p>Or login with:</p>
             <form action="{{ request.path }}{% if request.query_string %}?{{ request.query_string }}{% endif %}" method="post">
-            <input type="hidden" name="auth_type" value="google"/>
+                <input type="hidden" name="auth_type" value="google"/>
                 <input type="submit" id="google-submit" value="Google" />
             </form>
             <form action="{{ request.path }}{% if request.query_string %}?{{ request.query_string }}{% endif %}" method="post">
-            <input type="hidden" name="auth_type" value="facebook"/>
+                <input type="hidden" name="auth_type" value="facebook"/>
                 <input type="submit" id="facebook-submit" value="Facebook" />
             </form>
             <div class="breaker"></div>
