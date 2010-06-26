@@ -16,8 +16,8 @@
         {% endif %}
         <form action="{{ request.path }}{% if request.query_string %}?{{ request.query_string }}{% endif %}" method="post">
             <input type="hidden" name="auth_type" value="local"/>
-            <label for="auth_email">E-mail</label>
-            <input id="auth_email" name="auth_email" type="text" tabindex="1" />
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="text" tabindex="1" />
 
             <label for="password">Password</label>
             <input id="password" name="password" type="password" tabindex="2" />

@@ -359,59 +359,46 @@ class LocalAuth(UserAuthType):
     datastore only.
 
     """
-    email = db.EmailProperty(required=True)
     password = db.ByteStringProperty(required=True, indexed=False)
 
     @staticmethod
-    def add_to_user(handler, user, auth_email, password):
+    def add_to_user(handler, user, password):
         password = password.encode('utf-8')
         salt = os.urandom(4)
         auth = LocalAuth(
             parent=user,
-            email=auth_email.strip().lower(),
             password=salt + hashlib.sha256(password + salt).digest())
         auth.put()
         return auth
 
     @staticmethod
-    def log_in(handler, auth_email, password):
+    def log_in(handler, email, password):
         """Retrieves a LocalAuth instance, based on an e-mail and a password.
 
         The SHA-256 hash of the password must match the hash stored in the
         datastore, otherwise an exception will be raised.
 
         """
-        email = auth_email.strip().lower()
-        auth = LocalAuth.gql('WHERE email = :1', email).get()
-        if auth:
-            password = password.encode('utf-8')
-            salt = auth.password[:4]
-            hash = auth.password[4:]
-        if not auth or hashlib.sha256(password + salt).digest() != hash:
-            raise simpleeditions.LogInError(
-                'Wrong e-mail address or password.')
-
-        # No error so far means the user has been successfully authenticated.
-        return auth
+        email = email.strip().lower()
+        user = User.all(keys_only=True).filter('email', email).get()
+        if user:
+            auth = LocalAuth.all().ancestor(user).get()
+            if auth:
+                password = password.encode('utf-8')
+                salt = auth.password[:4]
+                hash = auth.password[4:]
+                if hashlib.sha256(password + salt).digest() == hash:
+                    return auth
+        raise simpleeditions.LogInError(
+            'Wrong e-mail address or password.')
 
     @staticmethod
-    def validate(handler, auth_email, password):
-        if not isinstance(auth_email, basestring):
-            raise TypeError('The e-mail address must be supplied as a string.')
+    def validate(handler, password):
         if not isinstance(password, basestring):
             raise TypeError('The password must be supplied as a string.')
 
-        email = auth_email.strip().lower()
-
-        qry = LocalAuth.all(keys_only=True).filter('email', email)
-        if qry.get():
-            raise simpleeditions.ConnectError('E-mail is already in use.')
-
-        if not mail.is_email_valid(email):
-            raise ValueError('A valid e-mail address must be provided.')
-
-        if len(password) < 4:
-            raise ValueError('Password must be at least 4 characters long.')
+        if len(password) < 6:
+            raise ValueError('Password must be at least 6 characters long.')
 
 class GoogleAuth(UserAuthType):
     """Supports authenticating to the application using Google's own
