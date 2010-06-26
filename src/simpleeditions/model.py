@@ -134,7 +134,7 @@ class User(db.Model):
         return query.get()
 
     @staticmethod
-    def register(display_name, email=None):
+    def create(display_name, email=None):
         user = User(
             display_name=display_name,
             canonical_name=User.get_canonical_name(display_name))
@@ -209,7 +209,7 @@ class UserAuthType(polymodel.PolyModel):
     @staticmethod
     def _register(auth_class, handler, display_name, email=None, *args,
                   **kwargs):
-        user = User.register(display_name, email)
+        user = User.create(display_name, email)
         auth = auth_class.add_to_user(handler, user, *args, **kwargs)
         return auth
 
@@ -268,20 +268,31 @@ class FacebookAuth(UserAuthType):
 
     @staticmethod
     def add_to_user(handler, user):
+        data = FacebookAuth.get_data(handler)
+
         auth = FacebookAuth(
             parent=user,
-            facebook_uid=FacebookAuth.get_current_uid(handler))
+            facebook_uid=int(data['uid']))
         auth.put()
+
+        if not user.email and 'email' in data:
+            user.email = data['email']
+            user.put()
+
         return auth
 
     @staticmethod
-    def get_current_uid(handler):
-        user = facebook.get_user_from_cookie(
+    def get_data(handler):
+        data = facebook.get_user_from_cookie(
             handler.request.cookies,
             str(settings.FACEBOOK_APP_ID),
             settings.FACEBOOK_SECRET)
 
-        if not user:
+        # This part of the code ensures that the Facebook e-mail is available.
+        # This can cause double authentication if the Facebook connect button
+        # is implemented (since it does not include e-mail in the cookie).
+        # This part needs to be improved if that happens.
+        if not data or not 'email' in data:
             # No Facebook cookie available; check if we're in the process of
             # authing.
             code = handler.request.get('code')
@@ -294,10 +305,11 @@ class FacebookAuth(UserAuthType):
                 result = urlfetch.fetch(
                     'https://graph.facebook.com/oauth/access_token'
                     '?client_id=%s&redirect_uri=%s&client_secret=%s'
-                    '&code=%s' % (settings.FACEBOOK_APP_ID,
-                                  urllib.quote_plus(redirect_uri),
-                                  settings.FACEBOOK_SECRET,
-                                  urllib.quote_plus(code)))
+                    '&code=%s&scope=email' % (
+                        settings.FACEBOOK_APP_ID,
+                        urllib.quote_plus(redirect_uri),
+                        settings.FACEBOOK_SECRET,
+                        urllib.quote_plus(code)))
                 # Get a dict of the data returned by Facebook. It will look
                 # like the following example:
                 # {'access_token': '...', 'expires': '5860'}
@@ -306,6 +318,7 @@ class FacebookAuth(UserAuthType):
                 # Get the UID of the current Facebook user.
                 graph = facebook.GraphAPI(data['access_token'])
                 user = graph.get_object('me')
+                data['email'] = user['email']
                 data['uid'] = user['id']
 
                 # Store the user information in a cookie to avoid doing this
@@ -322,13 +335,11 @@ class FacebookAuth(UserAuthType):
                     'fbs_%s' % settings.FACEBOOK_APP_ID,
                     '"%s"' % urllib.urlencode(data),
                     exp)
+            else:
+                raise simpleeditions.ExternalLoginNeededError(
+                    'You must log in with Facebook first.')
 
-                return int(user['id'])
-
-            raise simpleeditions.ExternalLoginNeededError(
-                'You must log in with Facebook first.')
-
-        return int(user['uid'])
+        return data
 
     @staticmethod
     def get_login_url(return_path='/'):
@@ -351,7 +362,8 @@ class FacebookAuth(UserAuthType):
 
     @staticmethod
     def validate(handler):
-        uid = FacebookAuth.get_current_uid(handler)
+        data = FacebookAuth.get_data(handler)
+        uid = int(data['uid'])
 
         qry = FacebookAuth.all(keys_only=True).filter('facebook_uid', uid)
         if qry.get():
@@ -419,10 +431,17 @@ class GoogleAuth(UserAuthType):
 
     @staticmethod
     def add_to_user(handler, user):
+        google_user = users.get_current_user()
+
         auth = GoogleAuth(
             parent=user,
-            google_user=users.get_current_user())
+            google_user=google_user)
         auth.put()
+
+        if not user.email:
+            user.email = google_user.email()
+            user.put()
+
         return auth
 
     @staticmethod
