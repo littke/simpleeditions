@@ -398,7 +398,8 @@ class LocalAuth(UserAuthType):
             raise TypeError('The password must be supplied as a string.')
 
         if len(password) < 6:
-            raise ValueError('Password must be at least 6 characters long.')
+            raise simpleeditions.ConnectError(
+                'Password must be at least 6 characters long.')
 
 class GoogleAuth(UserAuthType):
     """Supports authenticating to the application using Google's own
