@@ -20,15 +20,15 @@
             {% endif %}
             <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
                 <p>Article title</p>
-                <p><input name="title" type="text" value="{{ article.title }}" /></p>
+                <p><input name="title" type="text" value="{% if request.POST.title %}{{ request.POST.title }}{% else %}{{ article.title }}{% endif %}" /></p>
                 <p>Icon (optional)</p>
                 <p><input name="icon" type="file" /></p>
                 <p>Article description</p>
-                <p><textarea cols="100" name="description" rows="5">{{ article.description }}</textarea></p>
+                <p><textarea cols="100" name="description" rows="5">{% if request.POST.description %}{{ request.POST.description }}{% else %}{{ article.description }}{% endif %}</textarea></p>
                 <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
-                <p><textarea cols="100" name="content" rows="35">{{ article.content }}</textarea></p>
+                <p><textarea cols="100" name="content" rows="35">{% if request.POST.content %}{{ request.POST.content }}{% else %}{{ article.content }}{% endif %}</textarea></p>
                 <p>Edit message (optional)</p>
-                <input name="message" id="edit_message" type="text" />
+                <input name="message" id="edit_message" type="text" value="{{ request.POST.message }}" />
                 <p><input{% if not user_can_edit %} disabled="disabled"{% endif %} type="submit" value="Save article" />
             </form>
             <a href="/{{ article.id }}/manage/revisions/">View the edit log</a>

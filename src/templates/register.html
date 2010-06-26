@@ -19,10 +19,10 @@
             <form action="{{ request.path }}" method="post">
                 <input type="hidden" name="auth_type" value="local"/>
                 <label for="display_name">Display name</label>
-                <input id="display_name" name="display_name" type="text" />
+                <input id="display_name" name="display_name" type="text" value="{{ request.POST.display_name }}" />
 
                 <label for="email">E-mail</label>
-                <input id="email" name="email" type="text" />
+                <input id="email" name="email" type="text" value="{{ request.POST.email }}" />
                 <div class="explanation">Won't be seen by others. Only used for login.</div>
 
                 <label for="password">Password</label>
