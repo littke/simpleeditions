@@ -94,7 +94,8 @@ def get_rpc():
 
 class User(db.Model):
     display_name = db.StringProperty(required=True)
-    email = db.StringProperty()
+    canonical_name = db.StringProperty(required=True)
+    email = db.EmailProperty()
     created = db.DateTimeProperty(auto_now_add=True)
     status = db.StringProperty(choices=('inactive', 'member', 'contributor',
                                         'staff', 'admin'),
@@ -114,6 +115,14 @@ class User(db.Model):
     }
 
     @staticmethod
+    def get_canonical_name(display_name):
+        """Returns a version of the display name that can be used for case-
+        and space-insensitive comparisons.
+
+        """
+        return display_name.lower().replace(' ', '')
+
+    @staticmethod
     def get_session(session_id):
         """Retrieves a User instance for the currently logged in user.
 
@@ -126,11 +135,42 @@ class User(db.Model):
 
     @staticmethod
     def register(display_name, email=None):
-        user = User(display_name=display_name)
+        user = User(
+            display_name=display_name,
+            canonical_name=User.get_canonical_name(display_name))
         if email:
             user.email = email
         user.put()
         return user
+
+    @staticmethod
+    def validate(display_name, email=None):
+        if len(display_name) < 2:
+            raise simpleeditions.RegisterError(
+                'Display name must be at least 2 characters long.')
+
+        if len(display_name) > 25:
+            raise simpleeditions.RegisterError(
+                'Display name may not be any longer than 25 characters.')
+
+        if not re.match('[a-zA-Z0-9 ]+$', display_name):
+            raise simpleeditions.RegisterError(
+                'The display name can only contain letters, numbers and '
+                'spaces.')
+
+        qry = User.all(keys_only=True).filter('display_name',
+            User.get_canonical_name(display_name))
+        if qry.get():
+            raise simpleeditions.RegisterError(
+                'That display name, or a very similar one, already exists.')
+
+        if email:
+            qry = User.all(keys_only=True).filter('email', email)
+            if qry.get():
+                raise simpleeditions.RegisterError('E-mail is already in use.')
+
+            if not mail.is_email_valid(email):
+                raise ValueError('A valid e-mail address must be provided.')
 
     def can(self, action):
         """Returns True if the user has permission to do the specified action.
@@ -192,6 +232,17 @@ class UserAuthType(polymodel.PolyModel):
         not be created if connecting fails.
 
         """
+        if not isinstance(display_name, basestring):
+            raise TypeError('Display name must be a string.')
+
+        if not isinstance(email, basestring):
+            raise TypeError('E-mail must be a string.')
+
+        # Clean display name and e-mail address.
+        display_name = re.sub(' {2,}', ' ', display_name.strip())
+        email = email.strip().lower()
+
+        User.validate(display_name, email)
         cls.validate(handler, *args, **kwargs)
         return db.run_in_transaction(UserAuthType._register,
             cls, handler, display_name, email, *args, **kwargs)
