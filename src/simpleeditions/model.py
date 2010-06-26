@@ -235,12 +235,15 @@ class UserAuthType(polymodel.PolyModel):
         if not isinstance(display_name, basestring):
             raise TypeError('Display name must be a string.')
 
-        if not isinstance(email, basestring):
-            raise TypeError('E-mail must be a string.')
+        if email:
+            if not isinstance(email, basestring):
+                raise TypeError('E-mail must be a string.')
 
-        # Clean display name and e-mail address.
+            # Normalize e-mail address.
+            email = email.strip().lower()
+
+        # Clean display name.
         display_name = re.sub(' {2,}', ' ', display_name.strip())
-        email = email.strip().lower()
 
         User.validate(display_name, email)
         cls.validate(handler, *args, **kwargs)
