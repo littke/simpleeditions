@@ -137,22 +137,22 @@ li {
     width: 860px;
     margin: 0 auto;
     text-align: left;
-    height: 108px;
+    height: 103px;
     position: relative;
 }
 
 #logo {
     float: left;
     position: relative;
-    top: 30px;
-    left: 27px;
+    top: 27px;
+    left: 25px;
 }
 
 #account {
     float: left;
     position: absolute;
     right: 20px;
-    top: 54px;
+    top: 49px;
     color: #ddd;
 }
 
