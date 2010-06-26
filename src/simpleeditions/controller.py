@@ -245,7 +245,8 @@ def register(handler, auth_type, **kwargs):
     # Check whether user provided values that are not supported by the chosen
     # auth type.
     code = auth_class.register.func_code
-    extra_args = set(kwargs) - set(code.co_varnames[2:code.co_argcount])
+    args = code.co_varnames[2:code.co_argcount]
+    extra_args = set(kwargs) - set(args)
     code = auth_class.add_to_user.func_code
     extra_args -= set(code.co_varnames[2:code.co_argcount])
     if extra_args:
