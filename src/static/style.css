@@ -357,54 +357,55 @@ span.minus {
 
 /* Edit article */
 #edit_message {
-  width: 200px;
+    width: 200px;
 }
 
-/* Register and join */
+/* Register and login */
 
-#login #thirdpartylogin input {
-  width: 105px;
-  float: left;
-  margin-left: 10px;
-  background-position: 11px 5px;
-  padding-left: 32px;
+#third_party input {
+    width: 105px;
+    float: left;
+    margin-left: 10px;
+    background-position: 11px 5px;
+    padding-left: 32px;
 }
 
 #google-submit {
-  background: url('images/logos/google_16x16.png') no-repeat;
-  width: 98px !important;
+    background: url('images/logos/google_16x16.png') no-repeat;
+    width: 98px !important;
 }
 
 #facebook-submit {
-  background: url('images/logos/facebook_16x16.png') no-repeat;
+    background: url('images/logos/facebook_16x16.png') no-repeat;
+    width: 111px !important;
 }
 
-#login #thirdpartylogin p {
-  font-size: 10px;
-  color: #555;
+#third_party p {
+    font-size: 10px;
+    color: #555;
 }
 
 #login form, #register form {
-  margin: 10px 0;
+    margin: 10px 0;
 }
 
 #login label, #register label {
-  display: block;
-  margin: 5px 0 0 0;
-  font-size: 13px;
+    display: block;
+    margin: 5px 0 0 0;
+    font-size: 13px;
 }
 
 #login input, #register input {
-  width: 220px;
+    width: 220px;
 }
 
 #login input#submit, #register input#submit {
-  width: 228px;
-  margin-top: 10px;
+    width: 228px;
+    margin-top: 10px;
 }
 
 #register div.explanation {
-  font-size: 9px;
-  margin-left: 5px;
-  color: #555;
+    font-size: 9px;
+    margin-left: 5px;
+    color: #555;
 }
