@@ -225,6 +225,15 @@ class UserAuthType(polymodel.PolyModel):
         cls.validate(handler, *args, **kwargs)
         return cls.add_to_user(handler, user, *args, **kwargs)
 
+    @staticmethod
+    def get_user_info(handler, *args, **kwargs):
+        """Returns a tuple of display name and e-mail available from the
+        authentication service. If either is unavailable, an empty string is
+        used instead.
+
+        """
+        return ('', '')
+
     @classmethod
     def register(cls, handler, display_name, email=None, *args, **kwargs):
         """Attempts to register a new user and connect it with this
@@ -267,6 +276,28 @@ class FacebookAuth(UserAuthType):
     facebook_uid = db.IntegerProperty(required=True)
 
     @staticmethod
+    def _add_user_data(data):
+        graph = facebook.GraphAPI(data['access_token'])
+        user = graph.get_object('me')
+        data['uid'] = user['id']
+        data['name'] = user['name']
+        if 'email' in user:
+            data['email'] = user['email']
+
+        # This cookie uses the same structure as the one created by the
+        # Facebook JavaScript library.
+        exp = datetime.now() + timedelta(seconds=int(data['expires']))
+        data['expires'] = int(time.mktime(exp.timetuple()))
+        payload = ''.join('%s=%s' % (k, data[k]) for k in
+                          sorted(data.keys()))
+        sig = hashlib.md5(payload + settings.FACEBOOK_SECRET)
+        data['sig'] = sig.hexdigest()
+        utils.set_cookie(handler,
+            'fbs_%s' % settings.FACEBOOK_APP_ID,
+            '"%s"' % urllib.urlencode(data),
+            exp)
+
+    @staticmethod
     def add_to_user(handler, user):
         data = FacebookAuth.get_data(handler)
 
@@ -275,24 +306,16 @@ class FacebookAuth(UserAuthType):
             facebook_uid=int(data['uid']))
         auth.put()
 
-        if not user.email and 'email' in data:
-            user.email = data['email']
-            user.put()
-
         return auth
 
     @staticmethod
-    def get_data(handler):
+    def get_data(handler, extra_data=False):
         data = facebook.get_user_from_cookie(
             handler.request.cookies,
             str(settings.FACEBOOK_APP_ID),
             settings.FACEBOOK_SECRET)
 
-        # This part of the code ensures that the Facebook e-mail is available.
-        # This can cause double authentication if the Facebook connect button
-        # is implemented (since it does not include e-mail in the cookie).
-        # This part needs to be improved if that happens.
-        if not data or not 'email' in data:
+        if not data:
             # No Facebook cookie available; check if we're in the process of
             # authing.
             code = handler.request.get('code')
@@ -316,28 +339,12 @@ class FacebookAuth(UserAuthType):
                 data = dict((k, v[-1]) for k, v in
                             cgi.parse_qs(result.content).items())
                 # Get the UID of the current Facebook user.
-                graph = facebook.GraphAPI(data['access_token'])
-                user = graph.get_object('me')
-                data['email'] = user['email']
-                data['uid'] = user['id']
-
-                # Store the user information in a cookie to avoid doing this
-                # expensive request too often.
-                # This cookie uses the same structure as the one created by the
-                # Facebook JavaScript library.
-                exp = datetime.now() + timedelta(seconds=int(data['expires']))
-                data['expires'] = int(time.mktime(exp.timetuple()))
-                payload = ''.join('%s=%s' % (k, data[k]) for k in
-                                  sorted(data.keys()))
-                sig = hashlib.md5(payload + settings.FACEBOOK_SECRET)
-                data['sig'] = sig.hexdigest()
-                utils.set_cookie(handler,
-                    'fbs_%s' % settings.FACEBOOK_APP_ID,
-                    '"%s"' % urllib.urlencode(data),
-                    exp)
+                FacebookAuth._add_user_data(data)
             else:
                 raise simpleeditions.ExternalLoginNeededError(
                     'You must log in with Facebook first.')
+        elif extra_data and ('name' not in data):
+            FacebookAuth._add_user_data(data)
 
         return data
 
@@ -349,8 +356,14 @@ class FacebookAuth(UserAuthType):
                 '&redirect_uri=%s' % (settings.FACEBOOK_APP_ID, return_url))
 
     @staticmethod
+    def get_user_info(handler):
+        data = FacebookAuth.get_data(handler, True)
+        return (data['name'], data['email'] if 'email' in data else '')
+
+    @staticmethod
     def log_in(handler):
-        uid = FacebookAuth.get_current_uid(handler)
+        data = FacebookAuth.get_data(handler)
+        uid = int(data['uid'])
 
         auth = FacebookAuth.gql('WHERE facebook_uid = :1', uid).get()
         if not auth:
@@ -447,6 +460,11 @@ class GoogleAuth(UserAuthType):
     @staticmethod
     def get_login_url(return_path='/'):
         return users.create_login_url(return_path)
+
+    @staticmethod
+    def get_user_info(handler):
+        google_user = users.get_current_user()
+        return (google_user.nickname(), google_user.email())
 
     @staticmethod
     def log_in(handler):
