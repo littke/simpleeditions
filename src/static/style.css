@@ -409,3 +409,9 @@ span.minus {
     margin-left: 5px;
     color: #555;
 }
+
+#register #third_party {
+    float: right;
+    margin-right: 130px;
+    width: 300px;
+}

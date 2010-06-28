@@ -35,6 +35,9 @@ from google.appengine.ext.webapp import template
 import simpleeditions
 from simpleeditions import controller, settings, utils
 
+class RedirectionNeeded(simpleeditions.Error):
+    """Raised when a redirection is needed for an authentication to finish."""
+
 class TemplatedRequestHandler(webapp.RequestHandler):
     """Simplifies handling requests. In particular, it simplifies working
     with templates, with its render() method.
@@ -144,9 +147,10 @@ def do_auth(handler, auth_func, *args):
 
     This function expects at least auth_type to be defined as a form value.
 
-    Returns True when authentication succeeded and False when authentication
-    failed but the handler has been redirected to another URL where the
-    authentication can be completed. In other cases, an exception is raised.
+    Returns result of authentication when it succeeded and raises the exception
+    RedirectionNeeded when authentication failed but the handler has been
+    redirected to another URL where the authentication can be completed. In
+    other cases, an exception explaining the error is raised.
 
     """
     req = handler.request
@@ -160,7 +164,7 @@ def do_auth(handler, auth_func, *args):
     # Call the auth function with the requested auth type.
     auth_type = kwargs.pop('auth_type')
     try:
-        auth_func(handler, auth_type, **kwargs)
+        result = auth_func(handler, auth_type, **kwargs)
     except simpleeditions.ExternalLoginNeededError:
         # The authentication method requires that the user be directed to an
         # external URL.
@@ -178,9 +182,9 @@ def do_auth(handler, auth_func, *args):
             auth_type,
             path)
         handler.redirect(login_url)
-        return False
+        raise RedirectionNeeded('This page needs to be redirected.')
 
-    return True
+    return result
 
 def login_required(func):
     """A decorator that ensures that the user is logged in to the application.
@@ -388,8 +392,9 @@ class LoginHandler(TemplatedRequestHandler):
 
     def post(self):
         try:
-            if not do_auth(self, controller.log_in):
-                return
+            do_auth(self, controller.log_in)
+        except RedirectionNeeded:
+            return
         except (simpleeditions.LogInError,
                 simpleeditions.NotConnectedError), e:
             self.add_error(str(e))
@@ -438,16 +443,42 @@ class RegisterHandler(TemplatedRequestHandler):
         if self.do_get_post():
             return
 
-        self.render('register.html')
+        self.render('register.html', auth_type='local')
 
     def post(self):
+        req = self.request
+        auth_type = req.get('auth_type')
+        auth_name = controller.get_auth_name(self, auth_type)
+
         try:
-            if not do_auth(self, controller.register):
+            if auth_type == 'local' or req.get('display_name'):
+                do_auth(self, controller.register)
+            else:
+                # Get user data from external services so that it can be used
+                # to pre-fill the registration form.
+                display_name, email = do_auth(
+                    self,
+                    controller.get_auth_user_info)
+
+                self.render('register.html',
+                    auth_name=auth_name,
+                    auth_type=auth_type,
+                    auth_display_name=display_name,
+                    auth_email=email)
                 return
+        except RedirectionNeeded:
+            return
         except (simpleeditions.RegisterError,
                 simpleeditions.ConnectError), e:
             self.add_error(str(e))
-            self.render('register.html')
+
+            if auth_type == 'local':
+                self.render('register.html')
+            else:
+                self.render('register.html',
+                    auth_name=auth_name,
+                    auth_type=auth_type)
+
             return
 
         # Renew user info, since the user just registered and should be logged

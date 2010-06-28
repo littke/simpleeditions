@@ -154,6 +154,11 @@ def get_articles(handler, order, limit, include_content=False):
     return [get_article_dict(article, include_content) for article in articles]
 
 @public
+def get_auth_user_info(handler, auth_type, **kwargs):
+    auth_class = get_auth_class(auth_type)
+    return auth_class.get_user_info(handler, **kwargs)
+
+@public
 def get_auth_name(handler, auth_type):
     auth_class = get_auth_class(auth_type)
     return auth_class.name
