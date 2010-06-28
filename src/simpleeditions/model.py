@@ -472,6 +472,9 @@ class GoogleAuth(UserAuthType):
     @staticmethod
     def get_user_info(handler):
         google_user = users.get_current_user()
+        if not google_user:
+            raise simpleeditions.ExternalLoginNeededError(
+                'You must log in with Google first.')
         return (google_user.nickname(), google_user.email())
 
     @staticmethod
