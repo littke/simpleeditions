@@ -13,7 +13,7 @@
                 <tr>
                     <td><a href="/{{ article.id }}/{{ article.slug }}">{{ article.title }}</a></td>
                     <td>{{ article.user_name }}</td>
-                    <td>{{ article.last_modified }}</td>
+                    <td>{{ article.last_modified|timesince }} ago</td>
                 </tr>
             {% endfor %}
             </tbody>
