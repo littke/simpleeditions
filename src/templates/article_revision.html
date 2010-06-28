@@ -16,7 +16,7 @@
                 {% if revision.next %}<a href="{{ revision.next }}">Next revision &rarr;</a>{% endif %}
             </p>
         </div>
-        {{ revision.html }}
+        {{ revision.html|safe }}
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}
