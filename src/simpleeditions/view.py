@@ -472,12 +472,9 @@ class RegisterHandler(TemplatedRequestHandler):
                 simpleeditions.ConnectError), e:
             self.add_error(str(e))
 
-            if auth_type == 'local':
-                self.render('register.html')
-            else:
-                self.render('register.html',
-                    auth_name=auth_name,
-                    auth_type=auth_type)
+            self.render('register.html',
+                auth_name=auth_name,
+                auth_type=auth_type)
 
             return
 
