@@ -206,6 +206,8 @@ class UserAuthType(polymodel.PolyModel):
     """Represents a method to authenticate to the application.
 
     """
+    name = 'Unknown'
+
     @staticmethod
     def _register(auth_class, handler, display_name, email=None, *args,
                   **kwargs):
@@ -273,6 +275,8 @@ class FacebookAuth(UserAuthType):
     """Supports authenticating to the application using Facebook.
 
     """
+    name = 'Facebook'
+
     facebook_uid = db.IntegerProperty(required=True)
 
     @staticmethod
@@ -387,6 +391,8 @@ class LocalAuth(UserAuthType):
     datastore only.
 
     """
+    name = 'SimpleEditions'
+
     password = db.ByteStringProperty(required=True, indexed=False)
 
     @staticmethod
@@ -440,6 +446,8 @@ class GoogleAuth(UserAuthType):
     authentication system for App Engine.
 
     """
+    name = 'Google'
+
     google_user = db.UserProperty(required=True)
 
     @staticmethod

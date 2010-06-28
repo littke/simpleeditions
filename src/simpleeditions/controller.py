@@ -154,6 +154,11 @@ def get_articles(handler, order, limit, include_content=False):
     return [get_article_dict(article, include_content) for article in articles]
 
 @public
+def get_auth_name(handler, auth_type):
+    auth_class = get_auth_class(auth_type)
+    return auth_class.name
+
+@public
 def get_login_url(handler, auth_type, return_url='/'):
     try:
         auth_class = model.AUTH_TYPES[auth_type]
