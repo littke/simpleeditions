@@ -280,7 +280,7 @@ class FacebookAuth(UserAuthType):
     facebook_uid = db.IntegerProperty(required=True)
 
     @staticmethod
-    def _add_user_data(data):
+    def _add_user_data(handler, data):
         graph = facebook.GraphAPI(data['access_token'])
         user = graph.get_object('me')
         data['uid'] = user['id']
@@ -343,12 +343,12 @@ class FacebookAuth(UserAuthType):
                 data = dict((k, v[-1]) for k, v in
                             cgi.parse_qs(result.content).items())
                 # Get the UID of the current Facebook user.
-                FacebookAuth._add_user_data(data)
+                FacebookAuth._add_user_data(handler, data)
             else:
                 raise simpleeditions.ExternalLoginNeededError(
                     'You must log in with Facebook first.')
         elif extra_data and ('name' not in data):
-            FacebookAuth._add_user_data(data)
+            FacebookAuth._add_user_data(handler, data)
 
         return data
 
