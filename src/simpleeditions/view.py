@@ -86,6 +86,9 @@ class TemplatedRequestHandler(webapp.RequestHandler):
 
         self.render(settings.ERROR_TEMPLATE, traceback=tb)
 
+    def head(self, *args, **kwargs):
+        self.get(*args, **kwargs)
+
     def initialize(self, request, response):
         super(TemplatedRequestHandler, self).initialize(request, response)
         self.update_user()
