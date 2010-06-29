@@ -51,6 +51,8 @@
                 <label for="password">Password</label>
                 <input id="password" tabindex="3" name="password" type="password" />
                 <div class="explanation">At least 6 characters.</div>
+                {% else %}
+                <input id="email" name="email" type="hidden" value="{% if auth_email %}{{ auth_email }}{% else %}{{ request.POST.email }}{% endif %}" />
                 {% endifequal %}
 
                 <input class="breaker" tabindex="4" id="submit" type="submit" value="Join" />
