@@ -4,7 +4,9 @@
     <div class="contentbox_top"></div>
     <div class="contentbox_middle" id="register">
         <h1>Join SimpleEditions</h1>
+        {% ifnotequal request.method "POST" %}
         <p id="subtext">Good choice, matey.</p>
+        {% endifnotequal %}
         {% if errors %}
         <div class="error">
             <p>Failed to register:</p>
@@ -18,37 +20,40 @@
         <div id="registration_form">
             {% ifequal auth_type "local" %}
             <div id="third_party">
-                <p><strong>Pssst!</strong> Do you have an account with any of these services? By choosing any of these services, you will use them for logging in to SimpleEditions. Simple!</p>
+                <p>You can also choose to connect <strong>an existing account</strong> to SimpleEditions, by selecting below.</p>
                 <form action="{{ request.path }}" method="post">
                     <input type="hidden" name="auth_type" value="google"/>
-                    <input type="submit" id="google-submit" value="Google" />
+                    <input type="submit" id="google-submit" tabindex="5" value="Google" />
                 </form>
                 <form action="{{ request.path }}" method="post">
                     <input type="hidden" name="auth_type" value="facebook"/>
-                    <input type="submit" id="facebook-submit" value="Facebook" />
+                    <input type="submit" id="facebook-submit" tabindex="6" value="Facebook" />
                 </form>
             </div>
             {% endifequal %}
             <form action="{{ request.path }}" method="post">
                 {% ifnotequal auth_type "local" %}
-                <p>You are registering using <strong>{{ auth_name }}</strong>. If this is not what you wanted, <a href="{{ request.path }}">start over</a>.</p>
+                <p>You are connecting your {{ auth_name }} account <strong>{{ auth_display_name }}</strong> to SimpleEditions.</p>
+
+                <input name="email" type="hidden" value="{% if auth_email %}{{ auth_email }}{% else %}{{ request.POST.email }}{% endif %}" />
                 {% endifnotequal %}
 
                 <input type="hidden" name="auth_type" value="{% if auth_type %}{{ auth_type }}{% else %}local{% endif %}"/>
-                <label for="display_name">Display name</label>
-                <input id="display_name" name="display_name" type="text" value="{% if auth_display_name %}{{ auth_display_name }}{% else %}{{ request.POST.display_name }}{% endif %}" />
-
-                <label for="email">E-mail</label>
-                <input id="email" name="email" type="text" value="{% if auth_email %}{{ auth_email }}{% else %}{{ request.POST.email }}{% endif %}" />
-                <div class="explanation">Won't be seen by others.</div>
+                <label for="display_name">Choose your display name:</label>
+                <input id="display_name" tabindex="1" name="display_name" type="text" value="{% if auth_display_name %}{{ auth_display_name }}{% else %}{{ request.POST.display_name }}{% endif %}" />
+                <div class="explanation">Example: <em>John Washington</em> or <em>Karl Berg</em>.</div>
 
                 {% ifequal auth_type "local" %}
+                <label for="email">E-mail</label>
+                <input id="email" tabindex="2" name="email" type="text" value="{% if auth_email %}{{ auth_email }}{% else %}{{ request.POST.email }}{% endif %}" />
+                <div class="explanation">Won't be seen by others.</div>
+
                 <label for="password">Password</label>
-                <input id="password" name="password" type="password" />
+                <input id="password" tabindex="3" name="password" type="password" />
                 <div class="explanation">At least 6 characters.</div>
                 {% endifequal %}
 
-                <input class="breaker" id="submit" type="submit" value="Join" />
+                <input class="breaker" tabindex="4" id="submit" type="submit" value="Join" />
                 <div class="breaker"></div>
             </form>
         </div>
