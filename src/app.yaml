@@ -3,6 +3,9 @@ version: 2
 runtime: python
 api_version: 1
 
+derived_file_type:
+- python_precompiled
+
 default_expiration: "365d"
 
 handlers:
