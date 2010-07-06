@@ -30,11 +30,20 @@
                 <a href="/{{ article.id }}/manage/edit">Edit article</a>
                 {% endif %}
             </p>
-            <p><fb:like layout="button_count"></fb:like></p>
         </div>
         <div class="tutorial_content">
           {{ article.html|safe }}
         </div>
+        <img src="{{ "images/divider.png"|static }}" class="divider-margin" alt="Divider image">
+        <div class="tutorial_share">
+            <script type="text/javascript">
+            tweetmeme_url = 'http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}';
+            tweetmeme_style = 'compact';
+            </script>
+            <div id="tweetmeme_share"><script type="text/javascript" src="http://tweetmeme.com/i/scripts/button.js"></script></div>
+            <div id="facebook_share"><fb:like layout="button_count"></fb:like></div>
+        </div>
+        <div class="breaker" style="clear: left;"></div>
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}
