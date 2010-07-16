@@ -12,6 +12,7 @@ After cloning this repository, you will need to copy `src/simpleeditions/setting
 
 - [Jonatan Littke](http://github.com/littke)
 - [Andreas Blixt](http://github.com/blixt)
+- [Erik Brännström](http://github.com/erikbrannstrom)
 
 ## License
 
