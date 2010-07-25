@@ -44,6 +44,31 @@
             <div id="facebook_share"><fb:like layout="button_count"></fb:like></div>
         </div>
         <div class="breaker" style="clear: left;"></div>
+        <div id="comments">
+            <h2>Comments ({{ comments|length }})</h2>
+        {% for comment in comments %}
+            <p><strong title="{{ comment.created }}">{{ comment.user_name }}:</strong><br />{{ comment.content }}</p>
+        {% empty %}
+        <p>This article does not have any comments yet.</p>
+        {% endfor %}
+        </div>
+        {% if user.can_comment %}
+        <form action="{{ request.path }}" method="post">
+            <h2>Write a comment</h2>
+            {% if errors %}
+            <div class="error">
+                <p>Failed to add the comment:</p>
+                <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <textarea name="comment">{% if errors %}{{ request.POST.comment }}{% endif %}</textarea>
+            <input type="submit" value="Post comment" />
+        </form>
+        {% endif %}
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}

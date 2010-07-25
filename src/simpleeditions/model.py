@@ -106,6 +106,8 @@ class User(db.Model):
     # Actions that require permissions paired with functions that return True
     # if the supplied user has the permission.
     actions = {
+        'comment':
+            lambda user: True,
         'create-article':
             lambda user: user.status in ('contributor', 'staff', 'admin'),
         'edit-any-article':
@@ -564,6 +566,7 @@ class Article(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now_add=True)
     last_save = db.DateTimeProperty(auto_now=True)
+    comments = db.IntegerProperty(default=0)
     edits = db.IntegerProperty(default=0)
     views = db.IntegerProperty(default=0)
     slug = db.StringProperty(required=True, validator=_validate_slug)
@@ -709,9 +712,47 @@ class Article(db.Model):
         return article
 
     @staticmethod
+    def _save_comment(article_key, user, content):
+        article = Article.get(article_key)
+
+        if not isinstance(user, User):
+            raise TypeError('Invalid user.')
+
+        if not isinstance(content, basestring):
+            raise TypeError('Invalid content.')
+
+        if len(content) < 15:
+            raise simpleeditions.SaveCommentError(
+                'A comment must be at least 15 characters long.')
+        if len(content) > 500:
+            raise simpleeditions.SaveCommentError(
+                'Comments may not be any longer than 500 characters.')
+
+        article.comments += 1
+
+        comment = ArticleComment(
+            parent=article_key, user=user, user_name=user.display_name,
+            content=content)
+
+        try:
+            comment.put()
+            article.put()
+        except apiproxy_errors.CapabilityDisabledError:
+            raise simpleeditions.SaveCommentError(
+                'Sorry, the database is currently in maintenance. Try again '
+                'later.')
+
+        return comment
+
+    @staticmethod
+    def add_comment(article, user, content):
+        return db.run_in_transaction(Article._save_comment,
+            get_key(article, Article), get_instance(user, User), content)
+
+    @staticmethod
     def create(user, title, description, content, icon=None):
-        return db.run_in_transaction(Article._save, user, title, description,
-                                     content, icon)
+        return db.run_in_transaction(Article._save,
+            user, title, description, content, icon)
 
     @staticmethod
     def update(article, user, title=None, description=None, content=None,
@@ -720,8 +761,24 @@ class Article(db.Model):
         that it should not be changed.
 
         """
-        return db.run_in_transaction(Article._save, user, title, description,
-                                     content, icon, message, article=article)
+        return db.run_in_transaction(Article._save,
+            user, title, description, content, icon, message, article=article)
+
+class ArticleComment(db.Model):
+    user = db.ReferenceProperty(User, collection_name='comments',
+                                required=True)
+    user_name = db.StringProperty(required=True, indexed=False)
+    created = db.DateTimeProperty(auto_now_add=True)
+    content = db.StringProperty(required=True, multiline=True, indexed=False)
+
+    @classmethod
+    def all_for_article(cls, article):
+        """Returns a Query instance that will only return comment instances
+        that are bound to the specificed article id/key/instance.
+
+        """
+        article = get_key(article, Article)
+        return cls.all().ancestor(article)
 
 class ArticleRevision(db.Model):
     previous = db.SelfReferenceProperty(indexed=False, collection_name='_1')

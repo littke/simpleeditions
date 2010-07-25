@@ -65,6 +65,11 @@ def get_blob_dict(blob, include_data=False):
     if include_data:
         props += [('data_as_base64', 'data')]
 
+def get_comment_dict(comment):
+    return utils.get_dict(comment, (
+        'key.id', ('_entity.user.id', 'user_id'), 'user_name', 'created',
+        'content'))
+
 def get_current_user(handler):
     try:
         session_id = handler.request.cookies['session']
@@ -136,6 +141,18 @@ def create_article(handler, title, description, content, icon_data=None):
     return get_article_dict(article)
 
 @public
+def create_comment(handler, article_id, content):
+    if not isinstance(article_id, (int, long)):
+        raise TypeError('Article id must be an integer.')
+
+    user = handler.user_obj
+    if not user:
+        raise simpleeditions.NotLoggedInError(
+            'You must be logged in to write comments.')
+
+    comment = model.Article.add_comment(article_id, user, content)
+
+@public
 def get_article(handler, id, include_content=False, view=False):
     article = model.Article.get_by_id(id)
     if not article:
@@ -162,6 +179,16 @@ def get_auth_user_info(handler, auth_type, **kwargs):
 def get_auth_name(handler, auth_type):
     auth_class = get_auth_class(auth_type)
     return auth_class.name
+
+@public
+def get_comments(handler, article_id):
+    if not isinstance(article_id, (int, long)):
+        raise TypeError('Article id must be an integer')
+
+    rpc = model.get_rpc()
+    query = model.ArticleComment.all_for_article(article_id)
+    comments = query.order('-created').fetch(10, rpc=rpc)
+    return [get_comment_dict(comment) for comment in comments]
 
 @public
 def get_login_url(handler, auth_type, return_url='/'):

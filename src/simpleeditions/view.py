@@ -292,8 +292,23 @@ class ArticleHandler(TemplatedRequestHandler):
         user = self.user_obj
         self.render('article.html',
             article=article,
+            comments=controller.get_comments(self, int(article_id)),
             user_can_edit=user and (user.key().id() == article['user_id'] or
                                     user.can('edit-any-article')))
+
+    @login_required
+    def post(self, article_id):
+        req = self.request
+        try:
+            controller.create_comment(self, int(article_id),
+                                      req.get('comment'))
+        except (TypeError, ValueError):
+            logging.exception('Presumed browser sent erroneous values:')
+            self.add_error('Your browser sent invalid values.')
+        except simpleeditions.SaveCommentError, e:
+            self.add_error(e.message)
+
+        self.get(article_id)
 
 class ArticleRevisionHandler(TemplatedRequestHandler):
     def get(self, article_id, revision):
