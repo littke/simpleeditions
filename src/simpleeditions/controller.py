@@ -174,7 +174,10 @@ def get_login_url(handler, auth_type, return_url='/'):
 
 @public
 def get_revision(handler, article_id, revision):
-    key = model.ArticleRevision.build_key(int(article_id), revision)
+    if not isinstance(article_id, (int, long)):
+        raise TypeError('Article id must be an integer')
+
+    key = model.ArticleRevision.build_key(article_id, revision)
     revision = model.ArticleRevision.get(key)
     if not revision:
         raise simpleeditions.RevisionNotFoundError(
@@ -184,8 +187,11 @@ def get_revision(handler, article_id, revision):
 
 @public
 def get_revisions(handler, article_id):
+    if not isinstance(article_id, (int, long)):
+        raise TypeError('Article id must be an integer')
+
     rpc = model.get_rpc()
-    query = model.ArticleRevision.all_for_article(int(article_id))
+    query = model.ArticleRevision.all_for_article(article_id)
     revisions = query.order('-created').fetch(10, rpc=rpc)
     return [get_revision_dict(revision) for revision in revisions]
 
