@@ -57,6 +57,10 @@
         {% empty %}
             <p>Give us your feedback. Was this article helpful? What can be improved?</p>
         {% endfor %}
+        {% if not user %}
+            <img src="{{ "images/divider.png"|static }}" class="divider-margin" alt="" />
+            <p><a href="/login">Login</a> or <a href="/join">join SimpleEditions</a> to participate.</a></p>
+        {% endif %}
         </div>
         {% if user.can_comment %}
         <form action="{{ request.path }}" method="post" id="add_comment">
