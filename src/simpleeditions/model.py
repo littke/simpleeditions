@@ -721,9 +721,9 @@ class Article(db.Model):
         if not isinstance(content, basestring):
             raise TypeError('Invalid content.')
 
-        if len(content) < 15:
+        if len(content) < 10:
             raise simpleeditions.SaveCommentError(
-                'A comment must be at least 15 characters long.')
+                'A comment must be at least 10 characters long.')
         if len(content) > 500:
             raise simpleeditions.SaveCommentError(
                 'Comments may not be any longer than 500 characters.')
