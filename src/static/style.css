@@ -383,16 +383,46 @@ span.minus {
 }
 
 /* Home */
-#recent_tutorials h1 {
-    margin-bottom: 0.5em;
-}
-
 #recent_tutorials h2 a {
     color: #252525;
 }
 
-#recent_tutorials h2 a:hover {
-    border-bottom: 1px black dotted;
+.tutorial_box {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tutorial_box li {
+    float: left;
+    width: 400px;
+    margin: 0 0 10px;
+    padding: 0;
+}
+
+.tutorial_box li:hover {
+    background: url('images/tutorial_box_bg.png') no-repeat;
+}
+
+.tutorial_box a {
+    display: block;
+    padding: 11px 15px 15px;
+}
+
+.tutorial_box .title {
+    font-size: 1.618em;
+    line-height: 1.4em;
+}
+
+.tutorial_box .snippet {
+    margin-left: 61px;
+    display: block;
+    color: #333;
+}
+
+.tutorial_box img {
+    float: left;
+    margin: 4px 10px 0 0;
 }
 
 /* Edit article */

@@ -10,26 +10,22 @@
     <div class="contentbox_top"></div>
     <div class="contentbox_middle" id="recent_tutorials">
         <h1>Recent articles</h1>
+        <ul class="tutorial_box">
         {% for article in articles %}
-        <div class="tutorial_header">
-            {% if article.icon %}
-            <img alt="" src="/content/{{ article.icon }}.png" />
-            {% else %}
-            <img alt="" src="{{ "images/badges/badge_default.png"|static }}" />
-            {% endif %}
-            <h2><a href="/{{ article.id }}/{{ article.slug }}">{{ article.title }}</a></h2>
-            <p class="article_extra">
-                By {{ article.user_name }}. 
-            </p>
-        </div>
-        <div class="tutorial_content">
-          {{ article.description|linebreaks }}
-          <a href="/{{ article.id }}/{{ article.slug }}">Read more...</a>
-        </div>
-        {% if not forloop.last %}
-        <img src="{{ "images/divider.png"|static }}" class="divider-margin" alt="-- Divider --"/>
-        {% endif %}
+        <li>
+            <a href="/{{ article.id }}/{{ article.slug }}">
+                {% if article.icon %}
+                <img alt="" src="/content/{{ article.icon }}.png" />
+                {% else %}
+                <img alt="" src="{{ "images/badges/badge_default.png"|static }}" />
+                {% endif %}
+                <span class="title">{{ article.title }}</span><br/>
+                <span class="snippet">{{ article.description|linebreaksbr }}</span>
+            </a>
+        </li>
         {% endfor %}
+        </ul>
+        <div class="breaker"></div>
         {% if user.can_create_article %}
         <p><a href="/new">Write an article</a>!</p>
         {% endif %}
