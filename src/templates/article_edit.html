@@ -29,7 +29,7 @@
                 <p><textarea cols="100" name="content" rows="35">{% if request.POST.content %}{{ request.POST.content }}{% else %}{{ article.content }}{% endif %}</textarea></p>
                 <p>Edit message (optional)</p>
                 <input name="message" id="edit_message" type="text" value="{{ request.POST.message }}" />
-                <p><input{% if not user_can_edit %} disabled="disabled"{% endif %} type="submit" value="Save article" />
+                <p><input{% if not user_can_edit %} disabled="disabled"{% endif %} type="submit" value="Save article" /></p>
             </form>
             <a href="/{{ article.id }}/manage/revisions/">View the edit log</a>
         </div>
