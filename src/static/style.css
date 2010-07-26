@@ -126,6 +126,10 @@ li {
     margin: 8px 0;
 }
 
+.nopadding {
+    padding: 0;
+}
+
 /* Header */
 
 #headercontainer {
@@ -297,6 +301,22 @@ span.highlight {
 
 .tutorial_header p {
     margin: 1px 0 0;
+}
+
+/* Article comments */
+
+#comments, #add_comment textarea {
+    width: 600px;
+}
+
+#comments p {
+    margin: 1.2em 0;
+}
+
+#comments p span {
+    display: block;
+    font-weight: bold;
+    padding-bottom: 3px;
 }
 
 /* When the titles are in a list, we use h2s instead of h1s */

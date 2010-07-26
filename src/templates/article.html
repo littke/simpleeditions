@@ -44,17 +44,23 @@
             <div id="facebook_share"><fb:like layout="button_count"></fb:like></div>
         </div>
         <div class="breaker" style="clear: left;"></div>
+    </div>
+    <div class="contentbox_bottom"></div>
+
+    <div class="contentbox_top"></div>
+    <div class="contentbox_middle">
         <div id="comments">
-            <h2>Comments ({{ comments|length }})</h2>
+            <h2 class="nopadding">Comments ({{ comments|length }})</h2>
         {% for comment in comments %}
-            <p><strong title="{{ comment.created }}">{{ comment.user_name }}:</strong><br />{{ comment.content }}</p>
+            <p><span title="{{ comment.created }}">{{ comment.user_name }}:</span>
+            {{ comment.content }}</p>
         {% empty %}
-        <p>This article does not have any comments yet.</p>
+            <p>Give us your feedback. Was this article helpful? What can be improved?</p>
         {% endfor %}
         </div>
         {% if user.can_comment %}
-        <form action="{{ request.path }}" method="post">
-            <h2>Write a comment</h2>
+        <form action="{{ request.path }}" method="post" id="add_comment">
+            <h3>Write a comment</h3>
             {% if errors %}
             <div class="error">
                 <p>Failed to add the comment:</p>
@@ -65,7 +71,7 @@
                 </ul>
             </div>
             {% endif %}
-            <textarea name="comment">{% if errors %}{{ request.POST.comment }}{% endif %}</textarea>
+            <textarea name="comment">{% if errors %}{{ request.POST.comment }}{% endif %}</textarea><br/>
             <input type="submit" value="Post comment" />
         </form>
         {% endif %}
