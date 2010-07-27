@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "article_manage.html" %}
 {% block page_title %}{{ article.title }} – Revisions{% endblock %}
 {% block page_head %}
     <style type="text/css">
@@ -9,13 +9,10 @@
         width: 100%;
     }
     </style>
-{% endblock %} 
-{% block page_content %}
-    <div class="contentbox_top"></div>
-    <div class="contentbox_middle">
-        <h1>{{ article.title }}</h1>
-        <p><a href="/{{ article.id }}/{{ article.slug }}">&larr; Back to article</a></p>
-        <h2>Revisions</h2>
+{% endblock %}
+{% block section_id %}manage_revisions{% endblock %}
+{% block section_title %}Revisions{% endblock %}
+{% block section_content %}
         <table id="articles">
             <thead>
                 <tr>
@@ -36,6 +33,4 @@
             {% endfor %}
             </tbody>
         </table>
-    </div>
-    <div class="contentbox_bottom"></div>
 {% endblock %}

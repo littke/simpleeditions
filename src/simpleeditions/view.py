@@ -330,7 +330,7 @@ class ArticleRevisionsHandler(TemplatedRequestHandler):
             self.not_found()
             return
 
-        self.render('article_revisions.html',
+        self.render('article_manage_revisions.html',
             article=article,
             revisions=revisions)
 
@@ -368,7 +368,7 @@ class EditArticleHandler(TemplatedRequestHandler):
             return
 
         user = self.user_obj
-        self.render('article_edit.html',
+        self.render('article_manage_edit.html',
             article=article,
             user_can_edit=user and (user.key().id() == article['user_id'] or
                                     user.can('edit-any-article')))

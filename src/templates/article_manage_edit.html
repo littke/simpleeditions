@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "article_manage.html" %}
 {% block page_title %}{{ article.title }} – Edit{% endblock %}
-{% block page_content %}
-    <div class="contentbox_top"></div>
-    <div class="contentbox_middle">
+{% block section_id %}manage_edit{% endblock %}
+{% block section_title %}Edit article{% endblock %}
+{% block section_content %}
         <div id="edit_article">
-            <h1>Edit article</h1>
             {% if not user_can_edit %}
             <p class="warning"><strong>Note:</strong> You may not save any changes this article.</p>
             {% endif %}
@@ -31,8 +30,5 @@
                 <input name="message" id="edit_message" type="text" value="{{ request.POST.message }}" />
                 <p><input{% if not user_can_edit %} disabled="disabled"{% endif %} type="submit" value="Save article" /></p>
             </form>
-            <a href="/{{ article.id }}/manage/revisions/">View the edit log</a>
         </div>
-    </div>
-    <div class="contentbox_bottom"></div>
 {% endblock %}
