@@ -125,14 +125,12 @@ def create_article(handler, title, description, content, icon_data=None):
 
     try:
         icon_blob = create_icon(user, icon_data) if icon_data else None
+        article = model.Article.create(user, title, description, content,
+                                       icon_blob)
     except images.BadImageError:
         raise simpleeditions.SaveArticleError(
             'The supplied file could not be used as an icon. Try another '
             'image.')
-
-    try:
-        article = model.Article.create(user, title, description, content,
-                                       icon_blob)
     except apiproxy_errors.CapabilityDisabledError:
         raise simpleeditions.SaveArticleError(
             'Sorry, the database is currently in maintenance. Try again '
