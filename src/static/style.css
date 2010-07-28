@@ -242,7 +242,7 @@ li {
 }
 
 #contentcontainer textarea {
-  width: 800px;
+    width: 800px;
 }
 
 #intro_box {
@@ -361,25 +361,25 @@ span.highlight {
 
 /* Tutorial content tags */
 .pros, .cons {
-  list-style-type: none;
-  padding-left: 22px;
+    list-style-type: none;
+    padding-left: 22px;
 }
 
 span.plus {
-  color: green;
+    color: green;
 }
 
 span.minus {
-  color: red;
+    color: red;
 }
 
 .default-border {
-  border: 1px solid #ddd;
+    border: 1px solid #ddd;
 }
 
 .right-align {
-  float: right;
-  margin: 6px 0 10px 10px;
+    float: right;
+    margin: 6px 0 10px 10px;
 }
 
 /* Home */
