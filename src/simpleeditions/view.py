@@ -281,6 +281,41 @@ class ApiHandler(TemplatedRequestHandler):
         res.headers['Content-Type'] = 'application/json'
         res.out.write(simplejson.dumps(result, separators=(',', ':')))
 
+class ArticleFilesHandler(TemplatedRequestHandler):
+    def get(self, article_id):
+        try:
+            article = controller.get_article(self, int(article_id))
+        except (TypeError, ValueError, simpleeditions.NotFoundError):
+            self.not_found()
+            return
+
+        files = controller.get_files(self, int(article_id))
+
+        user = self.user_obj
+        self.render('article_manage_files.html',
+            article=article,
+            files=files,
+            user_can_upload=user and user.can('upload-files') and (
+                user.key().id() == article['user_id'] or
+                user.can('edit-any-article')))
+
+    def post(self, article_id):
+        try:
+            article_id = int(article_id)
+
+            req = self.request
+            file = req.POST['file']
+            name = req.get('name', file.filename)
+            blob = controller.add_file(self, article_id, name, file.type,
+                                       file.value)
+        except (TypeError, ValueError):
+            logging.exception('Presumed browser sent erroneous values:')
+            self.add_error('Your browser sent invalid values.')
+        except simpleeditions.SaveBlobError, e:
+            self.add_error(e.message)
+
+        self.get(article_id)
+
 class ArticleHandler(TemplatedRequestHandler):
     def get(self, article_id):
         try:

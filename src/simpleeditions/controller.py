@@ -35,10 +35,16 @@ import simpleeditions
 from simpleeditions import model, settings, utils
 from simpleeditions.utils import public
 
-def create_icon(user, icon_data):
+def create_blob(user, data, type, name, article=None):
+    if article:
+        return model.Blob.create(article, user, data, type, name)
+    else:
+        return model.Blob.prepare(user, data, type, name)
+
+def create_icon(user, icon_data, article=None):
     # Resize image to 50x52 and store the result as PNG.
     icon_data = images.resize(icon_data, 50, 52)
-    return model.Blob.create(user, icon_data, 'image/png')
+    return create_blob(user, icon_data, 'image/png', 'Icon', article)
 
 def get_article_dict(article, include_content=False):
     props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
@@ -54,16 +60,15 @@ def get_auth_class(auth_type):
     except KeyError:
         raise ValueError('Invalid authentication type.')
 
-def get_blob(name, article=None):
-    if article:
-        article = model.get_key(article, model.Article)
-    return model.Blob.get_by_key_name(name, parent=article)
+def get_blob(name):
+    return model.Blob.get_by_key_name(name)
 
 def get_blob_dict(blob, include_data=False):
-    props = ['key.name', ('_entity.user.id', 'user_id'), 'user_name',
-             'created', 'content_type', 'size']
+    props = [('key.name', 'id'), ('_entity.user.id', 'user_id'), 'user_name',
+             'created', 'content_type', 'size', 'name']
     if include_data:
         props += [('data_as_base64', 'data')]
+    return utils.get_dict(blob, props)
 
 def get_comment_dict(comment):
     return utils.get_dict(comment, (
@@ -103,6 +108,18 @@ def start_user_session(handler, user):
     utils.set_cookie(handler, 'session', user.session, user.expires)
 
 @public
+def add_file(handler, article_id, name, type, data):
+    if not isinstance(article_id, (int, long)):
+        raise TypeError('Article id must be an integer.')
+
+    if not handler.user_obj:
+        raise simpleeditions.NotLoggedInError(
+            'You must be logged in to upload files.')
+
+    return create_blob(handler.user_obj, data, type, name,
+                       model.get_key(article_id, model.Article))
+
+@public
 def connect(handler, auth_type, **kwargs):
     """Adds an authentication method to the current user.
 
@@ -127,6 +144,9 @@ def create_article(handler, title, description, content, icon_data=None):
         icon_blob = create_icon(user, icon_data) if icon_data else None
         article = model.Article.create(user, title, description, content,
                                        icon_blob)
+        if icon_blob:
+            icon_blob.owner = article
+            icon_blob.put()
     except images.BadImageError:
         raise simpleeditions.SaveArticleError(
             'The supplied file could not be used as an icon. Try another '
@@ -187,6 +207,18 @@ def get_comments(handler, article_id):
     query = model.ArticleComment.all_for_article(article_id)
     comments = query.order('-created').fetch(10, rpc=rpc)
     return [get_comment_dict(comment) for comment in comments]
+
+@public
+def get_files(handler, article_id):
+    if not isinstance(article_id, (int, long)):
+        raise TypeError('Article id must be an integer')
+
+    rpc = model.get_rpc()
+    query = model.Blob.all() \
+        .filter('owner', model.get_key(article_id, model.Article)) \
+        .order('-created')
+    files = query.fetch(10, rpc=rpc)
+    return [get_blob_dict(file) for file in files]
 
 @public
 def get_login_url(handler, auth_type, return_url='/'):
@@ -317,15 +349,17 @@ def update_article(handler, id, title=None, description=None, content=None,
             'You must be logged in to update an article.')
 
     try:
-        icon_blob = create_icon(user, icon_data) if icon_data else None
+        if icon_data:
+            icon_blob = create_icon(user, icon_data,
+                                    model.get_key(id, Article))
+        else:
+            icon_blob = None
+        article = model.Article.update(id, user, title, description, content,
+                                       icon_blob, message)
     except images.BadImageError:
         raise simpleeditions.SaveArticleError(
             'The supplied file could not be used as an icon. Try another '
             'image.')
-
-    try:
-        article = model.Article.update(id, user, title, description, content,
-                                       icon_blob, message)
     except apiproxy_errors.CapabilityDisabledError:
         raise simpleeditions.SaveArticleError(
             'Sorry, the database is currently in maintenance. Try again '

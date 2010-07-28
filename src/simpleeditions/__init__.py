@@ -68,5 +68,8 @@ class SaveError(Error):
 class SaveArticleError(SaveError):
     """Raised when saving an article fails."""
 
+class SaveBlobError(SaveError):
+    """Raised when uploading a file fails."""
+
 class SaveCommentError(SaveError):
     """Raised when adding a comment fails."""

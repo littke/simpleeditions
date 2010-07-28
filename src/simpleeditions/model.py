@@ -31,6 +31,7 @@ import uuid
 from google.appengine.api import mail, urlfetch, users
 from google.appengine.ext import db
 from google.appengine.ext.db import polymodel
+from google.appengine.runtime import apiproxy_errors
 
 import facebook
 import markdown2
@@ -520,16 +521,35 @@ class Blob(db.Model):
     """Represents a user-submitted binary object. For example, an image.
 
     """
+    owner = db.ReferenceProperty()
     user = db.ReferenceProperty(User, collection_name='blobs', required=True)
     user_name = db.StringProperty(required=True, indexed=False)
     created = db.DateTimeProperty(auto_now_add=True)
     data = db.BlobProperty(required=True)
     content_type = db.StringProperty(required=True, indexed=False)
     size = db.IntegerProperty(required=True)
-    description = db.StringProperty(indexed=False)
+    name = db.StringProperty(indexed=False)
 
     @classmethod
-    def create(cls, user, data, content_type, description=''):
+    def create(cls, owner, user, data, content_type, name=''):
+        blob = cls.prepare(user, data, content_type, name)
+        blob.owner = owner
+
+        try:
+            blob.put()
+        except apiproxy_errors.RequestTooLargeError:
+            raise simpleeditions.SaveBlobError(
+                'The provided file was too large.')
+
+        return blob
+
+    @classmethod
+    def prepare(cls, user, data, content_type, name=''):
+        """Creates a new Blob. This does NOT put the Blob to the datastore,
+        since the caller may want to use its key and then update it before
+        storing it.
+
+        """
         user = get_instance(user, User)
         if not user:
             raise ValueError('Did not get a valid user.')
@@ -538,8 +558,7 @@ class Blob(db.Model):
 
         blob = cls(key_name=uuid.uuid4().get_hex(), user=user,
                    user_name=user.display_name, data=data,
-                   content_type=content_type, size=size)
-        blob.put()
+                   content_type=content_type, size=size, name=name)
         return blob
 
     def data_as_base64(self):

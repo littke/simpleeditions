@@ -1,0 +1,52 @@
+{% extends "article_manage.html" %}
+{% block page_title %}{{ article.title }} – Files{% endblock %}
+{% block section_id %}manage_files{% endblock %}
+{% block section_title %}Files{% endblock %}
+{% block section_content %}
+        {% if errors %}
+        <div class="error">
+            <p>Failed to upload file:</p>
+            <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Uploaded</th>
+                    <th>By</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for file in files %}
+                <tr class="{% cycle odd,even %}">
+                    <td><a href="/content/{{ file.id }}">{{ file.name }}</a></td>
+                    <td>{{ file.content_type }}</td>
+                    <td>{{ file.size|filesizeformat }}</td>
+                    <td>{{ file.created }}</td>
+                    <td>{{ file.user_name }}</td>
+                </tr>
+            {% empty %}
+                <tr class="empty">
+                    <td colspan="5">This article has no files associated with it.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if user_can_upload %}
+        <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
+            <h3>Upload file</h3>
+            <p>File to upload</p>
+            <p><input name="file" type="file" /></p>
+            <p>File title</p>
+            <p><input name="name" type="text" /></p>
+            <p><input type="submit" value="Upload" /></p>
+        </form>
+        {% endif %}
+{% endblock %}
