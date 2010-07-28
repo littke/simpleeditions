@@ -16,7 +16,7 @@
         {% endif %}
         <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
             <p>Article title</p>
-            <p><input name="title" type="text" value="{{ request.POST.title }}" /></p>
+            <p><input name="title" maxlength="50" type="text" value="{{ request.POST.title }}" /></p>
             <p>Icon (optional)</p>
             <p><input name="icon" type="file" /></p>
             <p>Article description</p>

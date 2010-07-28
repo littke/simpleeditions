@@ -19,7 +19,7 @@
             {% endif %}
             <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
                 <p>Article title</p>
-                <p><input name="title" type="text" value="{% if request.POST.title %}{{ request.POST.title }}{% else %}{{ article.title }}{% endif %}" /></p>
+                <p><input name="title" maxlength="50" type="text" value="{% if request.POST.title %}{{ request.POST.title }}{% else %}{{ article.title }}{% endif %}" /></p>
                 <p>Icon (optional)</p>
                 <p><input name="icon" type="file" /></p>
                 <p>Article description</p>
