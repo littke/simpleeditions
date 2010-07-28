@@ -1,7 +1,6 @@
 {% extends "article_manage.html" %}
 {% block page_title %}{{ article.title }} – Edit{% endblock %}
 {% block section_id %}manage_edit{% endblock %}
-{% block section_title %}Edit article{% endblock %}
 {% block section_content %}
         <div id="edit_article">
             {% if not user_can_edit %}

@@ -1,7 +1,6 @@
 {% extends "article_manage.html" %}
 {% block page_title %}{{ article.title }} – Files{% endblock %}
 {% block section_id %}manage_files{% endblock %}
-{% block section_title %}Files{% endblock %}
 {% block section_content %}
         {% if errors %}
         <div class="error">
@@ -13,6 +12,7 @@
             </ul>
         </div>
         {% endif %}
+        {% if files %}
         <table>
             <thead>
                 <tr>
@@ -32,13 +32,13 @@
                     <td>{{ file.created }}</td>
                     <td>{{ file.user_name }}</td>
                 </tr>
-            {% empty %}
-                <tr class="empty">
-                    <td colspan="5">This article has no files associated with it.</td>
-                </tr>
             {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <p>This article does not have any files associated with it.</p>
+        {% endif %}
+
         {% if user_can_upload %}
         <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
             <h3>Upload file</h3>
