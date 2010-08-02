@@ -5,7 +5,10 @@
 {% block section_content %}
         <div id="edit_article">
             {% if not user_can_edit %}
-            <p class="warning"><strong>Note:</strong> You may not save any changes this article.</p>
+            <div class="warning">
+                <p><strong>Note:</strong> You may not save any changes this article.</p>
+                <p><a href="/login?continue={{ request.path|urlencode }}">Log in</a> first to edit it.</p>
+            </div>
             {% endif %}
             {% if errors %}
             <div class="error">

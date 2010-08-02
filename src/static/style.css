@@ -130,6 +130,17 @@ li {
     padding: 0;
 }
 
+div.warning {
+    background: #ffe;
+    border: #fc0 solid 1px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+div.warning p {
+    margin: 0;
+}
+
 /* Header */
 
 #headercontainer {

@@ -394,7 +394,6 @@ class BlobHandler(webapp.RequestHandler):
         res.out.write(blob.data)
 
 class EditArticleHandler(TemplatedRequestHandler):
-    @login_required
     def get(self, article_id):
         try:
             article = controller.get_article(self, int(article_id), True)
