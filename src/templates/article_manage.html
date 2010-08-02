@@ -5,13 +5,16 @@
     <div class="contentbox_middle" id="{% block section_id %}manage{% endblock %}">
         <h1>{{ article.title }}</h1>
         <p><a href="/{{ article.id }}/{{ article.slug }}">&larr; Back to article</a></p>
-        <ul>
-            <li><a href="/{{ article.id }}/manage/edit">Edit</a></li>
-            <li><a href="/{{ article.id }}/manage/revisions/">Revisions</a></li>
-            <li><a href="/{{ article.id }}/manage/files/">Files</a></li>
+        <ul class="tabs large-text">
+            <li id="manage_edit_tab"><a href="/{{ article.id }}/manage/edit">Edit</a></li>
+            <li id="manage_revisions_tab"><a href="/{{ article.id }}/manage/revisions/">Revisions</a></li>
+            <li id="manage_files_tab"><a href="/{{ article.id }}/manage/files/">Files</a></li>
         </ul>
-        <h2>{% block section_title %}Manage article{% endblock %}</h2>
-        {% block section_content %}<p>Please select one of the above sections.</p>{% endblock %}
+        <div class="tab_content">
+            {% block section_content %}
+            <p>Please select one of the above sections.</p>
+            {% endblock %}
+        </div>
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}

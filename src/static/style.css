@@ -107,6 +107,60 @@ li {
     margin-top: 1px;
 }
 
+
+/* Tabs */
+
+ul.tabs {
+    border-bottom: 1px solid #DDD;
+    height: 26px;
+    line-height: 1;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+
+ul.large-text li {
+    font-size: 1.2em;
+}
+
+ul.tabs li {
+    float: left;
+    margin: 0 5px;
+}
+
+ul.tabs li a {
+    display: block;
+    background: #EBEBEB;
+    border: 1px solid #DDD;
+    border-bottom: 0;
+    border-top-left-radius: 5px;
+    -khtml-border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    border-top-right-radius: 5px;
+    -khtml-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    padding: 6px 10px 5px;
+}
+
+ul.tabs li a:hover {
+    background: transparent;
+    border: 1px solid #DDD;
+    border-bottom: 0;
+}
+
+ul.tabs .selected a, 
+#manage_edit #manage_edit_tab a, 
+#manage_revisions #manage_revisions_tab a, 
+#manage_files #manage_files_tab a {
+    background: transparent;
+    color: #333;
+    border-bottom: 1px solid #F2F2F2;
+}
+
+.tab_content {
+    margin-left: 6px;
+}
+
 /* Handy classes for various use */
 
 .error {
@@ -437,6 +491,7 @@ span.minus {
 }
 
 /* Edit article */
+
 #edit_message {
     width: 200px;
 }
