@@ -85,17 +85,30 @@
 {% block page_foot %}
     <div id="fb-root"></div>
     <script type="text/javascript">
-      window.fbAsyncInit = function() {
+    window.fbAsyncInit = function() {
         FB.init({appId: '{{ FACEBOOK_APP_ID }}', status: true, cookie: true,
                  xfbml: true});
-      };
-      (function() {
+    };
+    (function() {
         var e = document.createElement('script');
         e.type = 'text/javascript';
         e.src = document.location.protocol +
-          '//connect.facebook.net/en_US/all.js';
+            '//connect.facebook.net/en_US/all.js';
         e.async = true;
         document.getElementById('fb-root').appendChild(e);
-      }());
+
+        var code = document.getElementsByTagName('code');
+        for (var i = 0; i < code.length; i++) {
+            code[i].className = (code[i].className ? code[i].className + ' prettyprint' : 'prettyprint');
+        }
+        if (code.length) {
+            e = document.createElement('script');
+            e.type = 'text/javascript';
+            e.src = '{{ "prettify.js"|static }}';
+            e.async = true;
+            e.onload = function () { prettyPrint(); };
+            document.body.appendChild(e);
+        }
+    }());
     </script>
 {% endblock %}
