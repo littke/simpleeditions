@@ -111,12 +111,12 @@ li {
 /* Tabs */
 
 ul.tabs {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #DDD;
+    border-bottom: 1px solid #ddd;
     height: 24px;
+    line-height: 1;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
 }
 
 ul.large-text li {
@@ -124,8 +124,8 @@ ul.large-text li {
 }
 
 ul.tabs li {
-    display: inline;
-    margin-left: 5px;
+    float: left;
+    margin: 4px 0 0 5px;
 }
 
 ul.tabs li a {
@@ -142,9 +142,9 @@ ul.tabs li a {
 }
 
 ul.tabs li a:hover {
+    background: transparent;
     border: 1px solid #DDD;
     border-bottom: 0;
-    background: none;
 }
 
 ul.tabs .selected a, 
