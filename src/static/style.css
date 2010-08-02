@@ -111,8 +111,8 @@ li {
 /* Tabs */
 
 ul.tabs {
-    border-bottom: 1px solid #ddd;
-    height: 24px;
+    border-bottom: 1px solid #DDD;
+    height: 26px;
     line-height: 1;
     list-style: none;
     padding: 0;
@@ -120,15 +120,16 @@ ul.tabs {
 }
 
 ul.large-text li {
-    font-size: 14px;
+    font-size: 1.2em;
 }
 
 ul.tabs li {
     float: left;
-    margin: 4px 0 0 5px;
+    margin: 0 5px;
 }
 
 ul.tabs li a {
+    display: block;
     background: #EBEBEB;
     border: 1px solid #DDD;
     border-bottom: 0;
@@ -138,7 +139,7 @@ ul.tabs li a {
     border-top-right-radius: 5px;
     -khtml-border-top-right-radius: 5px;
     -moz-border-radius-topright: 5px;
-    padding: 5px 10px 4px;
+    padding: 6px 10px 5px;
 }
 
 ul.tabs li a:hover {
@@ -151,7 +152,7 @@ ul.tabs .selected a,
 #manage_edit #manage_edit_tab a, 
 #manage_revisions #manage_revisions_tab a, 
 #manage_files #manage_files_tab a {
-    background: none;
+    background: transparent;
     color: #333;
     border-bottom: 1px solid #F2F2F2;
 }
