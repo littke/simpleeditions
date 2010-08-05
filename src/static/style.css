@@ -107,6 +107,13 @@ li {
     margin-top: 1px;
 }
 
+pre {
+    margin-left: 20px;
+}
+
+pre code {
+    white-space: normal;
+}
 
 /* Tabs */
 
