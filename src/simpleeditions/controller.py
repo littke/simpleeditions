@@ -183,9 +183,11 @@ def get_article(handler, id, include_content=False, view=False):
     return get_article_dict(article, include_content)
 
 @public
-def get_articles(handler, order, limit, include_content=False):
+def get_articles(handler, order, limit=None, include_content=False):
     rpc = model.get_rpc()
-    articles = model.Article.all().order(order).fetch(limit, rpc=rpc)
+    articles = model.Article.all().order(order)
+    if limit:
+        articles = articles.fetch(limit, rpc=rpc)
     return [get_article_dict(article, include_content) for article in articles]
 
 @public

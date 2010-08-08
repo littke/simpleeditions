@@ -372,7 +372,7 @@ class ArticleRevisionsHandler(TemplatedRequestHandler):
 class ArticlesHandler(TemplatedRequestHandler):
     def get(self):
         self.render('articles.html',
-            articles=controller.get_articles(self, "-last_modified", 10, False))
+            articles=controller.get_articles(self, "title", include_content=False))
 
 class BlobHandler(webapp.RequestHandler):
     def get(self, blob_key):
