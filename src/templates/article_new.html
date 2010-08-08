@@ -16,13 +16,13 @@
         {% endif %}
         <form action="{{ request.path }}" enctype="multipart/form-data" method="post">
             <p>Article title</p>
-            <p><input name="title" maxlength="50" type="text" value="{{ request.POST.title }}" /></p>
+            <p><input name="title" size="42" maxlength="50" type="text" value="{{ request.POST.title }}" /></p>
             <p>Icon (optional)</p>
             <p><input name="icon" type="file" /></p>
             <p>Article description</p>
             <p><textarea cols="100" name="description" rows="5">{{ request.POST.description }}</textarea></p>
             <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
-            <p><textarea cols="100" name="content" rows="50">{{ request.POST.content }}</textarea></p>
+            <p><textarea cols="100" name="content" rows="40">{{ request.POST.content }}</textarea></p>
             <p><input type="submit" value="Save article" /></p>
         </form>
     </div>
