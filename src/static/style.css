@@ -111,10 +111,6 @@ pre {
     margin-left: 20px;
 }
 
-pre code {
-    white-space: normal;
-}
-
 /* Tabs */
 
 ul.tabs {
