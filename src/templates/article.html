@@ -52,8 +52,12 @@
         <div id="comments">
             <h2 class="nopadding">Comments ({{ comments|length }})</h2>
         {% for comment in comments %}
-            <p><span title="{{ comment.created }}">{{ comment.user_name }}:</span>
-            {{ comment.content }}</p>
+            <p>
+                <span class="username">{{ comment.user_name }}:</span>
+                <span title="{{ comment.created }}" class="timesince">({{ comment.created|timesince }} ago)</span>
+                <br />
+                {{ comment.content }}
+            </p>
         {% empty %}
             <p>Give us your feedback. Was this article helpful? What can be improved?</p>
         {% endfor %}

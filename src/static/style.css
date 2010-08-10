@@ -385,9 +385,13 @@ span.highlight {
     margin: 1.2em 0;
 }
 
-#comments p span {
-    display: block;
+#comments span.username {
     font-weight: bold;
+    padding-bottom: 3px;
+}
+
+#comments span.timesince {
+    color: #999;
     padding-bottom: 3px;
 }
 
