@@ -476,6 +476,10 @@ span.minus {
     padding: 0;
 }
 
+.tutorial_box li.first {
+    clear: left;
+}
+
 .tutorial_box li:hover {
     background: url('images/tutorial_box_bg.png') no-repeat;
 }
