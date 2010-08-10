@@ -353,7 +353,7 @@ def update_article(handler, id, title=None, description=None, content=None,
     try:
         if icon_data:
             icon_blob = create_icon(user, icon_data,
-                                    model.get_key(id, Article))
+                                    model.get_key(id, model.Article))
         else:
             icon_blob = None
         article = model.Article.update(id, user, title, description, content,
