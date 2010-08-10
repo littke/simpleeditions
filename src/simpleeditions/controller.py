@@ -207,7 +207,7 @@ def get_comments(handler, article_id):
 
     rpc = model.get_rpc()
     query = model.ArticleComment.all_for_article(article_id)
-    comments = query.order('-created').fetch(10, rpc=rpc)
+    comments = query.order('created').fetch(50, rpc=rpc)
     return [get_comment_dict(comment) for comment in comments]
 
 @public
