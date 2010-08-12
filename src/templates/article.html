@@ -36,11 +36,7 @@
         </div>
         <img src="{{ "images/divider.png"|static }}" class="divider-margin" alt="----------" />
         <div class="tutorial_share">
-            <script type="text/javascript">
-            tweetmeme_url = 'http://{{ DOMAIN }}/{{ article.id }}/{{ article.slug }}';
-            tweetmeme_style = 'compact';
-            </script>
-            <div id="tweetmeme_share"><script type="text/javascript" src="http://tweetmeme.com/i/scripts/button.js"></script></div>
+            <div id="twitter_share"><a href="http://twitter.com/share" class="twitter-share-button" data-text="{{ article.title }}" data-count="horizontal" data-via="SimpleEditions">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></div>
             <div id="facebook_share"><fb:like layout="button_count"></fb:like></div>
         </div>
         <div class="breaker" style="clear: left;"></div>

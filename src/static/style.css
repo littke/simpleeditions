@@ -425,12 +425,6 @@ span.highlight {
     top: -2px;
 }
 
-#tweetmeme_share {
-    position: relative;
-    top: 2px;
-    width: 60px;
-}
-
 /* Tutorial content tags */
 .pros, .cons {
     list-style-type: none;
