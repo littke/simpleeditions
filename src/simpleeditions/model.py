@@ -22,6 +22,7 @@ import base64
 import cgi
 from datetime import datetime, timedelta
 import hashlib
+import logging
 import os
 import re
 import time
@@ -227,6 +228,10 @@ class UserAuthType(polymodel.PolyModel):
         if not user:
             raise ValueError('Did not get a valid user.')
 
+        logging.info('Connecting %s using %s.' % (
+            user.display_name, cls.__name__))
+        logging.debug('%r %r' % (args, kwargs))
+
         cls.validate(handler, *args, **kwargs)
         return cls.add_to_user(handler, user, *args, **kwargs)
 
@@ -261,6 +266,10 @@ class UserAuthType(polymodel.PolyModel):
 
         User.validate(display_name, email)
         cls.validate(handler, *args, **kwargs)
+
+        logging.info('Registering %s using %s.' % (display_name, cls.__name__))
+        logging.debug('%r %r' % (args, kwargs))
+
         return db.run_in_transaction(UserAuthType._register,
             cls, handler, display_name, email, *args, **kwargs)
 
@@ -284,6 +293,9 @@ class FacebookAuth(UserAuthType):
 
     @staticmethod
     def _add_user_data(handler, data):
+        logging.info('Getting Facebook data through Graph API.')
+        logging.debug(data)
+
         graph = facebook.GraphAPI(data['access_token'])
         user = graph.get_object('me')
         data['uid'] = user['id']
@@ -352,6 +364,8 @@ class FacebookAuth(UserAuthType):
                     'You must log in with Facebook first.')
         elif extra_data and ('name' not in data):
             FacebookAuth._add_user_data(handler, data)
+        else:
+            logging.info('Got Facebook data from cookie.')
 
         return data
 
