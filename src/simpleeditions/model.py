@@ -185,6 +185,13 @@ class User(db.Model):
         except KeyError:
             raise ValueError('Unknown action %s.' % action)
 
+    def email_as_md5(self):
+        """Returns the MD5 hash of the user's e-mail (if any).
+
+        """
+        if self.email:
+            return hashlib.md5(self.email).hexdigest()
+
     def end_session(self):
         """Removes a session from the database, effectively logging the user
         out.
@@ -765,7 +772,7 @@ class Article(db.Model):
 
         comment = ArticleComment(
             parent=article_key, user=user, user_name=user.display_name,
-            content=content)
+            user_email_md5=user.email_as_md5(), content=content)
 
         try:
             comment.put()
@@ -801,6 +808,7 @@ class ArticleComment(db.Model):
     user = db.ReferenceProperty(User, collection_name='comments',
                                 required=True)
     user_name = db.StringProperty(required=True, indexed=False)
+    user_email_md5 = db.StringProperty(indexed=False)
     created = db.DateTimeProperty(auto_now_add=True)
     content = db.StringProperty(required=True, multiline=True, indexed=False)
 

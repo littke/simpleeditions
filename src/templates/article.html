@@ -49,6 +49,7 @@
             <h2 class="nopadding">Comments ({{ comments|length }})</h2>
         {% for comment in comments %}
             <p>
+                {% if comment.user_email_md5 %}<img alt="" src="http://www.gravatar.com/avatar/{{ comment.user_email_md5 }}?s=50&r=pg&d=identicon" />{% endif %}
                 <span class="username">{{ comment.user_name }}:</span>
                 <span title="{{ comment.created }}" class="timesince">({{ comment.created|timesince }} ago)</span>
                 <br />

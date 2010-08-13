@@ -72,8 +72,8 @@ def get_blob_dict(blob, include_data=False):
 
 def get_comment_dict(comment):
     return utils.get_dict(comment, (
-        'key.id', ('_entity.user.id', 'user_id'), 'user_name', 'created',
-        'content'))
+        'key.id', ('_entity.user.id', 'user_id'), 'user_name',
+        'user_email_md5', 'created', 'content'))
 
 def get_current_user(handler):
     try:
