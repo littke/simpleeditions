@@ -289,10 +289,11 @@ div.warning p {
     font-size: 11px;
 }
 
-#footer ul li.version {
+#footer div#extra_info {
     color: #777;
     float: right;
-    padding-right: 25px;
+    margin: 17px 25px 0 0;
+    font-size: 11px;
 }
 
 #footer ul li a {
