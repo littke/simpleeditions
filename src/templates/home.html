@@ -12,7 +12,7 @@
         <h1>Recent articles</h1>
         <ul class="tutorial_box">
         {% for article in articles %}
-        <li class="{% cycle first,second %}">
+        <li>
             <a href="/{{ article.id }}/{{ article.slug }}">
                 {% if article.icon %}
                 <img alt="" src="/content/{{ article.icon }}.png" />

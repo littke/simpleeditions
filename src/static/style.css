@@ -464,10 +464,7 @@ span.minus {
     width: 400px;
     margin: 0 0 10px;
     padding: 0;
-}
-
-.tutorial_box li.first {
-    clear: left;
+    height: 120px;
 }
 
 .tutorial_box li:hover {
