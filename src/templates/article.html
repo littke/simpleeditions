@@ -49,11 +49,11 @@
             <h2 class="nopadding">Comments ({{ comments|length }})</h2>
         {% for comment in comments %}
             <p>
-                <img alt="" src="http://www.gravatar.com/avatar/{{ comment.user_email_md5 }}?s=50&r=pg&d=identicon" />
+                <img class="padded-border left-align" alt="" src="http://www.gravatar.com/avatar/{{ comment.user_email_md5 }}?s=32&r=pg&d=mm" width="32" height="32" />
                 <span class="username">{{ comment.user_name }}:</span>
                 <span title="{{ comment.created }}" class="timesince">({{ comment.created|timesince }} ago)</span>
                 <br />
-                {{ comment.content }}
+                <span class="comment">{{ comment.content|linebreaksbr }}</span>
             </p>
         {% empty %}
             <p>Give us your feedback. Was this article helpful? What can be improved?</p>

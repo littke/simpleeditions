@@ -373,7 +373,12 @@ span.highlight {
 
 /* Article comments */
 
-#comments, #add_comment textarea {
+#comments {
+    width: 600px;
+}
+
+#add_comment textarea {
+    height: 100px;
     width: 600px;
 }
 
@@ -389,6 +394,11 @@ span.highlight {
 #comments span.timesince {
     color: #999;
     padding-bottom: 3px;
+}
+
+#comments span.comment {
+    margin-left: 46px;
+    display: block;
 }
 
 /* When the titles are in a list, we use h2s instead of h1s */
@@ -441,6 +451,17 @@ span.minus {
 
 .default-border {
     border: 1px solid #ddd;
+}
+
+.padded-border {
+    border: 1px solid #ddd;
+    padding: 2px;
+    background-color: white;
+}
+
+.left-align {
+    float: left;
+    margin: 3px 8px 10px 0;
 }
 
 .right-align {
