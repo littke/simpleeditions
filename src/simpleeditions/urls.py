@@ -37,9 +37,10 @@ urlpatterns = (
     (r'/new', view.NewArticleHandler),
 
     # Account control
+    (r'/join', view.RegisterHandler),
     (r'/login', view.LoginHandler),
     (r'/logout', view.LogOutHandler),
-    (r'/join', view.RegisterHandler),
+    (r'/user/(\d+)', view.UserHandler),
 
     # Uploaded files handler
     (r'/content/([a-f0-9]{32})(?:\.[a-z0-9]+)?', view.BlobHandler),

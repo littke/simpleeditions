@@ -23,7 +23,7 @@
             <a href="/"><img alt="SimpleEditions" src="{{ "images/logo.png"|static }}" id="logo" /></a>
             <div id="account">
                 {% if user %}
-                Logged in as <strong>{{ user.display_name }}</strong>. <a href="/logout?continue={{ request.path|urlencode }}">Log out</a>
+                Logged in as <a href="/user/{{ user.id }}"><strong>{{ user.display_name }}</strong></a>. <a href="/logout?continue={{ request.path|urlencode }}">Log out</a>
                 {% else %}
                 <a href="/login?continue={{ request.path|urlencode }}">Log in</a> | <a href="/join">Join</a>
                 {% endif %}

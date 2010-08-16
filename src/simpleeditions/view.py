@@ -535,6 +535,19 @@ class RegisterHandler(TemplatedRequestHandler):
         self.update_user()
         self.render('register_success.html')
 
+class UserHandler(TemplatedRequestHandler):
+    def get(self, user_id):
+        try:
+            user_id = int(user_id)
+            if self.user and self.user['id'] == user_id:
+                user = self.user
+            else:
+                user = controller.get_user_info(self, user_id)
+
+            self.render('user.html', user_info=user)
+        except simpleeditions.NotFoundError:
+            self.not_found()
+
 _static_pages = ['about.html']
 class StaticPageHandler(TemplatedRequestHandler):
     def get(self, page_slug):

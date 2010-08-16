@@ -93,7 +93,8 @@ def get_revision_dict(revision, include_content=False):
     return utils.get_dict(revision, props)
 
 def get_user_dict(user, include_private_values=False):
-    props = ['key.id', 'display_name', 'created', 'status']
+    props = ['key.id', 'display_name', 'created', 'status',
+             ('email_as_md5', 'email_md5')]
     if include_private_values:
         props += ['email']
     user_dict = utils.get_dict(user, props)

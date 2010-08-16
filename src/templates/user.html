@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block page_title %}{{ user_info.display_name }}{% endblock %}
+{% block page_content %}
+    <div class="contentbox_top"></div>
+    <div class="contentbox_middle">
+        <p class="profile-avatar left-align">
+            {% ifequal user.id user_info.id %}
+            <a href="http://en.gravatar.com/" target="_blank"><img class="padded-border" alt="" src="http://www.gravatar.com/avatar/{{ user_info.email_md5 }}?s=150&r=pg&d=mm" width="150" height="150" /><br />Change at Gravatar.com</a>
+            {% else %}
+            <img class="padded-border" alt="" src="http://www.gravatar.com/avatar/{{ user_info.email_md5 }}?s=150&r=pg&d=mm" width="150" height="150" />
+            {% endifequal %}
+        </p>
+        <h2>{{ user_info.display_name }}</h2>
+        <table class="user-details">
+            {% if user_info.email %}
+            <tr><th rowspan="2">E-mail</th><td>{{ user_info.email }}</td></tr>
+            <tr class="info"><td>(Used for <a href="http://en.gravatar.com/" target="_blank">Gravatar</a>)</td></tr>
+            {% endif %}
+            <tr><th>Joined</th><td>{{ user_info.created|timesince }} ago</td></tr>
+        </table>
+        <div class="breaker"></div>
+    </div>
+    <div class="contentbox_bottom"></div>
+{% endblock %}

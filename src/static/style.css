@@ -95,6 +95,19 @@ table {
     border-spacing: 0;
 }
 
+table.user-details td, table.user-details th {
+    padding: 0;
+}
+
+table.user-details th {
+    vertical-align: top;
+    width: 70px;
+}
+
+table.user-details tr.info {
+    font-size: 10px;
+}
+
 table td, table th {
     padding: 4px;
 }
@@ -185,6 +198,11 @@ ul.tabs .selected a,
 
 .nopadding {
     padding: 0;
+}
+
+.profile-avatar {
+    margin-right: 20px !important;
+    text-align: center;
 }
 
 div.warning {
