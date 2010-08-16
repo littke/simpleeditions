@@ -310,12 +310,18 @@ div.warning p {
 #footer div#extra_info {
     color: #777;
     float: right;
-    margin: 17px 25px 0 0;
+    margin: 13px 25px 0 0;
     font-size: 11px;
 }
 
 #footer ul li a {
     color: #565656;
+}
+
+#twitter_icon {
+    position: relative;
+    top: 4px;
+    left: -2px;
 }
 
 /* Content */
