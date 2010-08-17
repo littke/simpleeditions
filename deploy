@@ -5,7 +5,7 @@ if [ -z $1 ]; then
 fi
 
 git_current_branch() {
-    git branch | grep '^\* ' | grep -v 'no branch' | sed 's/^* //g'
+    git branch --no-color | grep '^\* ' | grep -v 'no branch' | sed 's/^* //g'
 }
 
 cat src/app.yaml.template | sed "s/\\\$APPNAME/$1/g" | sed "s/\\\$BRANCH/$(git_current_branch)/g" > src/app.yaml
