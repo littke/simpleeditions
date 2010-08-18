@@ -157,10 +157,10 @@ class User(db.Model):
             raise simpleeditions.RegisterError(
                 'Display name may not be any longer than 25 characters.')
 
-        if not re.match('[a-zA-Z0-9 ]+$', display_name):
+        if not re.match('[a-zA-Z][a-zA-Z0-9 ]+$', display_name):
             raise simpleeditions.RegisterError(
                 'The display name can only contain letters, numbers and '
-                'spaces.')
+                'spaces. The first character must be a letter.')
 
         qry = User.all(keys_only=True).filter('canonical_name',
             User.get_canonical_name(display_name))
