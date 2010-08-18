@@ -49,8 +49,10 @@
             <h2 class="nopadding">Comments ({{ comments|length }})</h2>
         {% for comment in comments %}
             <p>
-                <img class="padded-border left-align" alt="" src="http://www.gravatar.com/avatar/{{ comment.user_email_md5 }}?s=32&r=pg&d=mm" width="32" height="32" />
-                <span class="username">{{ comment.user_name }}:</span>
+                <a href="/user/{{ comment.user_canonical_name }}">
+                    <img class="padded-border left-align" alt="" src="http://www.gravatar.com/avatar/{{ comment.user_email_md5 }}?s=32&r=pg&d=mm" width="32" height="32" />
+                    <span class="username">{{ comment.user_name }}:</span>
+                </a>
                 <span title="{{ comment.created }}" class="timesince">({{ comment.created|timesince }} ago)</span>
                 <br />
                 <span class="comment">{{ comment.content|linebreaksbr }}</span>
