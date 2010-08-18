@@ -95,7 +95,7 @@ def get_rpc():
     return db.create_rpc(deadline=5, read_policy=db.EVENTUAL_CONSISTENCY)
 
 class User(db.Model):
-    display_name = db.StringProperty(required=True)
+    display_name = db.StringProperty(required=True, indexed=False)
     canonical_name = db.StringProperty(required=True)
     email = db.EmailProperty()
     created = db.DateTimeProperty(auto_now_add=True)
@@ -162,7 +162,7 @@ class User(db.Model):
                 'The display name can only contain letters, numbers and '
                 'spaces.')
 
-        qry = User.all(keys_only=True).filter('display_name',
+        qry = User.all(keys_only=True).filter('canonical_name',
             User.get_canonical_name(display_name))
         if qry.get():
             raise simpleeditions.RegisterError(
