@@ -14,7 +14,7 @@
         <table class="user-details">
             {% if user_info.email %}
             <tr><th rowspan="2">E-mail</th><td>{{ user_info.email }}</td></tr>
-            <tr class="info"><td>(Used for <a href="http://en.gravatar.com/" target="_blank">Gravatar</a>)</td></tr>
+            <tr class="info"><td>Used for <a href="http://en.gravatar.com/" target="_blank">Gravatar</a>, not visible to anyone else.</td></tr>
             {% endif %}
             <tr><th>Joined</th><td>{{ user_info.created|timesince }} ago</td></tr>
         </table>
