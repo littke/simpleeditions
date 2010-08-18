@@ -3,18 +3,31 @@
 body {
     margin: 0;
     padding: 0;
-    font: 12px/18px "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
-    font-size: 12px;
+    font: 13px/18px "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
     color: #252525;
     text-align: center;
-    background-color: #e1e1e1;
+    background: url('images/bg.png');
+    background-color: #d9d2ca;
 }
 
 h1, h2, h3, h4 {
-    margin: 0 0 0.25em;
-    padding-top: 0.9em;
+    font-family: "Cantarell", "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
+    margin: 0 0 0.25em 0;
+    padding-top: 0.3em;
     font-weight: normal;
     line-height: 1;
+    position: relative;
+    left: -2px;
+}
+
+/* Reset IE6/7's abnormal font-size for h1s, not sure why it occurs */
+.ie6 h1, .ie7 h1 { font-size: 26px; }
+
+/* Don't use Cantarell for IE, doesn't look good */
+.ie6 h1, .ie6 h2, .ie6 h3, .ie6 h4,
+.ie7 h1, .ie7 h2, .ie7 h3, .ie7 h4,
+.ie8 h1, .ie8 h2, .ie8 h3, .ie8 h4 {
+    font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
 }
 
 h1 {
@@ -70,17 +83,12 @@ a {
     text-decoration: none;
 }
 
-a:link, a:active {
-    color: #0088CC;
-}
-
-a:visited {
-    color: #406e8d;
+a:link, a:active, a:visited {
+    color: #ae6021;
 }
 
 a:link:hover, a:active:hover, a:visited:hover {
-    color: #0c567c;
-    border-color: #999;
+    color: #d26b19;
 }
 
 table .odd td {
@@ -122,6 +130,16 @@ li {
 
 pre {
     margin-left: 20px;
+}
+
+.contentbox_divider, .divider {
+    background: url('images/divider.png') repeat;
+    margin: 8px 0;
+    height: 2px;
+}
+
+.contentbox_divider {
+    background: url('images/contentbox_divider.png') repeat;
 }
 
 /* Tabs */
@@ -220,29 +238,36 @@ div.warning p {
 
 #headercontainer {
     background: url('images/header_bg.png') repeat-x;
-    background-color: black;
+    background-color: #373632;
 }
 
 #header {
-    width: 860px;
+    width: 880px;
     margin: 0 auto;
     text-align: left;
-    height: 103px;
+    height: 75px;
     position: relative;
 }
 
 #logo {
     float: left;
     position: relative;
-    top: 27px;
-    left: 25px;
+    left: 16px;
+    color: #373632;
+}
+
+#slogan {
+    float: left;
+    position: relative;
+    left: 35px;
+    color: #373632;
 }
 
 #account {
     float: left;
     position: absolute;
-    right: 20px;
-    top: 49px;
+    right: 35px;
+    top: 28px;
     color: #ddd;
 }
 
@@ -251,71 +276,56 @@ div.warning p {
 }
 
 #account a:hover {
-    border-bottom: 1px white dotted;
-}
-
-/* Navigation */
-
-#navigation {
-    text-align: left;
-    background: url('images/nav_bg.png') no-repeat;
-    height: 50px;
-    width: 860px;
-    margin: 13px auto 0;
-}
-
-#navigation ul {
-    margin: 0;
-    padding: 15px 0 0 17px;
-    list-style-type: none;
-}
-
-#navigation ul li {
-    margin: 0 10px;
-    display: inline;
-}
-
-#navigation ul li a, #footer ul li a {
-    color: #363636;
-    text-decoration: none;
-    text-shadow: 0px 1px 1px #fff;
-    -khtml-text-shadow: 0px 1px 1px #fff;
-    -moz-text-shadow: 0px 1px 1px #fff;
-}
-
-#navigation ul li a:hover, #footer ul li a:hover {
-    color: #000;
-    border-bottom: 1px black dotted;
+    color: #D26B19;
 }
 
 #footer {
-    margin: 0 auto 20px;
-    width: 860px;
+    margin: 0 auto;
     background: url('images/footer.png') no-repeat;
     text-align: left;
-    height: 53px;
+    padding: 10px 45px 10px 25px;
+    width: 810px;
+    height: 193px;
+    position: relative;
+    top: 25px;
+}
+
+#contributor_photos {
+    float: left;
+    margin: 10px 20px 0 10px;
+    width: 132px;
+}
+
+#footer p {
+    color: #333;
+    width: 640px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-spacing: 1.3px;
+    margin-top: 12px;
 }
 
 #footer ul {
     list-style-type: none;
-    padding: 17px 0 0 250px;
 }
 
 #footer ul li {
-    margin: 0 5px;
+    margin: 0 10px 0 0;
     display: inline;
-    font-size: 11px;
 }
 
 #footer div#extra_info {
     color: #777;
     float: right;
-    margin: 13px 25px 0 0;
-    font-size: 11px;
+    margin: 0 35px 0 0;
 }
 
-#footer ul li a {
+#footer a {
     color: #565656;
+}
+
+#footer a:hover {
+    color: #D26B19;
 }
 
 #twitter_icon {
@@ -327,15 +337,20 @@ div.warning p {
 /* Content */
 
 #contentcontainer {
+    padding: 20px 0 0 0;
+    background: url('images/contentcontainer_bg.png') repeat;
+}
+
+#content {
     text-align: left;
     margin: 0 auto;
-    width: 860px;
+    width: 880px;
     line-height: 1.75;
     word-spacing: 1.3px;
 }
 
-#contentcontainer textarea {
-    width: 800px;
+#content textarea {
+    width: 735px;
 }
 
 #intro_box {
@@ -353,20 +368,17 @@ div.warning p {
 }
 
 .contentbox_top {
-    height: 15px;
-    margin: 4px 6px 0 0;
+    height: 24px;
     background: url('images/contentbox_top.png') no-repeat;
 }
 
 .contentbox_middle {
     background: url('images/contentbox_middle.png') repeat-y;
-    padding: 12px 25px 1px 25px;
-    margin: 0 6px 0 0;
+    padding: 0px 60px 20px 60px;
 }
 
 .contentbox_bottom {
-    height: 14px;
-    margin: 0 6px 0 0;
+    height: 30px;
     background: url('images/contentbox_bottom.png') no-repeat;
 }
 
@@ -407,6 +419,14 @@ span.highlight {
     width: 600px;
 }
 
+#add_comment .submit {
+    margin-top: 10px;
+}
+
+#add_comment h3 {
+    margin-bottom: 10px;
+}
+
 #comments p {
     margin: 1.2em 0;
 }
@@ -442,8 +462,12 @@ span.highlight {
     padding-right: 10px;
 }
 
-.tutorial_content {
-    width: 600px;
+.tutorial_content a:visited:hover {
+    color: #D26B19;
+}
+
+.tutorial_content a:visited {
+    color: #ae804e;
 }
 
 .tutorial_share {
@@ -495,47 +519,110 @@ span.minus {
 }
 
 /* Home */
-#recent_tutorials h2 a {
-    color: #252525;
+
+#recent_articles {
+    padding-bottom: 10px;
 }
 
-.tutorial_box {
+#filter {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-.tutorial_box li {
+#filter li {
     float: left;
-    width: 400px;
-    margin: 0 0 10px;
+    margin: 0 0 5px 17px;
+    color: #444;
+}
+
+#filter_divider {
+    margin: 15px 0;
+}
+
+.article_list {
+    list-style-type: none;
+    margin: 0;
     padding: 0;
-    height: 120px;
 }
 
-.tutorial_box li:hover {
-    background: url('images/tutorial_box_bg.png') no-repeat;
+li.article_box {
+    background: url('images/article_box.png') no-repeat;
+    float: left;
+    width: 420px;
+    margin: 0 20px 10px 0;
+    padding: 0;
+    height: 148px;
+    line-height: 1.5;
 }
 
-.tutorial_box a {
+li.article_box:hover {
+    background: url('images/article_box_hover.png') no-repeat;
+}
+
+li.article_box a:link, li.article_box a:visited, li.article_box a:active {
     display: block;
     padding: 11px 15px 15px;
+    color: #252525;
 }
 
-.tutorial_box .title {
+li.article_box a:hover {
+    color: #151515;
+}
+
+li.article_box a span.title {
+    font-family: "Cantarell", "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
+    position: relative;
+    left: -1px;
+    line-height: 1.15;
+    text-shadow: 0px 1px 1px #fff;
+    -khtml-text-shadow: 0px 1px 1px #fff;
+    -moz-text-shadow: 0px 1px 1px #fff;
+}
+
+/* Don't use Cantarell for IE, doesn't look good */
+.ie6 li.article_box a span.title, 
+.ie7 li.article_box a span.title,
+.ie8 li.article_box a span.title {
+    font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
+    font-size: 20px;
+}
+
+h1 {
+    padding-top: 0;
+    text-shadow: 0px 1px 1px #fff;
+    -khtml-text-shadow: 0px 1px 1px #fff;
+    -moz-text-shadow: 0px 1px 1px #fff;
+}
+
+h2 {
+    font-weight: normal;
     font-size: 1.618em;
-    line-height: 1.4em;
-}
-
-.tutorial_box .snippet {
-    margin-left: 61px;
-    display: block;
+    line-height: 1.3;
     color: #333;
 }
 
-.tutorial_box img {
-    float: left;
-    margin: 4px 10px 0 0;
+
+h3 {
+    font-size: 1.1em;
+    text-transform: uppercase;
+}
+
+.article_box .title {
+    font-size: 1.70em;
+    line-height: 1.2em;
+}
+
+.article_box .snippet {
+    margin-top: 5px;
+    width: 330px;
+    display: block;
+    color: #353535;
+}
+
+.article_box img {
+    float: right;
+    margin: 2px 0 0 8px;
 }
 
 /* Register and login */

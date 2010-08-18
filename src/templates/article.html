@@ -34,7 +34,7 @@
         <div class="tutorial_content">
             {{ article.html|safe }}
         </div>
-        <img src="{{ "images/divider.png"|static }}" class="divider-margin" alt="----------" />
+        <div class="contentbox_divider"></div>
         <div class="tutorial_share">
             <div id="twitter_share"><a href="http://twitter.com/share" class="twitter-share-button" data-text="{{ article.title }}" data-count="horizontal" data-via="SimpleEditions">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></div>
             <div id="facebook_share"><fb:like layout="button_count"></fb:like></div>
@@ -61,8 +61,8 @@
             <p>Give us your feedback. Was this article helpful? What can be improved?</p>
         {% endfor %}
         {% if not user %}
-            <img src="{{ "images/divider.png"|static }}" class="divider-margin" alt="" />
-            <p><a href="/login">Login</a> or <a href="/join">join SimpleEditions</a> to participate.</a></p>
+            <div class="contentbox_divider"></div>
+            <p><a href="/login">Login</a> or <a href="/join">join SimpleEditions</a> to participate.</p>
         {% endif %}
         </div>
         {% if user.can_comment %}
@@ -79,7 +79,7 @@
             </div>
             {% endif %}
             <textarea name="comment">{% if errors %}{{ request.POST.comment }}{% endif %}</textarea><br/>
-            <input type="submit" value="Post comment" />
+            <input class="submit" type="submit" value="Post comment" />
         </form>
         {% endif %}
     </div>

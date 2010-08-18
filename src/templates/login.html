@@ -25,7 +25,7 @@
             <p><input class="breaker" id="submit" type="submit" value="Log in" tabindex="3" /></p>
             <div class="breaker"></div>
         </form>
-        <img src="{{ "images/divider.png"|static }}" class="divider-margin" alt="-- Divider --"/>
+        <div class="contentbox_divider"></div>
         <div id="third_party">
             <p>Or login with:</p>
             <form action="{{ request.path }}{% if request.query_string %}?{{ request.query_string }}{% endif %}" method="post">

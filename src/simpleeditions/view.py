@@ -435,6 +435,13 @@ class HomeHandler(TemplatedRequestHandler):
         self.render('home.html',
             articles=articles)
 
+class PopularHandler(TemplatedRequestHandler):
+    def get(self):
+        articles = controller.get_articles(self, order='-views', limit=10)
+
+        self.render('popular.html',
+            articles=articles)
+
 class LoginHandler(TemplatedRequestHandler):
     def get(self):
         if self.do_get_post():

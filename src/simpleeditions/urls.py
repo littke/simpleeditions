@@ -23,6 +23,7 @@ from simpleeditions import view
 urlpatterns = (
     # Content pages
     (r'/', view.HomeHandler),
+    (r'/popular', view.PopularHandler),
     (r'/(about)', view.StaticPageHandler),
 
     # List of articles
@@ -37,7 +38,7 @@ urlpatterns = (
     (r'/new', view.NewArticleHandler),
 
     # Account control
-    (r'/join', view.RegisterHandler),
+    (r'/sign-up', view.RegisterHandler),
     (r'/login', view.LoginHandler),
     (r'/logout', view.LogOutHandler),
     (r'/user/([a-z][a-z\d]*)', view.UserHandler),

@@ -9,6 +9,7 @@
     <title>{% block page_title %}Untitled page{% endblock %}{% block page_title_suffix %} – SimpleEditions{% endblock %}</title>
     <link href="{{ "style.css"|static }}" rel="stylesheet" type="text/css" />
     <link href="{{ "images/favicon.ico"|static }}" rel="shortcut icon" />
+    <link href='http://fonts.googleapis.com/css?family=Cantarell:regular,bold' rel='stylesheet' type='text/css' />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="fb:app_id" content="{{ FACEBOOK_APP_ID }}" />
     <meta name="og:site_name" content="SimpleEditions" />
@@ -17,40 +18,48 @@
     high quality articles. We're an open source project that anyone can enjoy and participate in.{% endblock %}" />
     {% block page_head %}{% endblock %}
 </head>
-<body>
+<!--[if lt IE 7 ]> <body class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <body class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <body class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <body class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <body> <!--<![endif]-->
     <div id="headercontainer">
         <div id="header">
             <a href="/"><img alt="SimpleEditions" src="{{ "images/logo.png"|static }}" id="logo" /></a>
+            <img src="{{ "images/slogan.png"|static }}" id="slogan" alt="we make tutorials together" />
             <div id="account">
                 {% if user %}
                 Logged in as <a href="/user/{{ user.canonical_name }}"><strong>{{ user.display_name }}</strong></a>. <a href="/logout?continue={{ request.path|urlencode }}">Log out</a>
                 {% else %}
-                <a href="/login?continue={{ request.path|urlencode }}">Log in</a> | <a href="/join">Join</a>
+                <a href="/login?continue={{ request.path|urlencode }}">Login</a> | <a href="/sign-up">Sign up</a>
                 {% endif %}
             </div>
         </div>
     </div>
-    <div id="navigation">
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/articles">Articles</a></li>
-            <li><a href="/about">About</a></li>
-        </ul>
-    </div>
-    <div id="contentcontainer">{% block page_content %}{% endblock %}</div>
-    <div id="footer">
-        <div id="extra_info">
-            <img src="{{ "images/twitter_icon.png"|static }}" id="twitter_icon" />
-            <a href="http://www.twitter.com/SimpleEditions" target="_blank">Follow us on Twitter</a>
-            | v1.1
+    <div id="contentcontainer">
+        <div id="content">
+            {% block page_content %}{% endblock %}
         </div>
-        <ul>
-            <li><a href="/about">About</a></li>
-            <li><a href="/about#contact">Contact</a></li>
-            <li><a href="/about#licenses">Open source</a></li>
-            <li><a href="/about#licenses">Copyleft</a></li>
-            </li>
-        </ul>
+    </div>
+    <div id="footercontainer">
+        <div id="footer">
+            <img id="contributor_photos" alt="Photos of contributors" src="{{ "images/contributor_photos.png"|static }}" />
+            <h2>Your expertise is needed</h2>
+            <p>SimpleEditions is a tutorial community that we create to together. <br />
+            We gather the experience of thousands of individuals and convert it into 
+            high quality, easy to understand tutorials.</p>
+            <div id="extra_info">
+                <img src="{{ "images/twitter_icon.png"|static }}" alt="Twitter icon" id="twitter_icon" />
+                <a href="http://www.twitter.com/SimpleEditions" target="_blank">Follow us on Twitter</a>
+                | v1.1
+            </div>
+            <ul>
+                <li><a href="/sign-up">Sign up</a></li>
+                <li><a href="/about">Learn more</a></li>
+                <li><a href="/about#contact">Contact</a></li>
+                <li><a href="/about#licenses">Open source</a></li>
+            </ul>
+        </div>
     </div>
     <!-- Google Analytics -->
     <script type="text/javascript">
