@@ -93,7 +93,7 @@ def get_revision_dict(revision, include_content=False):
     return utils.get_dict(revision, props)
 
 def get_user_dict(user, include_private_values=False):
-    props = ['key.id', 'display_name', 'created', 'status',
+    props = ['key.id', 'display_name', 'canonical_name', 'created', 'status',
              ('email_as_md5', 'email_md5')]
     if include_private_values:
         props += ['email']
@@ -256,12 +256,16 @@ def get_revisions(handler, article_id):
 @public
 def get_user_info(handler, id=None):
     """Returns information about a user. The current user is returned if no id
-    is specified.
+    is specified. The id can also be the canonical display name of the user.
 
     """
     if id:
         rpc = model.get_rpc()
-        user = model.User.get_by_id(id, rpc=rpc)
+        if isinstance(id, (int, long)):
+            user = model.User.get_by_id(id, rpc=rpc)
+        else:
+            user = model.User.all().filter('canonical_name', id).get(rpc=rpc)
+
         if not user:
             raise simpleeditions.UserNotFoundError(
                 'Could not find user with id %r.' % id)

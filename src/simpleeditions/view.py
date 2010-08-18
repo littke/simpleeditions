@@ -538,10 +538,15 @@ class RegisterHandler(TemplatedRequestHandler):
 class UserHandler(TemplatedRequestHandler):
     def get(self, user_id):
         try:
-            user_id = int(user_id)
-            if self.user and self.user['id'] == user_id:
+            user = None
+            if user_id.isdigit():
+                user_id = int(user_id)
+                if self.user and self.user['id'] == user_id:
+                    user = self.user
+            elif self.user and self.user['canonical_name'] == user_id:
                 user = self.user
-            else:
+
+            if not user:
                 user = controller.get_user_info(self, user_id)
 
             self.render('user.html', user_info=user)

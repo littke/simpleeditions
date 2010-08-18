@@ -40,6 +40,7 @@ urlpatterns = (
     (r'/join', view.RegisterHandler),
     (r'/login', view.LoginHandler),
     (r'/logout', view.LogOutHandler),
+    (r'/user/([a-z][a-z\d]*)', view.UserHandler),
     (r'/user/(\d+)', view.UserHandler),
 
     # Uploaded files handler
