@@ -40,6 +40,7 @@ urlpatterns = (
 
     # Account control
     (r'/sign-up', view.RegisterHandler),
+    (r'/sign-up/success', view.RegisterSuccessHandler),
     (r'/login', view.LoginHandler),
     (r'/logout', view.LogOutHandler),
     (r'/user/([a-z][a-z\d]*)', view.UserHandler),

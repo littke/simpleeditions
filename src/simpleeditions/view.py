@@ -499,6 +499,11 @@ class NotFoundHandler(TemplatedRequestHandler):
 
 class RegisterHandler(TemplatedRequestHandler):
     def get(self):
+        # Make sure user isn't logged in
+        user = self.user_obj
+        if user:
+            self.redirect('/')
+
         if self.do_get_post():
             return
 
@@ -540,7 +545,17 @@ class RegisterHandler(TemplatedRequestHandler):
         # Renew user info, since the user just registered and should be logged
         # in.
         self.update_user()
-        self.render('register_success.html')
+        # User successfully logged in.
+        self.redirect('/sign-up/success')
+
+class RegisterSuccessHandler(TemplatedRequestHandler):
+    def get(self):
+        user = self.user_obj
+        if user:
+            self.render('register_success.html')
+        else:
+            self.redirect('/sign-up')
+    post = get
 
 class UserHandler(TemplatedRequestHandler):
     def get(self, user_id):
