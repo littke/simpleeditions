@@ -22,8 +22,9 @@ from simpleeditions import view
 
 urlpatterns = (
     # Content pages
-    (r'/', view.HomeHandler),
+    (r'/', view.PopularHandler),
     (r'/popular', view.PopularHandler),
+    (r'/recent', view.RecentHandler),
     (r'/(about)', view.StaticPageHandler),
 
     # List of articles
