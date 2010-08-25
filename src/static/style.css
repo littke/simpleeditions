@@ -146,7 +146,7 @@ pre {
 
 ul.tabs {
     border-bottom: 1px solid #DDD;
-    height: 26px;
+    height: 28px;
     line-height: 1;
     list-style: none;
     padding: 0;
@@ -164,8 +164,8 @@ ul.tabs li {
 
 ul.tabs li a {
     display: block;
-    background: #EBEBEB;
-    border: 1px solid #DDD;
+    background: #ebe8e1;
+    border: 1px solid #CCC;
     border-bottom: 0;
     border-top-left-radius: 5px;
     -khtml-border-top-left-radius: 5px;
