@@ -542,9 +542,6 @@ class RegisterHandler(TemplatedRequestHandler):
 
             return
 
-        # Renew user info, since the user just registered and should be logged
-        # in.
-        self.update_user()
         # User successfully logged in.
         self.redirect('/sign-up/success')
 
