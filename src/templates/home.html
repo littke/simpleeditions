@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block page_title %}SimpleEditions - Tutorials made simple{% endblock %}
+{% block page_title_suffix %}{% endblock %}
+{% block page_content %}
+    <div id="recent_articles" class="article_list_container">
+        <h1>Recent</h1>
+        <a class="more" href="/recent">Show all</a>
+        <div id="article_divider" class="divider breaker"></div>
+
+        <ul class="article_list">
+        {% for article in recent_articles %}
+            {% include "include/list_article.html" %}
+        {% endfor %}
+        </ul>
+        <div class="breaker"></div>
+    </div>
+    <div id="popular_articles" class="article_list_container">
+        <h1>Popular</h1>
+        <a class="more" href="/recent">Show all</a>
+        <div id="article_divider" class="divider breaker"></div>
+
+        <ul class="article_list">
+        {% for article in popular_articles %}
+            {% include "include/list_article.html" %}
+        {% endfor %}
+        </ul>
+        <div class="breaker"></div>
+    </div>
+        {% if user.can_create_article %}
+        {% endif %}
+{% endblock %}

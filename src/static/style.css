@@ -520,23 +520,28 @@ span.minus {
 
 /* Home */
 
-#recent_articles {
+.article_list_container {
     padding-bottom: 10px;
 }
 
-#filter {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-#filter li {
+.article_list_container h1 {
     float: left;
-    margin: 0 0 5px 17px;
+    margin: 0 0 10px 17px;
     color: #444;
+    font-size: 13px;
+    text-shadow: 0 0 0;
+    font-weight: bold;
+    font-family: "Lucida Grande";
 }
 
-#filter_divider {
+.article_list_container a.more {
+    float: right;
+    margin: 0 35px 0 0;
+    padding: 0;
+    line-height: 13px;
+}
+
+#article_divider {
     margin: 15px 0;
 }
 

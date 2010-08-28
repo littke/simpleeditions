@@ -428,16 +428,25 @@ class EditArticleHandler(TemplatedRequestHandler):
         # Some kind of error has occurred; show the edit page again.
         self.get(article_id)
 
+class HomeHandler(TemplatedRequestHandler):
+    def get(self):
+        recent_articles = controller.get_articles(self, order='-created', limit=2)
+        popular_articles = controller.get_articles(self, order='-views', limit=4)
+
+        self.render('home.html',
+            popular_articles=popular_articles,
+            recent_articles=recent_articles)
+
 class RecentHandler(TemplatedRequestHandler):
     def get(self):
-        articles = controller.get_articles(self, order='-created', limit=10)
+        articles = controller.get_articles(self, order='-created', limit=30)
 
         self.render('recent.html',
             articles=articles)
 
 class PopularHandler(TemplatedRequestHandler):
     def get(self):
-        articles = controller.get_articles(self, order='-views', limit=10)
+        articles = controller.get_articles(self, order='-views', limit=30)
 
         self.render('popular.html',
             articles=articles)
