@@ -484,6 +484,10 @@ span.highlight {
     top: -2px;
 }
 
+#more_articles {
+    float: right;
+}
+
 /* Tutorial content tags */
 .pros, .cons {
     list-style-type: none;
