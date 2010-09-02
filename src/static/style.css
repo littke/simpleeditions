@@ -545,6 +545,10 @@ span.minus {
     line-height: 13px;
 }
 
+#add_new_tutorial {
+    padding: 0 35px 20px 13px;
+}
+
 #article_divider {
     margin: 15px 0;
 }

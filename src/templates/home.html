@@ -26,6 +26,11 @@
         </ul>
         <div class="breaker"></div>
     </div>
-        {% if user.can_create_article %}
-        {% endif %}
+
+    {% if user.can_create_article %}
+    <div id="add_new_tutorial">
+        <a href="/new">+ Write a new tutorial</a>
+    </div>
+    {% endif %}
+
 {% endblock %}
