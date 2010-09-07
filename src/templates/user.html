@@ -21,4 +21,15 @@
         <div class="breaker"></div>
     </div>
     <div class="contentbox_bottom"></div>
+    <div class="article_list_container">
+    {% if user_articles %}
+    <h2>Articles by {% ifequal user_info.id user.id %}you{% else %}{{ user_info.display_name }}{% endifequal %}</h2>
+        <ul class="article_list">
+            {% for article in user_articles %}
+                {% include "include/list_article.html" %}
+            {% endfor %}
+        </ul>
+        <div class="breaker"></div>
+    </div>
+    {% endif %}
 {% endblock %}

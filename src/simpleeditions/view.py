@@ -577,7 +577,8 @@ class UserHandler(TemplatedRequestHandler):
             if not user:
                 user = controller.get_user_info(self, user_id)
 
-            self.render('user.html', user_info=user)
+            articles = controller.get_articles_by_user(self, user['id'])
+            self.render('user.html', user_info=user, user_articles=articles)
         except simpleeditions.NotFoundError:
             self.not_found()
 

@@ -49,7 +49,7 @@ def create_icon(user, icon_data, article=None):
 def get_article_dict(article, include_content=False):
     props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
              ('_entity.icon.name', 'icon'), 'created', 'last_modified',
-             'edits', 'views', 'slug', 'title', 'description']
+             'edits', 'views', 'slug', 'title', 'description', 'published']
     if include_content:
         props += ['content', 'html']
     return utils.get_dict(article, props)
@@ -184,10 +184,30 @@ def get_article(handler, id, include_content=False, view=False):
     return get_article_dict(article, include_content)
 
 @public
-def get_articles(handler, order, limit=50, include_content=False):
+def get_articles(handler, order, limit=50, include_content=False,
+        include_unpublished=False):
+    query = model.Article.all().order(order)
+    if not include_unpublished:
+        query = query.filter('published', True)
+
     rpc = model.get_rpc()
-    articles = model.Article.all().order(order).fetch(limit, rpc=rpc)
+    articles = query.fetch(limit, rpc=rpc)
     return [get_article_dict(article, include_content) for article in articles]
+
+@public
+def get_articles_by_user(handler, user_id):
+    if not isinstance(user_id, (int, long)):
+        raise TypeError('User id must be an integer')
+
+    user_key = model.get_key(user_id, model.User)
+
+    rpc = model.get_rpc()
+    articles = model.Article.all() \
+        .filter('user', user_key) \
+        .order('-last_modified') \
+        .fetch(50, rpc=rpc)
+
+    return [get_article_dict(article) for article in articles]
 
 @public
 def get_auth_user_info(handler, auth_type, **kwargs):

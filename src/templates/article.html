@@ -13,6 +13,11 @@
 {% block page_content %}
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
+        {% if not article.published %}
+        <div class="warning">
+            <p>This article has not been published yet! This means it will not show up in any lists, but you can still share the link.</p>
+        </div>
+        {% endif %}
         <div class="tutorial_header">
             {% if article.icon %}
             <img alt="" src="/content/{{ article.icon }}.png" />

@@ -111,9 +111,11 @@ class User(db.Model):
         'comment':
             lambda user: True,
         'create-article':
-            lambda user: user.status in ('contributor', 'staff', 'admin'),
+            lambda user: True,
         'edit-any-article':
             lambda user: user.status in ('staff', 'admin'),
+        'publish-article':
+            lambda user: user.status in ('contributor', 'staff', 'admin'),
         'upload-files':
             lambda user: user.status in ('contributor', 'staff', 'admin'),
     }
@@ -615,6 +617,7 @@ class Article(db.Model):
                                     indexed=False)
     content = db.TextProperty(required=True)
     html = db.TextProperty(required=True)
+    published = db.BooleanProperty(default=False)
 
     @staticmethod
     def _save(user, title=None, description=None, content=None, icon=None,
