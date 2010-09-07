@@ -56,7 +56,7 @@
                 </a>
                 <span title="{{ comment.created }}" class="timesince">({{ comment.created|timesince }} ago)</span>
                 <br />
-                <span class="comment">{{ comment.content|linebreaksbr }}</span>
+                <span class="comment">{{ comment.content|urlize|linebreaksbr }}</span>
             </p>
         {% empty %}
             <p>Give us your feedback. Was this article helpful? What can be improved?</p>
