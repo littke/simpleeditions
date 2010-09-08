@@ -11,16 +11,28 @@
 {% block page_title %}{{ article.title }}{% endblock %}
 {% block description %}{{ article.description }}{% endblock %}
 {% block page_content %}
+    {% if not article.published %}
+    <div class="contentbox_top"></div>
+    <div class="contentbox_middle" id="under_construction">
+        <img src="{{ "images/draft.png"|static }}" />
+        <h2>Under construction</h2>
+        {% if user.can_publish_article %}
+        <p>This article is a still draft. If you believe it meets the SimpleEdition standards, publish it to make it appear on the front page.</p>
+        <form action="/4/manage/publish" method="post"><button>Publish article</button></form>
+        <div class="breaker"></div>
+        {% else %}
+        <p>This article is a draft and may need additional work before it meets the SimpleEdition standards. <br/>
+        If you know something about the topic, consider contributing by posting a comment.</p>
+            {% if user %}
+        <p class="small">This message will disappear and the article will be featured on the front page
+        as soon as a moderator finds it ready for publishing.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="contentbox_bottom"></div>
+    {% endif %}
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
-        {% if not article.published %}
-        <div class="warning">
-            <p>This article has not been published yet! This means it will not show up in any lists, but you can still share the link.</p>
-            {% if user.can_publish_article %}
-            <p><form action="/4/manage/publish" method="post"><button>Publish article now</button></form></p>
-            {% endif %}
-        </div>
-        {% endif %}
         <div class="tutorial_header">
             {% if article.icon %}
             <img alt="" src="/content/{{ article.icon }}.png" />

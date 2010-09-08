@@ -52,7 +52,7 @@ h3 {
     color: #1E2630;
 }
 
-input, textarea, select {
+input, textarea, select, button {
     padding: 4px;
     font: 12px/18px "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
     border: 1px solid #cecece;
@@ -212,6 +212,10 @@ ul.tabs .selected a,
 
 .divider-margin {
     margin: 8px 0;
+}
+
+.small {
+    font-size: 11px;
 }
 
 .nopadding {
@@ -486,6 +490,11 @@ span.highlight {
 
 #more_articles {
     float: right;
+}
+
+#under_construction img {
+    float: left;
+    margin: 8px 10px 10px 0;
 }
 
 /* Tutorial content tags */
