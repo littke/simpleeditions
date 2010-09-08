@@ -16,6 +16,9 @@
         {% if not article.published %}
         <div class="warning">
             <p>This article has not been published yet! This means it will not show up in any lists, but you can still share the link.</p>
+            {% if user.can_publish_article %}
+            <p><form action="/4/manage/publish" method="post"><button>Publish article now</button></form></p>
+            {% endif %}
         </div>
         {% endif %}
         <div class="tutorial_header">

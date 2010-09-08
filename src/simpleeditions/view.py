@@ -506,6 +506,12 @@ class NotFoundHandler(TemplatedRequestHandler):
         self.not_found()
     post = get
 
+class PublishArticleHandler(TemplatedRequestHandler):
+    def post(self, article_id):
+        article_id = int(article_id)
+        controller.publish(self, article_id)
+        self.redirect('/%d/manage/edit' % article_id)
+
 class RegisterHandler(TemplatedRequestHandler):
     def get(self):
         # Make sure user isn't logged in

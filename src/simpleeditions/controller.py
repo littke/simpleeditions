@@ -333,6 +333,18 @@ def log_out(handler):
         utils.set_cookie(handler, 'session', '', datetime(1987, 7, 31, 3, 42))
 
 @public
+def publish(handler, article_id):
+    if not isinstance(article_id, (int, long)):
+        raise TypeError('Article id must be an integer.')
+
+    user = handler.user_obj
+    if not user:
+        raise simpleeditions.NotLoggedInError(
+            'You must be logged in to publish an article.')
+
+    model.Article.publish(article_id, user)
+
+@public
 def register(handler, auth_type, **kwargs):
     if handler.user_obj:
         raise simpleeditions.RegisterError(
@@ -365,7 +377,7 @@ def register(handler, auth_type, **kwargs):
 @public
 def update_article(handler, id, title=None, description=None, content=None,
                    icon_data=None, message=''):
-    if not isinstance(id, int):
+    if not isinstance(id, (int, long)):
         raise TypeError('Article id must be an integer.')
 
     user = handler.user_obj

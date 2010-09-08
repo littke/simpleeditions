@@ -34,6 +34,7 @@ urlpatterns = (
     (r'/(\d+)(?:/[a-z0-9-]+)?', view.ArticleHandler),
     (r'/(\d+)/manage/edit', view.EditArticleHandler),
     (r'/(\d+)/manage/files/', view.ArticleFilesHandler),
+    (r'/(\d+)/manage/publish', view.PublishArticleHandler),
     (r'/(\d+)/manage/revisions/', view.ArticleRevisionsHandler),
     (r'/(\d+)/manage/revisions/(\d+)', view.ArticleRevisionHandler),
     (r'/new', view.NewArticleHandler),

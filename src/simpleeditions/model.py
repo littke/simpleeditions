@@ -618,6 +618,8 @@ class Article(db.Model):
     content = db.TextProperty(required=True)
     html = db.TextProperty(required=True)
     published = db.BooleanProperty(default=False)
+    published_by = db.ReferenceProperty(User, collection_name='published')
+    published_date = db.DateTimeProperty()
 
     @staticmethod
     def _save(user, title=None, description=None, content=None, icon=None,
@@ -797,6 +799,31 @@ class Article(db.Model):
     def create(user, title, description, content, icon=None):
         return db.run_in_transaction(Article._save,
             user, title, description, content, icon)
+
+    @staticmethod
+    def publish(article, user):
+        article = get_instance(article, Article)
+        if not article:
+            raise simpleeditions.ArticleNotFoundError(
+                'A valid article must be provided.')
+
+        if article.published:
+            raise simpleeditions.SaveArticleError(
+                'That article has already been published.')
+
+        user = get_instance(user, User)
+        if not user:
+            raise simpleeditions.UserNotFoundError(
+                'A valid user must be provided.')
+
+        if not user.can('publish-article'):
+            raise simpleeditions.SaveArticleError(
+                'You do not have the permissions to publish that article.')
+
+        article.published = True
+        article.published_by = user
+        article.published_date = datetime.now()
+        article.put()
 
     @staticmethod
     def update(article, user, title=None, description=None, content=None,
