@@ -18,7 +18,7 @@
         <h2>Under construction</h2>
         {% if user.can_publish_article %}
         <p>This article is a still draft. If you believe it meets the SimpleEdition standards, publish it to make it appear on the front page.</p>
-        <form action="/4/manage/publish" method="post"><button>Publish article</button></form>
+        <form action="/{{ article.id }}/manage/publish" method="post"><button>Publish article</button></form>
         <div class="breaker"></div>
         {% else %}
         <p>This article is a draft and may need additional work before it meets the SimpleEdition standards. <br/>
