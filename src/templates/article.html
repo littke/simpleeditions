@@ -54,7 +54,7 @@
         {% for comment in comments %}
             <p>
                 <a href="/user/{{ comment.user_canonical_name }}">
-                    <img class="padded-border left-align" alt="" src="http://www.gravatar.com/avatar/{{ comment.user_email_md5 }}?s=32&r=pg&d=mm" width="32" height="32" />
+                    <img class="padded-border left-align" alt="" src="http://www.gravatar.com/avatar/{{ comment.user_email_md5 }}?s=32&amp;r=pg&amp;d=mm" width="32" height="32" />
                     <span class="username">{{ comment.user_name }}:</span>
                 </a>
                 <span title="{{ comment.created }}" class="timesince">({{ comment.created|timesince }} ago)</span>
@@ -82,7 +82,7 @@
                 </ul>
             </div>
             {% endif %}
-            <textarea name="comment">{% if errors %}{{ request.POST.comment }}{% endif %}</textarea><br/>
+            <textarea name="comment" cols="50" rows="5">{% if errors %}{{ request.POST.comment }}{% endif %}</textarea><br/>
             <input class="submit" type="submit" value="Post comment" />
         </form>
         {% endif %}
@@ -92,6 +92,7 @@
 {% block page_foot %}
     <div id="fb-root"></div>
     <script type="text/javascript">
+    <!--
     window.fbAsyncInit = function() {
         FB.init({appId: '{{ FACEBOOK_APP_ID }}', status: true, cookie: true,
                  xfbml: true});
@@ -117,5 +118,6 @@
             document.body.appendChild(e);
         }
     }());
+    -->
     </script>
 {% endblock %}

@@ -7,7 +7,7 @@
             {% ifequal user.id user_info.id %}
             <a href="http://en.gravatar.com/" target="_blank"><img class="padded-border" alt="" src="http://www.gravatar.com/avatar/{{ user_info.email_md5 }}?s=150&r=pg&d=mm" width="150" height="150" /><br />Change at Gravatar.com</a>
             {% else %}
-            <img class="padded-border" alt="" src="http://www.gravatar.com/avatar/{{ user_info.email_md5 }}?s=150&r=pg&d=mm" width="150" height="150" />
+            <img class="padded-border" alt="" src="http://www.gravatar.com/avatar/{{ user_info.email_md5 }}?s=150&amp;r=pg&amp;d=mm" width="150" height="150" />
             {% endifequal %}
         </p>
         <h2>{{ user_info.display_name }}</h2>
