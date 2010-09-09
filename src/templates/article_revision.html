@@ -11,12 +11,12 @@
             {% endif %}
             <h1>{{ revision.title }}</h1>
             <p class="article_extra">
-                Edit #{{ revision.number }}, made at {{ revision.created }} by {{ revision.user_name }}.<br />
-                {% if revision.previous %}<a href="{{ revision.previous }}">&larr; Previous revision</a>{% endif %}
-                {% if revision.next %}<a href="{{ revision.next }}">Next revision &rarr;</a>{% endif %}
+            Revision #{{ revision.number }} ({% if revision.previous %}<a href="{{ revision.previous }}">&larr;</a>{% else %}&larr;{% endif %} {% if revision.next %}<a href="{{ revision.next }}">&rarr;</a>{% else %}&rarr;{% endif %} / <a href=".">list</a>), made {{ revision.created|timesince }} ago by {{ revision.user_name }}.
             </p>
         </div>
-        {{ revision.html|safe }}
+        <div class="tutorial_content">
+            {{ revision.html|safe }}
+        </div>
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}
