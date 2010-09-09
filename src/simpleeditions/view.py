@@ -430,7 +430,7 @@ class EditArticleHandler(TemplatedRequestHandler):
 
 class HomeHandler(TemplatedRequestHandler):
     def get(self):
-        recent_articles = controller.get_articles(self, order='-created', limit=4)
+        recent_articles = controller.get_articles(self, order='-published_date', limit=4)
         popular_articles = controller.get_articles(self, order='-views', limit=4)
 
         self.render('home.html',
@@ -439,7 +439,7 @@ class HomeHandler(TemplatedRequestHandler):
 
 class RecentHandler(TemplatedRequestHandler):
     def get(self):
-        articles = controller.get_articles(self, order='-created', limit=30)
+        articles = controller.get_articles(self, order='-published_date', limit=30)
 
         self.render('recent.html',
             articles=articles)
