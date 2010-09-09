@@ -545,7 +545,7 @@ span.minus {
     font-size: 13px;
     text-shadow: 0 0 0;
     font-weight: bold;
-    font-family: "Lucida Grande";
+    font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
 }
 
 .article_list_container a.more {
