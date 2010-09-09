@@ -296,17 +296,18 @@ div.warning p {
 
 #contributor_photos {
     float: left;
-    margin: 10px 20px 0 10px;
+    margin: 10px 20px 0 35px;
     width: 132px;
 }
 
 #footer p {
     color: #333;
-    width: 640px;
+    width: 500px;
     font-size: 14px;
     line-height: 1.5;
     word-spacing: 1.3px;
     margin-top: 12px;
+    margin-left: 170px;
 }
 
 #footer ul {
