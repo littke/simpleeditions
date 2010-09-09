@@ -49,7 +49,8 @@ def create_icon(user, icon_data, article=None):
 def get_article_dict(article, include_content=False):
     props = ['key.id', ('_entity.user.id', 'user_id'), 'user_name',
              ('_entity.icon.name', 'icon'), 'created', 'last_modified',
-             'edits', 'views', 'slug', 'title', 'description', 'published']
+             'edits', 'views', 'slug', 'title', 'description', 'published',
+             ('_entity.published_by.id', 'published_by'), 'published_date']
     if include_content:
         props += ['content', 'html']
     return utils.get_dict(article, props)
