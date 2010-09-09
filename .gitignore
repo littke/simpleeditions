@@ -1,3 +1,4 @@
+/.appname
 /src/app.yaml
 /src/simpleeditions/settings.py
 *.pyc

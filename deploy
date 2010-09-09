@@ -1,12 +1,18 @@
 if [ -z $1 ]; then
-    echo 'You must specify an application identifier. Example:'
-    echo './deploy exampleapp'
-    exit 1;
+    if [ -f .appname ]; then
+        APPNAME=`cat .appname`
+    else
+        echo 'You must specify an application identifier. Example:'
+        echo './deploy exampleapp'
+        exit 1;
+    fi
+else
+    APPNAME=$1
 fi
 
 git_current_branch() {
     git branch --no-color | grep '^\* ' | grep -v 'no branch' | sed 's/^* //g'
 }
 
-cat src/app.yaml.template | sed "s/\\\$APPNAME/$1/g" | sed "s/\\\$BRANCH/$(git_current_branch)/g" > src/app.yaml
+cat src/app.yaml.template | sed "s/\\\$APPNAME/$APPNAME/g" | sed "s/\\\$BRANCH/$(git_current_branch)/g" > src/app.yaml
 appcfg.py update src/
