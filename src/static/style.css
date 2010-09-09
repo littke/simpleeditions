@@ -8,6 +8,7 @@ body {
     text-align: center;
     background: url('images/bg.png');
     background-color: #d9d2ca;
+    line-height: 1.75;
 }
 
 h1, h2, h3, h4 {
@@ -44,7 +45,6 @@ h2 {
     color: #333;
 }
 
-
 h3 {
     font-size: 1.1em;
     text-transform: uppercase;
@@ -79,6 +79,8 @@ button:active, input[type="reset"]:active, input[type="button"]:active, input[ty
     top: 1px;
 }
 
+/* Links */
+
 a {
     text-decoration: none;
 }
@@ -87,7 +89,7 @@ a:link, a:active, a:visited {
     color: #ae6021;
 }
 
-a:link:hover, a:active:hover, a:visited:hover {
+a:hover {
     color: #d26b19;
 }
 
@@ -131,6 +133,57 @@ li {
 pre {
     margin-left: 20px;
 }
+
+/* Standard button for a elements
+ * TODO: Add different buttons for use in a contentbox or in the header. */
+
+a.button {
+    display:inline-block;
+    height:27px;
+    margin: 0px 20px 0 0;
+    overflow:visible;
+    padding:0;
+    position:relative;
+    width:auto;
+    background: url(images/button.png) no-repeat 0px -29px;
+}
+
+a.button span {
+    cursor: pointer;
+    color: #252525;
+    text-shadow: 0px 1px 1px #fff;
+    -khtml-text-shadow: 0px 1px 1px #fff;
+    -moz-text-shadow: 0px 1px 1px #fff;
+}
+
+a.button:hover span {
+    color: black;
+}
+
+a.button span {
+    display: block;
+    height: 23px;
+    padding: 2px 17px 2px 7px;
+    position: relative;
+    right: -10px;
+    font-size: 11px;
+    background: url(images/button.png) no-repeat right -29px;
+}
+
+a.button:hover {
+    background-position: 0 0;
+}
+
+a.button:hover span {
+    background-position: right 0;
+}
+
+a.button:active {
+    position: relative;
+    top: 1px;
+}
+
+/* Dividers */
 
 .contentbox_divider, .divider {
     background: url('images/divider.png') repeat-x;
@@ -271,7 +324,7 @@ div.warning p {
     float: left;
     position: absolute;
     right: 35px;
-    top: 28px;
+    top: 26px;
     color: #ddd;
 }
 
@@ -350,7 +403,6 @@ div.warning p {
     text-align: left;
     margin: 0 auto;
     width: 880px;
-    line-height: 1.75;
     word-spacing: 1.3px;
 }
 
@@ -554,7 +606,7 @@ span.minus {
 }
 
 #add_new_tutorial {
-    padding: 0 35px 20px 13px;
+    padding: 0 0 20px 15px;
 }
 
 #article_divider {
@@ -622,7 +674,6 @@ h2 {
     line-height: 1.3;
     color: #333;
 }
-
 
 h3 {
     font-size: 1.1em;
