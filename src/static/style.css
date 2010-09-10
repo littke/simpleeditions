@@ -133,13 +133,13 @@ pre {
 }
 
 .contentbox_divider, .divider {
-    background: url('images/divider.png') repeat;
+    background: url('images/divider.png') repeat-x;
     margin: 8px 0;
     height: 2px;
 }
 
 .contentbox_divider {
-    background: url('images/contentbox_divider.png') repeat;
+    background: url('images/contentbox_divider.png') repeat-x;
 }
 
 /* Tabs */
@@ -558,7 +558,7 @@ span.minus {
 }
 
 #article_divider {
-    margin: 15px 0;
+    margin: 0 0 15px 0;
 }
 
 .article_list {
