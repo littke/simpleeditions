@@ -29,7 +29,7 @@
                 <span title="Updated {{ article.last_modified }}. Originally created {{ article.created|timesince }} ago.">Last updated {{ article.last_modified|timesince }} ago.</span>
                 {% endif %}
                 {% if user_can_edit %}
-                {{ article.views }} view{{ article.views|pluralize }}.
+                {{ article.views|intcomma }} view{{ article.views|pluralize }}.
                 <a href="/{{ article.id }}/manage/edit">Manage article</a>
                 {% endif %}
             </p>

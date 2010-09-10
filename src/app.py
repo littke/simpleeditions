@@ -41,6 +41,7 @@ import simpleeditions.settings
 import simpleeditions.urls
 
 # Register custom Django template filters/tags.
+webapp.template.register_template_library('django.contrib.humanize.templatetags.humanize')
 webapp.template.register_template_library('simpleeditions.template_extensions')
 
 def main():
