@@ -510,7 +510,7 @@ class PublishArticleHandler(TemplatedRequestHandler):
     def post(self, article_id):
         article_id = int(article_id)
         controller.publish(self, article_id)
-        self.redirect('/%d/manage/edit' % article_id)
+        self.redirect('/') # Redirect home, where the article will appear
 
 class RegisterHandler(TemplatedRequestHandler):
     def get(self):
