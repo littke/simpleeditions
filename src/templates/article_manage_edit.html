@@ -26,7 +26,7 @@
                 <p><input name="icon" type="file" /></p>
                 <p>Article description</p>
                 <p><textarea cols="100" name="description" rows="5">{% if request.POST.description %}{{ request.POST.description }}{% else %}{{ article.description }}{% endif %}</textarea></p>
-                <p>Article content (<a href="http://daringfireball.net/projects/markdown/syntax">Markdown formatted</a>)</p>
+                <p>Article content (<a href="/59001/markdown-an-introduction">Markdown formatted</a>)</p>
                 <p><textarea cols="100" name="content" rows="35">{% if request.POST.content %}{{ request.POST.content }}{% else %}{{ article.content }}{% endif %}</textarea></p>
                 <p>Edit message (<em>optional</em>)</p>
                 <input name="message" size="50" type="text" value="{{ request.POST.message }}" />

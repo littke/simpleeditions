@@ -4,9 +4,24 @@
     <div class="contentbox_top"></div>
     <div class="contentbox_middle">
         <h1>Successfully registered</h1>
-        <p>Welcome to SimpleEditions, <strong>{{ user.display_name }}</strong>! Your account was created successfully.</p>
-        <p>The site is still under construction and we'll shortly release tools for allowing you to edit articles. In the meanwhile, 
-        to participate in article writing, drop us an e-mail to contribute@simpleeditions.com and we'll get back to you!</p>
+        <p>Welcome to SimpleEditions, <strong>{{ user.display_name }}</strong>!</p>
+
+        <img class="padded-border profile-avatar right-align" alt="" src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=150&amp;r=pg&amp;d=mm" width="150" height="150" />
+        <h2>1. Your image</h2>
+        <p>
+            To get yourself a profile picture, register an account at
+            <a href="http://www.gravatar.com" target="_blank">Gravatar.com</a> and upload a photo.
+        </p>
+        <p class="small">
+            Gravatar is a website that helps you manage your picture on many websites at once. So when you upload a photo
+            at their website, it's automatically used as your profile picture at all Gravatar-connected websites, including
+            SimpleEditions. But it only works if you register your Gravatar account with the same e-mail as here (<em>{{ user.email }}</em>).
+        </p>
+        <h2>2. Writing</h2>
+        <p>
+            You can now begin submitting feedback comments to <a href="/recent">existing tutorials</a>, or <a href="/new">start working on a new tutorial</a>.
+        </p>
+        <div class="breaker"></div>
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}
