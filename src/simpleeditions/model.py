@@ -108,16 +108,24 @@ class User(db.Model):
     # Actions that require permissions paired with functions that return True
     # if the supplied user has the permission.
     actions = {
+        # Whether the user may comment on an article.
         'comment':
             lambda user: True,
+        # Whether the user may create a new article.
         'create-article':
             lambda user: True,
+        # Whether the user may edit ANY article.
         'edit-any-article':
             lambda user: user.status in ('staff', 'admin'),
+        # Whether the user may publish any unpublished article.
         'publish-article':
             lambda user: user.status in ('contributor', 'staff', 'admin'),
+        # Whether the user may upload a file to an article. First of all, the
+        # user must be able to edit the article.
         'upload-files':
             lambda user: user.status in ('contributor', 'staff', 'admin'),
+        # Whether the user may use HTML in the Markdown. Without this
+        # permission, any HTML will be replaced with "[HTML_REMOVED]".
         'use-html':
             lambda user: user.status in ('staff', 'admin'),
     }
