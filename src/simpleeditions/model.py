@@ -118,6 +118,8 @@ class User(db.Model):
             lambda user: user.status in ('contributor', 'staff', 'admin'),
         'upload-files':
             lambda user: user.status in ('contributor', 'staff', 'admin'),
+        'use-html':
+            lambda user: user.status in ('staff', 'admin'),
     }
 
     @staticmethod
@@ -691,7 +693,10 @@ class Article(db.Model):
         if content:
             if not isinstance(content, basestring):
                 raise TypeError('A valid article body must be provided.')
-            html = markdown2.markdown(content)
+            # Remove custom HTML unless the user has permissions to use HTML.
+            safe = None if user.can('use-html') else 'replace'
+            # Convert the Markdown to HTML.
+            html = markdown2.markdown(content, safe_mode=safe)
         else:
             html = None
 
