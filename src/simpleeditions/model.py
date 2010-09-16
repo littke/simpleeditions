@@ -102,6 +102,7 @@ class User(db.Model):
     status = db.StringProperty(choices=('inactive', 'member', 'contributor',
                                         'staff', 'admin'),
                                default='member')
+    grants = db.StringListProperty(indexed=False)
     session = db.StringProperty()
     expires = db.DateTimeProperty()
 
@@ -193,7 +194,7 @@ class User(db.Model):
 
         """
         try:
-            return self.actions[action](self)
+            return action in self.grants or self.actions[action](self)
         except KeyError:
             raise ValueError('Unknown action %s.' % action)
 
