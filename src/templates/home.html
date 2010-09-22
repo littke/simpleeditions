@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% block page_title %}SimpleEditions - Tutorials made simple{% endblock %}
 {% block page_title_suffix %}{% endblock %}
+{% block slogan %}{% endblock %}
+{% block intro %}
+    <div id="introcontainer">
+        <div id="intro">
+            <img src="{{ "images/intro_photos_large.png"|static }}" id="intro_photos_large" />
+            <div id="intro_text">
+                <img src="{{ "images/together_we_knowhow.png"|static }}" id="intro_photos_large" />
+                <p class="breaker">High quality tutorials that get straight to the point, <br/>
+                written collaboratively by you and me. <a href="/about">Learn more</a>.</p>
+            </div>
+            <div id="join_box">
+                <a href="/sign-up"><img src="{{ "images/join_button.png"|static }}" id="join_button" /></a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 {% block page_content %}
     <div id="recent_articles" class="article_list_container">
         <h1>Recent</h1>

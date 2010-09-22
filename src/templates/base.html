@@ -26,7 +26,7 @@
     <div id="headercontainer">
         <div id="header">
             <a href="/"><img alt="SimpleEditions" src="{{ "images/logo.png"|static }}" id="logo" /></a>
-            <img src="{{ "images/slogan.png"|static }}" id="slogan" alt="we make tutorials together" />
+            {% block slogan %}<img src="{{ "images/slogan.png"|static }}" id="slogan" alt="we make tutorials together" />{% endblock %}
             <div id="account">
                 {% if user %}
                 Logged in as <a href="/user/{{ user.canonical_name }}"><strong>{{ user.display_name }}</strong></a>. <a href="/logout?continue={{ request.path|urlencode }}">Log out</a>
@@ -36,6 +36,7 @@
             </div>
         </div>
     </div>
+    {% block intro %}{% endblock %}
     <div id="contentcontainer">
         <div id="content">
             {% block page_content %}{% endblock %}

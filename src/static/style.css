@@ -324,7 +324,7 @@ div.warning p {
 #account {
     float: left;
     position: absolute;
-    right: 35px;
+    right: 36px;
     top: 26px;
     color: #ddd;
 }
@@ -336,6 +336,72 @@ div.warning p {
 #account a:hover {
     color: #D26B19;
 }
+
+/* Intro */
+
+#introcontainer {
+    height: 204px;
+    background: url('images/intro_bg.png') repeat-x;
+    text-align: center;
+}
+
+#intro {
+    margin: 0 auto;
+    text-align: left;
+    width: 848px;
+    height: 154px;
+    padding: 25px 16px;
+}
+
+#intro img {
+    float: left;
+}
+
+#intro_text {
+    float: left;
+    margin-top: 23px;
+    margin-left: 25px;
+    font-size: 15px;
+}
+
+#intro_text p {
+    margin-top: 0;
+}
+
+#intro_photos_4small {
+    margin-top: 18px;
+    margin-left: 35px;
+}
+
+#join_box {
+    float: left;
+    background: url('images/join_box.png') no-repeat;
+    height: 110px;
+    width: 209px;
+    position: relative;
+    top: 13px;
+    left: 58px;
+}
+
+#join_button {
+    position: relative;
+    left: 61px;
+    top: 54px;
+}
+
+#join_box a:active {
+    position: relative;
+    top: 1px;
+}
+
+#intro_text p {
+    line-height: 1.6;
+    position: relative;
+    top: 3px;
+}
+
+
+/* Footer */
 
 #footer {
     margin: 0 auto;
@@ -409,20 +475,6 @@ div.warning p {
 
 #content textarea {
     width: 735px;
-}
-
-#intro_box {
-    margin-top: 5px;
-    color: white;
-    position: relative;
-    height: 147px;
-}
-
-#intro_box p {
-    position: absolute;
-    top: 60px;
-    left: 27px;
-    font-size: 13px;
 }
 
 .contentbox_top {
