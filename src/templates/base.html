@@ -23,45 +23,45 @@
 <!--[if IE 8 ]>    <body class="ie8"> <![endif]-->
 <!--[if IE 9 ]>    <body class="ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <body> <!--<![endif]-->
-    <div id="headercontainer">
-        <div id="header">
-            <a href="/"><img alt="SimpleEditions" src="{{ "images/logo.png"|static }}" id="logo" /></a>
-            {% block slogan %}<img src="{{ "images/slogan.png"|static }}" id="slogan" alt="we make tutorials together" />{% endblock %}
-            <div id="account">
-                {% if user %}
-                Logged in as <a href="/user/{{ user.canonical_name }}"><strong>{{ user.display_name }}</strong></a>. <a href="/logout?continue={{ request.path|urlencode }}">Log out</a>
-                {% else %}
-                <a href="/login?continue={{ request.path|urlencode }}">Login</a> | <a href="/sign-up">Sign up</a>
-                {% endif %}
+    <div id="main">
+        <div id="headercontainer">
+            <div id="header">
+                <a href="/"><img alt="SimpleEditions" src="{{ "images/logo.png"|static }}" id="logo" /></a>
+                {% block slogan %}<img src="{{ "images/slogan.png"|static }}" id="slogan" alt="we make tutorials together" />{% endblock %}
+                <div id="account">
+                    {% if user %}
+                    Logged in as <a href="/user/{{ user.canonical_name }}"><strong>{{ user.display_name }}</strong></a>. <a href="/logout?continue={{ request.path|urlencode }}">Log out</a>
+                    {% else %}
+                    <a href="/login?continue={{ request.path|urlencode }}">Login</a> | <a href="/sign-up">Sign up</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
-    {% block intro %}{% endblock %}
-    <div id="contentcontainer">
-        <div id="content">
-            {% block page_content %}{% endblock %}
+        {% block intro %}{% endblock %}
+        <div id="contentcontainer">
+            <div id="content">
+                {% block page_content %}{% endblock %}
+            </div>
         </div>
+        {% block outro %}{% endblock %}
+        <div id="push"></div>
     </div>
+    {% block footer %}
     <div id="footercontainer">
         <div id="footer">
-            <img id="contributor_photos" alt="Photos of contributors" src="{{ "images/contributor_photos.png"|static }}" />
-            <h2>Your expertise is needed</h2>
-            <p>SimpleEditions is a tutorial community that we create to together. <br />
-            We gather the experience of thousands of individuals and convert it into 
-            high quality, easy to understand tutorials.</p>
-            <div id="extra_info">
-                <img src="{{ "images/twitter_icon.png"|static }}" alt="Twitter icon" id="twitter_icon" />
-                <a href="http://www.twitter.com/SimpleEditions" target="_blank">Follow us on Twitter</a>
-                | v1.2
-            </div>
+            <img src="{{ "images/footer_photos.png"|static }}" alt="Contributors of SimpleEditions" id="footer_photos" />
+            <img src="{{ "images/footer_logo.png"|static }}" alt="SimpleEditions logo" id="footer_logo" />
             <ul>
+                <li><a href="/about">About</a></li>
                 <li><a href="/sign-up">Sign up</a></li>
-                <li><a href="/about">Learn more</a></li>
                 <li><a href="/about#contact">Contact</a></li>
-                <li><a href="/about#licenses">Open source</a></li>
+                <li><a href="http://www.twitter.com/SimpleEditions" target="_blank">Twitter</a></li>
             </ul>
+            <p class="breaker">Copyleft SimpleEditions. All tutorials available under a Creative Commons license, 
+            all source code is open source (GPL). Site v1.2.</p>
         </div>
     </div>
+    {% endblock %}
     <!-- Google Analytics -->
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

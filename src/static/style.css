@@ -4,10 +4,9 @@ body {
     margin: 0;
     padding: 0;
     font: 13px/18px "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Helvetica, Arial, sans-serif;
+    background: #D6CFC7 url('images/bg.png') repeat;
     color: #252525;
     text-align: center;
-    background: url('images/bg.png');
-    background-color: #d9d2ca;
     line-height: 1.75;
 }
 
@@ -135,6 +134,23 @@ pre {
     margin-left: 20px;
 }
 
+/* Make the footer sticky */
+
+body, html {
+    height: 100%;
+}
+
+#main {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -94px;
+}
+
+#push {
+    height: 94px;
+}
+
 /* Standard button for a elements
  * TODO: Add different buttons for use in a contentbox or in the header. */
 
@@ -186,10 +202,14 @@ a.button:active {
 
 /* Dividers */
 
-.contentbox_divider, .divider {
+.article_divider, .contentbox_divider, .divider {
     background: url('images/divider.png') repeat-x;
     margin: 8px 0;
     height: 2px;
+}
+
+.article_divider {
+    margin: 0 0 15px 0;
 }
 
 .contentbox_divider {
@@ -295,8 +315,7 @@ div.warning p {
 /* Header */
 
 #headercontainer {
-    background: url('images/header_bg.png') repeat-x;
-    background-color: #373632;
+    background: #2C221B url('images/header_bg.png') repeat-x;
 }
 
 #header {
@@ -340,8 +359,8 @@ div.warning p {
 /* Intro */
 
 #introcontainer {
-    height: 204px;
-    background: url('images/intro_bg.png') repeat-x;
+    height: 177px;
+    background: #E6E1DA url('images/intro_bg.png') repeat-x;
     text-align: center;
 }
 
@@ -349,7 +368,6 @@ div.warning p {
     margin: 0 auto;
     text-align: left;
     width: 848px;
-    height: 154px;
     padding: 25px 16px;
 }
 
@@ -400,14 +418,17 @@ div.warning p {
     top: 3px;
 }
 
+/* Outro */
 
-/* Footer */
+#outrocontainer {
+    background: #d9d2ca url('images/outro_bg.png');
+}
 
-#footer {
+#outro {
     margin: 0 auto;
-    background: url('images/footer.png') no-repeat;
+    background: url('images/outro.png') no-repeat;
     text-align: left;
-    padding: 10px 45px 10px 25px;
+    padding: 10px 45px 25px 25px;
     width: 810px;
     height: 193px;
     position: relative;
@@ -420,7 +441,7 @@ div.warning p {
     width: 132px;
 }
 
-#footer p {
+#outro p {
     color: #333;
     width: 500px;
     font-size: 14px;
@@ -430,8 +451,50 @@ div.warning p {
     margin-left: 170px;
 }
 
+#outro ul {
+    margin-top: 5px;
+    list-style-type: none;
+}
+
+#outro ul li {
+    margin: 0 10px 0 0;
+    display: inline;
+}
+
+#outro a {
+    font-size: 15px;
+}
+
+/* Footer */
+
+#footercontainer {
+    background: #1F150E url('images/footer_bg.png') repeat-x;
+    height: 94px;
+    text-align: center;
+}
+
+#footer {
+    text-align: left;
+    margin: 0 auto;
+    width: 880px;
+    padding-top: 17px;
+    position: relative;
+}
+
+#footer p {
+    font-size: 11px;
+    color: #432e22;
+    margin: 0;
+    position: absolute;
+    top: 58px;
+    left: 15px;
+}
+
 #footer ul {
     list-style-type: none;
+    margin: 6px 0 0 0;
+    padding-left: 40px;
+    float: left;
 }
 
 #footer ul li {
@@ -439,31 +502,25 @@ div.warning p {
     display: inline;
 }
 
-#footer div#extra_info {
-    color: #777;
-    float: right;
-    margin: 0 35px 0 0;
+#footer ul li a {
+    font-size: 15px;
 }
 
-#footer a {
-    color: #565656;
-}
-
-#footer a:hover {
-    color: #D26B19;
-}
-
-#twitter_icon {
+#footer_logo {
+    float: left;
     position: relative;
-    top: 4px;
-    left: -2px;
+    left: 10px;
+}
+
+#footer_photos {
+    float: right;
+    margin-right: 34px;
 }
 
 /* Content */
 
 #contentcontainer {
     padding: 20px 0 0 0;
-    background: url('images/contentcontainer_bg.png') repeat;
 }
 
 #content {
@@ -660,10 +717,6 @@ span.minus {
 
 #add_new_tutorial {
     padding: 0 0 20px 15px;
-}
-
-#article_divider {
-    margin: 0 0 15px 0;
 }
 
 .article_list {

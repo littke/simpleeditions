@@ -24,7 +24,7 @@
     {% if user_articles %}
     <div class="article_list_container">
         <h1>Articles by {% ifequal user_info.id user.id %}you{% else %}{{ user_info.display_name }}{% endifequal %}</h1>
-        <div id="article_divider" class="divider breaker"></div>
+        <div class="article_divider breaker"></div>
         <ul class="article_list">
             {% for article in user_articles %}
                 {% include "include/list_article.html" %}

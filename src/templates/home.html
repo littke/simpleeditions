@@ -2,26 +2,28 @@
 {% block page_title %}SimpleEditions - Tutorials made simple{% endblock %}
 {% block page_title_suffix %}{% endblock %}
 {% block slogan %}{% endblock %}
+{% block outro %}{% endblock %}
 {% block intro %}
     <div id="introcontainer">
         <div id="intro">
-            <img src="{{ "images/intro_photos_large.png"|static }}" id="intro_photos_large" />
+            <img src="{{ "images/intro_photos_large.png"|static }}" id="intro_photos_large" alt="Photos of contributors"/>
             <div id="intro_text">
-                <img src="{{ "images/together_we_knowhow.png"|static }}" id="intro_photos_large" />
+                <img src="{{ "images/together_we_knowhow.png"|static }}" />
                 <p class="breaker">High quality tutorials that get straight to the point, <br/>
                 written collaboratively by you and me. <a href="/about">Learn more</a>.</p>
             </div>
             <div id="join_box">
-                <a href="/sign-up"><img src="{{ "images/join_button.png"|static }}" id="join_button" /></a>
+                <a href="/sign-up"><img src="{{ "images/join_button.png"|static }}" alt="Join now" id="join_button" /></a>
             </div>
         </div>
     </div>
 {% endblock %}
+
 {% block page_content %}
     <div id="recent_articles" class="article_list_container">
         <h1>Recent</h1>
         <a class="more" href="/recent">All recent</a>
-        <div id="article_divider" class="divider breaker"></div>
+        <div class="article_divider breaker"></div>
 
         <ul class="article_list">
         {% for article in recent_articles %}
@@ -33,7 +35,7 @@
     <div id="popular_articles" class="article_list_container">
         <h1>Popular</h1>
         <a class="more" href="/popular">All popular</a>
-        <div id="article_divider" class="divider breaker"></div>
+        <div class="article_divider breaker"></div>
 
         <ul class="article_list">
         {% for article in popular_articles %}
@@ -48,5 +50,4 @@
         <a class="button" href="/new"><span>Write a new tutorial</span></a>
     </div>
     {% endif %}
-
 {% endblock %}

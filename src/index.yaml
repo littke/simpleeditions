@@ -25,6 +25,11 @@ indexes:
 - kind: Article
   properties:
   - name: published
+  - name: title
+
+- kind: Article
+  properties:
+  - name: published
   - name: views
     direction: desc
 

@@ -89,6 +89,21 @@
     </div>
     <div class="contentbox_bottom"></div>
 {% endblock %}
+{% block outro %}
+    <div id="outrocontainer">
+        <div id="outro">
+            <img id="contributor_photos" alt="Photos of contributors" src="{{ "images/contributor_photos.png"|static }}" />
+            <h2>Your expertise is needed</h2>
+            <p>SimpleEditions is a tutorial community that we create to together. <br />
+            We gather the experience of thousands of individuals and convert it into
+            high quality, easy to understand tutorials.</p>
+            <ul>
+                <li><a href="/sign-up">Sign up</a></li>
+                <li><a href="/about">Learn more</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
 {% block page_foot %}
     <div id="fb-root"></div>
     <script type="text/javascript">
