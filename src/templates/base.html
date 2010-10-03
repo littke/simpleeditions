@@ -49,7 +49,10 @@
     {% block footer %}
     <div id="footercontainer">
         <div id="footer">
-            <img src="{{ "images/footer_photos.png"|static }}" alt="Contributors of SimpleEditions" id="footer_photos" />
+            <div id="footer_photos">
+                <a href="/user/erikbraennstroem"><img src="{{ "images/footer_photo_erik.png"|static }}" alt="Contributor of SimpleEditions" /></a>
+                <a href="/user/andreasblixt"><img src="{{ "images/footer_photo_blixt.png"|static }}" alt="Contributor of SimpleEditions" /></a>
+            </div>
             <a href="/"><img src="{{ "images/footer_logo.png"|static }}" alt="SimpleEditions logo" id="footer_logo" /></a>
             <ul>
                 <li><a href="/">Home</a></li>

@@ -269,6 +269,23 @@ ul.tabs .selected a,
     margin-left: 6px;
 }
 
+/* Animations */
+
+@-webkit-keyframes bob {
+    0% {
+        -webkit-transform: rotate(0deg)
+    }
+    25% {
+        -webkit-transform: rotate(20deg)
+    }
+    75% {
+        -webkit-transform: rotate(-20deg)
+    }
+    100% {
+        -webkit-transform: rotate(0deg)
+    }
+}
+
 /* Handy classes for various use */
 
 .error {
@@ -513,8 +530,21 @@ div.warning p {
 }
 
 #footer_photos {
-    float: right;
     margin-right: 34px;
+    float: right;
+}
+
+#footer_photos img {
+    cursor: pointer;
+    -webkit-animation-name: bob;
+    -webkit-animation-duration: 4s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-play-state: paused;
+}
+
+#footer_photos img:hover {
+    -webkit-animation-play-state: running;
 }
 
 /* Content */
