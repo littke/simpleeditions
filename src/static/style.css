@@ -151,6 +151,11 @@ body, html {
     height: 94px;
 }
 
+#sponsored {
+    text-align: left;
+    padding-left: 15px;
+}
+
 /* Standard button for a elements
  * TODO: Add different buttons for use in a contentbox or in the header. */
 
