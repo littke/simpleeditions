@@ -26,10 +26,10 @@
             <p class="article_extra">
                 By {{ article.user_name }}.
                 {% if article.edits %}
-                <span title="Updated {{ article.last_modified }}. Originally created {{ article.created|timesince }} ago.">Last updated {{ article.last_modified|timesince }} ago.</span>
+                <span title="Updated {{ article.last_modified }}. Originally created {{ article.created|timesince }} ago.">Updated {{ article.last_modified|timesince }} ago.</span>
                 {% endif %}
+                {{ article.views|intcomma }} unique view{{ article.views|pluralize }}.
                 {% if user_can_edit %}
-                {{ article.views|intcomma }} view{{ article.views|pluralize }}.
                 <a href="/{{ article.id }}/manage/edit">Manage article</a>
                 {% endif %}
             </p>
