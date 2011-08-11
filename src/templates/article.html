@@ -41,6 +41,7 @@
         <div class="tutorial_share">
             <div id="twitter_share"><a href="http://twitter.com/share" class="twitter-share-button" data-text="{{ article.title }}" data-count="vertical" data-via="SimpleEditions">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></div>
             <div id="facebook_share"><fb:like layout="box_count"></fb:like></div>
+            <div id="googleplus_share"><g:plusone size="tall"></g:plusone></div>
             <div id="more_articles"><a href="/">More tutorials</a></div>
         </div>
         <div class="breaker"></div>
@@ -105,6 +106,15 @@
     </div>
 {% endblock %}
 {% block page_foot %}
+    <!-- Google +1 -->
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+
     <div id="fb-root"></div>
     <script type="text/javascript">
     <!--

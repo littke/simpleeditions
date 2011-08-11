@@ -17,6 +17,20 @@
     <meta name="description" content="{% block description %}SimpleEditions is a tutorial website aiming to make it easy to learn by focusing on 
     high quality articles. We're an open source project that anyone can enjoy and participate in.{% endblock %}" />
     {% block page_head %}{% endblock %}
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-16306135-1']);
+      _gaq.push(['_trackPageview']);
+      _gaq.push(['_trackPageLoadTime']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
 </head>
 <!--[if lt IE 7 ]> <body class="ie6"> <![endif]-->
 <!--[if IE 7 ]>    <body class="ie7"> <![endif]-->
@@ -69,16 +83,6 @@
         </div>
     </div>
     {% endblock %}
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-    try {
-    var pageTracker = _gat._getTracker("{{ ANALYTICS_TRACKER_ID }}");
-    pageTracker._trackPageview();
-    } catch(err) {}</script>
     {% block page_foot %}{% endblock %}
     <!-- Observer -->
     <script type="text/javascript" src="http://www.observerapp.com/record.js"></script>
